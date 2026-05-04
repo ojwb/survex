@@ -2218,6 +2218,18 @@ msgstr "Nom de station"
 msgid "Station Names"
 msgstr "Noms de station"
 
+#. TRANSLATORS: Label for a checkbox in the print/export dialog.
+#: ../src/printing.cc:500
+#: n:537
+msgid "Anonymous stations"
+msgstr ""
+
+#. TRANSLATORS: Option description in `survexport --help` output.
+#: ../src/survexport.cc:149
+#: n:538
+msgid "anonymous stations"
+msgstr ""
+
 #: ../src/survexport.cc:147
 #: n:475
 msgid "station labels"

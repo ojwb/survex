@@ -1,6 +1,6 @@
 /* printing.cc */
 /* Aven printing code */
-/* Copyright (C) 1993-2003,2004,2005,2006,2010,2011,2012,2013,2014,2015,2016,2017,2018 Olly Betts
+/* Copyright (C) 1993-2026 Olly Betts
  * Copyright (C) 2001,2004 Philip Underwood
  *
  * This program is free software; you can redistribute it and/or modify
@@ -108,6 +108,7 @@ enum {
 	svx_ENTS,
 	svx_FIXES,
 	svx_EXPORTS,
+	svx_ANON_STNS,
 	svx_GRID,
 	svx_TEXT_HEIGHT,
 	svx_MARKER_SIZE,
@@ -243,6 +244,7 @@ BEGIN_EVENT_TABLE(svxPrintDlg, wxDialog)
     EVT_CHECKBOX(svx_ENTS, svxPrintDlg::OnChange)
     EVT_CHECKBOX(svx_FIXES, svxPrintDlg::OnChange)
     EVT_CHECKBOX(svx_EXPORTS, svxPrintDlg::OnChange)
+    EVT_CHECKBOX(svx_ANON_STNS, svxPrintDlg::OnChange)
 END_EVENT_TABLE()
 
 static wxString scales[] = {
@@ -494,6 +496,10 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     v2->Add(new wxCheckBox(this, svx_NAMES, wmsg(/*Station Names*/260),
 			   wxDefaultPosition, wxDefaultSize, 0,
 			   BitValidator(&m_layout.show_mask, LABELS)),
+	    0, wxALIGN_LEFT|wxALL, 2);
+    v2->Add(new wxCheckBox(this, svx_ANON_STNS, wmsg(/*Anonymous Stations*/537),
+			   wxDefaultPosition, wxDefaultSize, 0,
+			   BitValidator(&m_layout.show_mask, EXPORTS)),
 	    0, wxALIGN_LEFT|wxALL, 2);
     v2->Add(new wxCheckBox(this, svx_ENTS, wmsg(/*Entrances*/418),
 			   wxDefaultPosition, wxDefaultSize, 0,
@@ -795,6 +801,7 @@ svxPrintDlg::SomethingChanged(int control_id) {
 		{ svx_ENTS, ENTS },
 		{ svx_FIXES, FIXES },
 		{ svx_EXPORTS, EXPORTS },
+		{ svx_ANON_STNS, ANON_STNS },
 		{ svx_CENTRED, CENTRED },
 		{ svx_FULLCOORDS, FULL_COORDS },
 		{ svx_CLAMP_TO_GROUND, CLAMP_TO_GROUND },

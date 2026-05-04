@@ -2,7 +2,7 @@
  * Export from Aven as GPX.
  */
 /* Copyright (C) 2012 Olaf Kähler
- * Copyright (C) 2012-2025 Olly Betts
+ * Copyright (C) 2012-2026 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -99,7 +99,11 @@ GPX::~GPX()
 const int *
 GPX::passes() const
 {
-    static const int default_passes[] = { LABELS|ENTS|FIXES|EXPORTS, LEGS|SURF, 0 };
+    static const int default_passes[] = {
+	LABELS|ENTS|FIXES|EXPORTS|ANON_STNS,
+	LEGS|SURF,
+	0
+    };
     return default_passes;
 }
 

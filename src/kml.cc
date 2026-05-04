@@ -2,7 +2,7 @@
  * Export from Aven as KML.
  */
 /* Copyright (C) 2012 Olaf Kähler
- * Copyright (C) 2012-2024 Olly Betts
+ * Copyright (C) 2012-2026 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -98,7 +98,14 @@ const int *
 KML::passes() const
 {
     static const int default_passes[] = {
-	PASG, XSECT, WALL1, WALL2, LEGS|SURF, LABELS|ENTS|FIXES|EXPORTS, 0
+	PASG,
+	XSECT,
+	WALL1,
+	WALL2,
+	LEGS|SURF,
+	LABELS|ENTS|FIXES|EXPORTS,
+	ANON_STNS,
+	0
     };
     return default_passes;
 }
@@ -390,6 +397,24 @@ KML::label(const img_point *p, const wxString& str, int /*sflags*/, int type)
 	    break;
     }
     fputs("</Placemark>\n", fh);
+}
+
+void
+KML::cross(const img_point *p, const wxString&, int /*sflags*/)
+{
+    // Anonymous station.
+    PJ_COORD coord{{p->x, p->y, p->z, HUGE_VAL}};
+    coord = proj_trans(pj, PJ_FWD, coord);
+    if (coord.xyzt.x == HUGE_VAL ||
+	coord.xyzt.y == HUGE_VAL ||
+	coord.xyzt.z == HUGE_VAL) {
+	// FIXME report errors
+    }
+    // %.8f is at worst just over 1mm.
+    fprintf(fh, "<Placemark><Point><coordinates>%.8f,%.8f,%.2f</coordinates></Point></Placemark>\n",
+	    coord.xyzt.x,
+	    coord.xyzt.y,
+	    coord.xyzt.z);
 }
 
 void

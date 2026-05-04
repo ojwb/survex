@@ -1,7 +1,7 @@
 /* gdalexport.cc
  * Export using GDAL
  */
-/* Copyright (C) 2024 Olly Betts
+/* Copyright (C) 2024,2026 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -224,7 +224,7 @@ const int*
 ShapefilePoints::passes() const
 {
     static const int default_passes[] = {
-	ENTS, FIXES, EXPORTS, LABELS, 0
+	ENTS, FIXES, EXPORTS, ANON_STNS, LABELS, 0
     };
     return default_passes;
 }

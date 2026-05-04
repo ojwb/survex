@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
-<Document><name>kmlexport</name>
+<Document><name>kmlexportanon</name>
 <Style id="fix"><IconStyle><Icon><href>https://maps.google.com/mapfiles/kml/paddle/red-blank.png</href></Icon><color>ff0000ff</color><hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/></IconStyle></Style>
 <Style id="exp"><IconStyle><Icon><href>https://maps.google.com/mapfiles/kml/paddle/blu-blank.png</href></Icon><color>ffff0000</color><hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/></IconStyle></Style>
 <Style id="ent"><IconStyle><Icon><href>https://maps.google.com/mapfiles/kml/paddle/grn-blank.png</href></Icon><color>ff00ff00</color><hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/></IconStyle></Style>
@@ -42,4 +42,6 @@
 <Placemark><Point><coordinates>174.77785826,-41.27931962,12.57</coordinates></Point><name>2</name></Placemark>
 <Placemark><Point><coordinates>174.77788868,-41.27842294,21.28</coordinates></Point><name>1</name></Placemark>
 <Placemark><Point><coordinates>174.77670004,-41.27839998,30.00</coordinates></Point><name>bh</name><styleUrl>#ent</styleUrl></Placemark>
+<Placemark><Point><coordinates>174.77664219,-41.28010369,-3.99</coordinates></Point></Placemark>
+<Placemark><Point><coordinates>174.77783087,-41.28012665,4.72</coordinates></Point></Placemark>
 </Document></kml>

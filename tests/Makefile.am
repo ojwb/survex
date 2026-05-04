@@ -194,8 +194,10 @@ dxffullcoords.dxf dxffullcoords.svx\
 dxfsurfequate.svx dxfsurfequate.dxf\
 gpxexport.gpx gpxexport.svx\
 hpglexport.hpgl hpglexport.svx\
+hpglexportanon.hpgl hpglexportanon.svx\
 jsonexport.json jsonexport.svx\
 kmlexport.kml kmlexport.svx\
+kmlexportanon.kml kmlexportanon.svx\
 pltexport.plt pltexport.svx\
 svgexport.svg svgexport.svx
 

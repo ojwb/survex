@@ -1,7 +1,7 @@
 /* pos.cc
  * Export from Aven as Survex .pos or .csv.
  */
-/* Copyright (C) 2001-2024 Olly Betts
+/* Copyright (C) 2001-2026 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,7 +75,11 @@ POS::~POS()
 const int *
 POS::passes() const
 {
-    static const int default_passes[] = { LABELS|ENTS|FIXES|EXPORTS, 0 };
+    static const int default_passes[] = {
+	LABELS|ENTS|FIXES|EXPORTS,
+	ANON_STNS,
+	0
+    };
     return default_passes;
 }
 
@@ -101,8 +105,18 @@ void POS::header(const char *, time_t,
 }
 
 void
+POS::start_pass(int pass)
+{
+    if (pass == ANON_STNS && !todo.empty()) {
+	// Sort and write out all the named stations first.
+	footer();
+    }
+}
+
+void
 POS::label(const img_point *p, const wxString& str, int /*sflags*/, int /*type*/)
 {
+    // Named station.
     const char* s = str.utf8_str();
     size_t len = strlen(s);
     pos_label * l = (pos_label*)malloc(offsetof(pos_label, name) + len + 1);
@@ -113,6 +127,17 @@ POS::label(const img_point *p, const wxString& str, int /*sflags*/, int /*type*/
     l->z = p->z;
     memcpy(l->name, s, len + 1);
     todo.push_back(l);
+}
+
+void
+POS::cross(const img_point *p, const wxString&, int /*sflags*/)
+{
+    // Anonymous station.
+    if (csv) {
+	fprintf(fh, "%.2f,%.2f,%.2f,\n", p->x, p->y, p->z);
+    } else {
+	fprintf(fh, "(%8.2f, %8.2f, %8.2f )\n", p->x, p->y, p->z);
+    }
 }
 
 class pos_label_ptr_cmp {
@@ -130,8 +155,7 @@ void
 POS::footer()
 {
     sort(todo.begin(), todo.end(), pos_label_ptr_cmp(separator));
-    vector<pos_label*>::const_iterator i;
-    for (i = todo.begin(); i != todo.end(); ++i) {
+    for (auto&& i = todo.begin(); i != todo.end(); ++i) {
 	if (csv) {
 	    fprintf(fh, "%.2f,%.2f,%.2f,", (*i)->x, (*i)->y, (*i)->z);
 	    csv_quote((*i)->name, fh);
@@ -141,4 +165,5 @@ POS::footer()
 		    (*i)->x, (*i)->y, (*i)->z, (*i)->name);
 	}
     }
+    todo.clear();
 }

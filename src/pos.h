@@ -2,7 +2,7 @@
  * Export from Aven as Survex .pos or .csv.
  */
 
-/* Copyright (C) 2005-2024 Olly Betts
+/* Copyright (C) 2005-2026 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,6 +44,8 @@ class POS : public ExportFilter {
     void header(const char *, time_t,
 		double, double, double,
 		double, double, double) override;
+    void start_pass(int) override;
     void label(const img_point *, const wxString&, int, int) override;
+    void cross(const img_point *, const wxString&, int sflags) override;
     void footer() override;
 };

@@ -2,7 +2,7 @@
  * Convert a processed survey data file to another format.
  */
 
-/* Copyright (C) 1994-2024 Olly Betts
+/* Copyright (C) 1994-2026 Olly Betts
  * Copyright (C) 2004 John Pybus (SVG Output code)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -74,7 +74,7 @@ main(int argc, char **argv)
    enum {
        OPT_SCALE = 0x100, OPT_BEARING, OPT_TILT, OPT_PLAN, OPT_ELEV,
        OPT_LEGS, OPT_SURF, OPT_SPLAYS, OPT_CROSSES, OPT_LABELS, OPT_ENTS,
-       OPT_FIXES, OPT_EXPORTS, OPT_XSECT, OPT_WALLS, OPT_PASG,
+       OPT_FIXES, OPT_EXPORTS, OPT_ANON_STNS, OPT_XSECT, OPT_WALLS, OPT_PASG,
        OPT_CENTRED, OPT_FULL_COORDS, OPT_CLAMP_TO_GROUND, OPT_DEFAULTS
    };
    static const struct option long_opts[] = {
@@ -90,6 +90,7 @@ main(int argc, char **argv)
 	{"splays", no_argument, 0, OPT_SPLAYS},
 	{"crosses", no_argument, 0, OPT_CROSSES},
 	{"station-names", no_argument, 0, OPT_LABELS},
+	{"anonymous-stations", no_argument, 0, OPT_ANON_STNS},
 	{"entrances", no_argument, 0, OPT_ENTS},
 	{"fixes", no_argument, 0, OPT_FIXES},
 	{"exports", no_argument, 0, OPT_EXPORTS},
@@ -120,8 +121,9 @@ main(int argc, char **argv)
 	{"version", no_argument, 0, HLP_VERSION},
 	// US spelling:
 	{"origin-in-center", no_argument, 0, OPT_CENTRED},
-	// Abbreviation:
+	// Abbreviations:
 	{"full-coords", no_argument, 0, OPT_FULL_COORDS},
+	{"anon-stations", no_argument, 0, OPT_ANON_STNS},
 	{0,0,0,0}
    };
 
@@ -145,34 +147,35 @@ main(int argc, char **argv)
 	{HLP_ENCODELONG(8),   /*splay legs*/465, 0, 0},
 	{HLP_ENCODELONG(9),   /*station markers*/474, 0, 0},
 	{HLP_ENCODELONG(10),  /*station labels*/475, 0, 0},
-	{HLP_ENCODELONG(11),  /*entrances*/466, 0, 0},
-	{HLP_ENCODELONG(12),  /*fixed points*/467, 0, 0},
-	{HLP_ENCODELONG(13),  /*exported stations*/468, 0, 0},
-	{HLP_ENCODELONG(14),  /*cross-sections*/469, 0, 0},
-	{HLP_ENCODELONG(15),  /*walls*/470, 0, 0},
-	{HLP_ENCODELONG(16),  /*passages*/471, 0, 0},
-	{HLP_ENCODELONG(17),  /*origin in centre*/472, 0, 0},
-	{HLP_ENCODELONG(18),  /*full coordinates*/473, 0, 0},
-	{HLP_ENCODELONG(19),  /*clamp to ground*/478, 0, 0},
-	{HLP_ENCODELONG(20),  /*include items exported by default*/155, 0, 0},
-	{HLP_ENCODELONG(21),  /*generate grid (default %sm)*/148, STRING(DEFAULT_GRID_SPACING), 0},
-	{HLP_ENCODELONG(22),  /*station labels text height (default %s)*/149, STRING(DEFAULT_TEXT_HEIGHT), 0},
-	{HLP_ENCODELONG(23),  /*station marker size (default %s)*/152, STRING(DEFAULT_MARKER_SIZE), 0},
-	{HLP_ENCODELONG(24),  /*produce Survex 3d output*/487, 0, 0},
-	{HLP_ENCODELONG(25),  /*produce CSV output*/102, 0, 0},
-	{HLP_ENCODELONG(26),  /*produce DXF output*/156, 0, 0},
-	{HLP_ENCODELONG(27),  /*produce EPS output*/454, 0, 0},
-	{HLP_ENCODELONG(28),  /*produce GPX output*/455, 0, 0},
-	{HLP_ENCODELONG(29),  /*produce HPGL output*/456, 0, 0},
-	{HLP_ENCODELONG(30),  /*produce JSON output*/457, 0, 0},
-	{HLP_ENCODELONG(31),  /*produce KML output*/458, 0, 0},
+	{HLP_ENCODELONG(11),  /*anonymous stations*/538, 0, 0},
+	{HLP_ENCODELONG(12),  /*entrances*/466, 0, 0},
+	{HLP_ENCODELONG(13),  /*fixed points*/467, 0, 0},
+	{HLP_ENCODELONG(14),  /*exported stations*/468, 0, 0},
+	{HLP_ENCODELONG(15),  /*cross-sections*/469, 0, 0},
+	{HLP_ENCODELONG(16),  /*walls*/470, 0, 0},
+	{HLP_ENCODELONG(17),  /*passages*/471, 0, 0},
+	{HLP_ENCODELONG(18),  /*origin in centre*/472, 0, 0},
+	{HLP_ENCODELONG(19),  /*full coordinates*/473, 0, 0},
+	{HLP_ENCODELONG(20),  /*clamp to ground*/478, 0, 0},
+	{HLP_ENCODELONG(21),  /*include items exported by default*/155, 0, 0},
+	{HLP_ENCODELONG(22),  /*generate grid (default %sm)*/148, STRING(DEFAULT_GRID_SPACING), 0},
+	{HLP_ENCODELONG(23),  /*station labels text height (default %s)*/149, STRING(DEFAULT_TEXT_HEIGHT), 0},
+	{HLP_ENCODELONG(24),  /*station marker size (default %s)*/152, STRING(DEFAULT_MARKER_SIZE), 0},
+	{HLP_ENCODELONG(25),  /*produce Survex 3d output*/487, 0, 0},
+	{HLP_ENCODELONG(26),  /*produce CSV output*/102, 0, 0},
+	{HLP_ENCODELONG(27),  /*produce DXF output*/156, 0, 0},
+	{HLP_ENCODELONG(28),  /*produce EPS output*/454, 0, 0},
+	{HLP_ENCODELONG(29),  /*produce GPX output*/455, 0, 0},
+	{HLP_ENCODELONG(30),  /*produce HPGL output*/456, 0, 0},
+	{HLP_ENCODELONG(31),  /*produce JSON output*/457, 0, 0},
+	{HLP_ENCODELONG(32),  /*produce KML output*/458, 0, 0},
 	/* TRANSLATORS: "Compass" and "Carto" are the names of software packages,
 	 * so should not be translated. */
-	{HLP_ENCODELONG(32),  /*produce Compass PLT output for Carto*/159, 0, 0},
-	{HLP_ENCODELONG(33),  /*produce Survex POS output*/459, 0, 0},
-	{HLP_ENCODELONG(34),  /*produce Shapefile (lines) output*/525, 0, 0},
-	{HLP_ENCODELONG(35),  /*produce Shapefile (points) output*/526, 0, 0},
-	{HLP_ENCODELONG(36),  /*produce SVG output*/160, 0, 0},
+	{HLP_ENCODELONG(33),  /*produce Compass PLT output for Carto*/159, 0, 0},
+	{HLP_ENCODELONG(34),  /*produce Survex POS output*/459, 0, 0},
+	{HLP_ENCODELONG(35),  /*produce Shapefile (lines) output*/525, 0, 0},
+	{HLP_ENCODELONG(36),  /*produce Shapefile (points) output*/526, 0, 0},
+	{HLP_ENCODELONG(37),  /*produce SVG output*/160, 0, 0},
 	{0, 0, 0, 0}
    };
 
@@ -212,6 +215,9 @@ main(int argc, char **argv)
 	 break;
        case OPT_EXPORTS:
 	 bit = EXPORTS;
+	 break;
+       case OPT_ANON_STNS:
+	 bit = ANON_STNS;
 	 break;
        case OPT_XSECT:
 	 bit = XSECT;

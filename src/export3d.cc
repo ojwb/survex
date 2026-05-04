@@ -1,7 +1,7 @@
 /* survex3d.cc
  * Export from Aven as Survex .3d.
  */
-/* Copyright (C) 2001-2024 Olly Betts
+/* Copyright (C) 2001-2026 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,9 @@ Export3D::~Export3D()
 const int *
 Export3D::passes() const
 {
-    static const int default_passes[] = { LEGS|SURF|LABELS|ENTS|FIXES|EXPORTS, 0 };
+    static const int default_passes[] = {
+	LEGS|SURF|LABELS|ENTS|FIXES|EXPORTS|ANON_STNS, 0
+    };
     return default_passes;
 }
 
@@ -62,8 +64,16 @@ Export3D::line(const img_point* p1, const img_point* p, unsigned flags, bool fPe
 void
 Export3D::label(const img_point* p, const wxString& str, int sflags, int)
 {
+    // Named station.
     const char* s = str.utf8_str();
     img_write_item(pimg, img_LABEL, sflags, s, p->x, p->y, p->z);
+}
+
+void
+Export3D::cross(const img_point* p, const wxString&, int sflags)
+{
+    // Anonymous station.
+    img_write_item(pimg, img_LABEL, sflags, "", p->x, p->y, p->z);
 }
 
 void

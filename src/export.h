@@ -2,7 +2,7 @@
  * Export to GIS formats, CAD formats, and other formats.
  */
 
-/* Copyright (C) 2004-2024 Olly Betts
+/* Copyright (C) 2004-2026 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -82,6 +82,7 @@ static_assert(MASK_ < 0x00000008, "MASK_ only contains expected bits");
 #define SCALE		0x00080000
 #define FULL_COORDS	0x00100000
 #define CLAMP_TO_GROUND	0x00200000
+#define ANON_STNS	0x00400000
 
 #define DEFAULT_GRID_SPACING 100 // metres
 #define DEFAULT_TEXT_HEIGHT 0.6

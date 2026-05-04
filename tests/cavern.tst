@@ -56,7 +56,12 @@ esac
 TESTS_=
 [ "$OSTYPE" = "cygwin" ] || TESTS_="3dexport \
  dxffullcoords dxfsurfequate\
- gpxexport hpglexport jsonexport kmlexport pltexport svgexport"
+ gpxexport\
+ hpglexport hpglexportanon\
+ jsonexport\
+ kmlexport kmlexportanon\
+ pltexport\
+ svgexport"
 
 : ${TESTS=${*:-"singlefix singlereffix oneleg midpoint lollipop fixedlollipop\
  cross firststn\

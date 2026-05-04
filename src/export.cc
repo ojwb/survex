@@ -63,52 +63,52 @@
 
 const format_info export_format_info[] = {
     { ".3d", /*Survex 3d files*/207,
-      LABELS|LEGS|SURF|SPLAYS|ENTS|FIXES|EXPORTS, /* FIXME: expand... */
-      LABELS|LEGS|SURF|SPLAYS|ENTS|FIXES|EXPORTS },
+      LABELS|LEGS|SURF|SPLAYS|ENTS|FIXES|EXPORTS|ANON_STNS, /* FIXME: expand... */
+      LABELS|LEGS|SURF|SPLAYS|ENTS|FIXES|EXPORTS|ANON_STNS },
     { ".csv", /*CSV files*/101,
-      LABELS|ENTS|FIXES|EXPORTS,
+      LABELS|ENTS|FIXES|EXPORTS|ANON_STNS,
       LABELS },
     { ".dxf", /*DXF files*/411,
-      LABELS|LEGS|SURF|SPLAYS|STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|GRID|FULL_COORDS|ORIENTABLE,
+      LABELS|LEGS|SURF|SPLAYS|STNS|ANON_STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|GRID|FULL_COORDS|ORIENTABLE,
       LABELS|LEGS|STNS },
     { ".eps", /*EPS files*/412,
-      LABELS|LEGS|SURF|SPLAYS|STNS|PASG|XSECT|WALLS|ORIENTABLE,
+      LABELS|LEGS|SURF|SPLAYS|STNS|ANON_STNS|PASG|XSECT|WALLS|ORIENTABLE,
       LABELS|LEGS|STNS },
     { ".gpx", /*GPX files*/413,
-      LABELS|LEGS|SURF|SPLAYS|ENTS|FIXES|EXPORTS|PROJ,
+      LABELS|LEGS|SURF|SPLAYS|ENTS|FIXES|EXPORTS|ANON_STNS|PROJ,
       LABELS },
     /* TRANSLATORS: Here "plotter" refers to a machine which draws a printout
      * on a (usually large) sheet of paper using a pen mounted in a motorised
      * mechanism. */
     { ".hpgl", /*HPGL for plotters*/414,
-      LABELS|LEGS|SURF|SPLAYS|STNS|CENTRED|SCALE|ORIENTABLE,
+      LABELS|LEGS|SURF|SPLAYS|STNS|ANON_STNS|CENTRED|SCALE|ORIENTABLE,
       LABELS|LEGS|STNS },
     { ".json", /*JSON files*/445,
       LEGS|SURF|SPLAYS|CENTRED,
       LEGS },
     { ".kml", /*KML files*/444,
-      LABELS|LEGS|SURF|SPLAYS|PASG|XSECT|WALLS|ENTS|FIXES|EXPORTS|PROJ|CLAMP_TO_GROUND,
+      LABELS|LEGS|SURF|SPLAYS|PASG|XSECT|WALLS|ENTS|FIXES|EXPORTS|ANON_STNS|PROJ|CLAMP_TO_GROUND,
       LABELS|LEGS },
     /* TRANSLATORS: "Compass" and "Carto" are the names of software packages,
      * so should not be translated:
      * https://www.fountainware.com/compass/ */
     { ".plt", /*Compass PLT for use with Carto*/415,
-      LABELS|LEGS|SURF|SPLAYS|ORIENTABLE,
-      LABELS|LEGS },
+      LABELS|ANON_STNS|LEGS|SURF|SPLAYS|ORIENTABLE,
+      LABELS|ANON_STNS|LEGS },
     /* TRANSLATORS: Survex is the name of the software, and "pos" refers to a
      * file extension, so neither should be translated. */
     { ".pos", /*Survex pos files*/166,
-      LABELS|ENTS|FIXES|EXPORTS,
+      LABELS|ENTS|FIXES|EXPORTS|ANON_STNS,
       LABELS },
     { ".svg", /*SVG files*/417,
-      LABELS|LEGS|SURF|SPLAYS|STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|SCALE|ORIENTABLE,
+      LABELS|LEGS|SURF|SPLAYS|STNS|ANON_STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|SCALE|ORIENTABLE,
       LABELS|LEGS|STNS },
     { ".shp", /*Shapefiles (lines)*/523,
       LEGS|SURF|SPLAYS,
       LEGS },
     { ".shp", /*Shapefiles (points)*/524,
-      LABELS|ENTS|FIXES|EXPORTS|STNS,
-      LABELS|STNS },
+      LABELS|ENTS|FIXES|EXPORTS|STNS|ANON_STNS,
+      LABELS|STNS|ANON_STNS },
 };
 
 static_assert(sizeof(export_format_info) == FMT_MAX_PLUS_ONE_ * sizeof(export_format_info[0]),
@@ -144,6 +144,8 @@ static const char *layer_name(int mask) {
 	    return "Surface";
 	case STNS:
 	    return "Stations";
+	case ANON_STNS:
+	    return "Anonymous Stations";
 	case LABELS:
 	    return "Labels";
 	case XSECT:
@@ -162,7 +164,7 @@ static double grid; /* grid spacing (or 0 for no grid) */
 const int *
 ExportFilter::passes() const
 {
-    static const int default_passes[] = { LEGS|SURF|STNS|LABELS, 0 };
+    static const int default_passes[] = { LEGS|SURF|STNS|ANON_STNS|LABELS, 0 };
     return default_passes;
 }
 
@@ -194,7 +196,7 @@ const int *
 DXF::passes() const
 {
     static const int dxf_passes[] = {
-	PASG, XSECT, WALL1, WALL2, LEGS|SURF|STNS|LABELS, 0
+	PASG, XSECT, WALL1, WALL2, LEGS|SURF|STNS|LABELS, ANON_STNS, 0
     };
     return dxf_passes;
 }
@@ -525,7 +527,7 @@ find_name(const img_point *p)
       if (pt->p.x == p->x && pt->p.y == p->y && pt->p.z == p->z)
 	 return pt->label;
    }
-   return "?";
+   return NULL;
 }
 
 class SVG : public ExportFilter {
@@ -561,7 +563,7 @@ const int *
 SVG::passes() const
 {
     static const int svg_passes[] = {
-	PASG, LEGS|SURF, XSECT, WALL1, WALL2, LABELS, STNS, 0
+	PASG, LEGS|SURF, XSECT, WALL1, WALL2, LABELS, STNS, ANON_STNS, 0
     };
     return svg_passes;
 }
@@ -895,6 +897,8 @@ PLT::PLT(const char * input_datum)
 const int *
 PLT::passes() const
 {
+    // We assume any leg end whose position doesn't match a label is an
+    // anonymous station, so we don't need ANON_STNS here.
     static const int plt_passes[] = { LABELS, LEGS|SURF, 0 };
     return plt_passes;
 }
@@ -972,7 +976,7 @@ PLT::find_name_plt(const img_point *p)
 {
     const char * s = find_name(p);
     escaped.resize(0);
-    if (*s == '\0') {
+    if (!s) {
 	// Anonymous station - number sequentially using a counter.  We start
 	// the name with "^" which gives a unique name since we escape any ^ in
 	// a real station name below, but only insert ^ followed by one of
@@ -1020,6 +1024,7 @@ PLT::find_name_plt(const img_point *p)
 void
 PLT::label(const img_point *p, const wxString& str, int sflags, int)
 {
+   // Named station.
    const char* s = str.utf8_str();
    (void)sflags; /* unused */
    set_name(p, s);
@@ -1061,7 +1066,7 @@ const int *
 EPS::passes() const
 {
     static const int eps_passes[] = {
-	PASG, XSECT, WALL1, WALL2, LEGS|SURF|STNS|LABELS, 0
+	PASG, XSECT, WALL1, WALL2, LEGS|SURF|STNS|ANON_STNS|LABELS, 0
     };
     return eps_passes;
 }
@@ -1629,6 +1634,13 @@ Export(const wxString &fnm_out, const wxString &title,
 
    for (pass = filt->passes(); *pass; ++pass) {
       int pass_mask = show_mask & *pass;
+      if (pass_mask & (ANON_STNS)) {
+	  if (filter && !filter->CheckVisible(wxString())) {
+	      // Turn off ANON_STNS up front if there's a filter which doesn't
+	      // allow it.
+	      pass_mask &= ~ANON_STNS;
+	  }
+      }
       if (!pass_mask)
 	  continue;
       filt->start_pass(*pass);
@@ -1673,6 +1685,12 @@ Export(const wxString &fnm_out, const wxString &title,
 	  list<LabelInfo*>::const_iterator pos = model.GetLabels();
 	  list<LabelInfo*>::const_iterator end = model.GetLabelsEnd();
 	  for ( ; pos != end; ++pos) {
+	      int sflags = (*pos)->get_flags();
+	      if ((sflags & img_SFLAG_ANON)) {
+		  // Anonymous station.
+		  continue;
+	      }
+
 	      if (filter && !filter->CheckVisible((*pos)->GetText()))
 		  continue;
 
@@ -1691,13 +1709,30 @@ Export(const wxString &fnm_out, const wxString &title,
 	      } else if (pass_mask & LABELS) {
 		  type = LABELS;
 	      }
-	      int sflags = (*pos)->get_flags();
 	      if (type) {
 		  filt->label(&p, (*pos)->GetText(), sflags, type);
 	      }
 	      if (pass_mask & STNS) {
 		  filt->cross(&p, (*pos)->GetText(), sflags);
 	      }
+	  }
+      }
+      if (pass_mask & (ANON_STNS)) {
+	  list<LabelInfo*>::const_iterator pos = model.GetLabels();
+	  list<LabelInfo*>::const_iterator end = model.GetLabelsEnd();
+	  for ( ; pos != end; ++pos) {
+	      int sflags = (*pos)->get_flags();
+	      if (!(sflags & img_SFLAG_ANON)) {
+		  // Not an anonymous station.
+		  continue;
+	      }
+
+	      transform_point(**pos, pre_offset, COS, SIN, COST, SINT, &p);
+	      p.x += x_offset;
+	      p.y += y_offset;
+	      p.z += z_offset;
+
+	      filt->cross(&p, wxEmptyString, sflags);
 	  }
       }
       if (pass_mask & (XSECT|WALLS|PASG)) {
