@@ -469,7 +469,7 @@ DXF::footer()
 
 typedef struct point {
    img_point p;
-   const char *label;
+   char *label;
    struct point *next;
 } point;
 
@@ -1761,7 +1761,20 @@ Export(const wxString &fnm_out, const wxString &title,
    }
    filt->footer();
    delete filt;
-   free(htab);
-   htab = NULL;
+
+   if (htab) {
+       // Free hash table entries.
+       for (size_t i = 0; i < HTAB_SIZE; ++i) {
+	   point* h = htab[i];
+	   while (h) {
+	       point* old_h = h;
+	       h = h->next;
+	       free(old_h->label);
+	       free(old_h);
+	   }
+       }
+       free(htab);
+       htab = NULL;
+   }
    return true;
 }
