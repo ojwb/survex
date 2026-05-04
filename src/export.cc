@@ -2,7 +2,7 @@
  * Export to GIS formats, CAD formats, and other formats.
  */
 
-/* Copyright (C) 1994-2025 Olly Betts
+/* Copyright (C) 1994-2026 Olly Betts
  * Copyright (C) 2004 John Pybus (SVG Output code)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -573,8 +573,6 @@ SVG::header(const char * title, time_t,
 {
    const char *unit = "mm";
    const double SVG_MARGIN = 5.0; // In units of "unit".
-   htab = (point **)osmalloc(HTAB_SIZE * sizeof(point *));
-   for (size_t i = 0; i < HTAB_SIZE; ++i) htab[i] = NULL;
    fprintf(fh, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
    double width = (max_x - min_x) * factor + SVG_MARGIN * 2;
    double height = (max_y - min_y) * factor + SVG_MARGIN * 2;
@@ -649,7 +647,6 @@ SVG::label(const img_point *p, const wxString& str, int sflags, int)
 	   p->x * factor, p->y * -factor);
    html_escape(fh, s);
    fputs("</text>\n", fh);
-   set_name(p, s);
 }
 
 void
