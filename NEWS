@@ -1,4 +1,4 @@
-up to: ee934092aa1a5bcf5b26b09d21b7b447b41cf387
+up to: c3bd62abf3e38c91dc5c564cd6056162d88827c9
 
 Changes in 1.4.21 (2026-0?-??):
 
@@ -51,6 +51,20 @@ Changes in 1.4.21 (2026-0?-??):
   + Check value after `TAPE=` in Walls data and give an error if it's not
     valid.
 
+  + In Walls data, we now reject multi-component readings with a decimal point
+    in anything but the final component.  Some examples of invalid readings
+    which now give an error with cavern are `12.5i3`. `12.5:29`, `12.5:29:30`
+    and `12:29.5:30`.
+
+* aven/survexport:
+
+  + Allow exporting/not exporting anonymous stations.  The default is chosen as
+    most appropriate for each format.
+
+  + Fix memory leak in PLT export.
+
+  + Fix memory leak and speed up SVG export.
+
 * Documentation:
 
   + Say "directive" instead of "command" in Walls docs since this is the
@@ -59,9 +73,22 @@ Changes in 1.4.21 (2026-0?-??):
   + Document Walls filename case mismatch issue.  Issue highlighted by a
     dataset from Darek Lubomski.
 
+  + Document that the last official release of Walls uses an old IGRF version.
+
+  + Improve section on submitting documentation changes.
+
   + Minor improvements to wording.
 
+  + HACKING.htm: autoconf 2.59 is the current minimum.
+
+* Test suite: Add test coverage for Walls compass/clino in mils.
+
 * Merge updates to Russian translation.
+
+* (Linux version): survex.spec: We no longer provide this.  It doesn't work
+  with current Fedora because some dependencies have been renamed, which
+  suggests nobody is regularly using it, which isn't a surprise as there's
+  now a Fedora package of Survex.  Reported by Bill Gee.
 
 Changes in 1.4.20 (2026-03-04):
 
