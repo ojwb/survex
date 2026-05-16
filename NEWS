@@ -1,4 +1,4 @@
-up to: c3bd62abf3e38c91dc5c564cd6056162d88827c9
+up to: 84a61242e8ac204cd3cad21fcc4b65733d21b46a
 
 Changes in 1.4.21 (2026-0?-??):
 
@@ -15,7 +15,7 @@ Changes in 1.4.21 (2026-0?-??):
 
   + `*entrance` now also suppresses unused fixed point warnings when it appears
     before the `*fix` (previously this only worked for `*entrance` after
-    `*fix`.
+    `*fix`).
 
   + `*fix` with SDs now sets the "fixed" flag on the station in the .3d file.
 
@@ -46,7 +46,7 @@ Changes in 1.4.21 (2026-0?-??):
     seems a more logical approach, since `#flags` is just free-form text which
     Walls itself doesn't ascribe particular semantics to.  (The word `entrance`
     in `#flags` still sets the "entrance" flag since Walls lacks a way to
-    properly mark entrances.)
+    explicitly mark entrances.)
 
   + Check value after `TAPE=` in Walls data and give an error if it's not
     valid.
@@ -83,7 +83,9 @@ Changes in 1.4.21 (2026-0?-??):
 
 * Test suite: Add test coverage for Walls compass/clino in mils.
 
-* Merge updates to Russian translation.
+* Merge updates to Polish translation from Paweł Gogolak.
+
+* Merge updates to Russian translation from Vasily Vl. Suhachev.
 
 * (Linux version): survex.spec: We no longer provide this.  It doesn't work
   with current Fedora because some dependencies have been renamed, which
