@@ -4,7 +4,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
 "PO-Revision-Date: 2016-08-20 00:43:08 +0000\n"
-"Last-Translator: Mateusz Golicz <mateusz.golicz@pza.org.pl>\n"
+"Last-Translator: Paweł Gogolak <Unknown>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -177,7 +177,7 @@ msgstr "Spodziewałem się liczby, znalazłem “%s”"
 #: n:489
 #, c-format
 msgid "Expecting integer in range %d to %d"
-msgstr ""
+msgstr "Oczekiwana liczba z przedziału od %d do %d"
 
 #: ../src/commands.c:2336
 #: n:10
@@ -399,7 +399,7 @@ msgstr "Nieznana jednostka “%s”"
 #: n:532
 #, c-format
 msgid "Unknown team role “%s”"
-msgstr ""
+msgstr "Nieznana rola w zespole “%s”"
 
 #: ../src/commands.c:2195
 #: n:536
@@ -3651,7 +3651,7 @@ msgstr ""
 #: ../src/survexport.cc:174
 #: n:526
 msgid "produce Shapefile (points) output"
-msgstr ""
+msgstr "stwórz Shapefile (punkty)"
 
 #: ../src/survexport.cc:175
 #: n:160
@@ -3661,7 +3661,7 @@ msgstr "wyjście w formacie SVG"
 #: ../src/survexport.cc:411
 #: n:252
 msgid "Export format not specified and not known from output file extension"
-msgstr ""
+msgstr "Nie określony format eksportu i nie jest znany z rozszerzenia pliku wyjściowego"
 
 #: ../src/survexport.cc:416
 #: n:253
