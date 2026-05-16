@@ -25,11 +25,11 @@ jobs:
     runs-on: 'ubuntu-24.04'
     steps:
     - name: Check out repository code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         show-progress: false
     - name: Install CCache
-      uses: hendrikmuhs/ccache-action@v1
+      uses: hendrikmuhs/ccache-action@v1.2.21
       with:
         key: ${{ github.job }}
     - name: Install package dependencies
@@ -72,7 +72,7 @@ jobs:
     - name: Create distribution tarball
       run: |
         make dist
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       with:
         path: |
           survex-*.tar.gz
@@ -86,11 +86,11 @@ jobs:
     needs: makedist
     steps:
     - name: Install CCache
-      uses: hendrikmuhs/ccache-action@v1
+      uses: hendrikmuhs/ccache-action@v1.2.21
       with:
         key: ${{ github.job }}
     - name: Fetch distribution
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
     - name: Unpack distribution
       run: |
         mv artifact/* .
@@ -122,7 +122,7 @@ jobs:
     container: debian:stable
     steps:
     - name: Fetch distribution
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
     - name: Unpack distribution
       run: |
         mv artifact/* .
@@ -143,7 +143,7 @@ jobs:
             libproj-dev \
             libswscale-dev
     - name: Install CCache
-      uses: hendrikmuhs/ccache-action@v1
+      uses: hendrikmuhs/ccache-action@v1.2.21
       with:
         key: ${{ github.job }}
     - name: configure
@@ -159,11 +159,11 @@ jobs:
     needs: makedist
     steps:
     - name: Install CCache
-      uses: hendrikmuhs/ccache-action@v1
+      uses: hendrikmuhs/ccache-action@v1.2.21
       with:
         key: ${{ github.job }}
     - name: Fetch distribution
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
     - name: Unpack distribution
       run: |
         mv artifact/* .
@@ -210,12 +210,12 @@ jobs:
           pkgconf:p
         update: true # To get wxwidgets3.2-msw --rescomp fix
     - name: Install CCache
-      uses: hendrikmuhs/ccache-action@v1
+      uses: hendrikmuhs/ccache-action@v1.2.21
       with:
         key: ${{ github.job }}
         variant: sccache
     - name: Fetch distribution
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
     - name: Unpack distribution
       run: |
         mv artifact/* .
@@ -238,7 +238,7 @@ jobs:
     - name: Run innosetup
       run: |
         make mingw_iss RUN_EXE= NTLDD=ntldd PROJ_PREFIX=/ucrt64
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       with:
         name: microsoft-windows-installer
         path: |
