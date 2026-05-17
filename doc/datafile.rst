@@ -1413,8 +1413,9 @@ Syntax
 
 Description
    ``*infer plumbs on`` tells cavern to interpret gradients of ±90 degrees
-   as UP/DOWN (so it will not apply the clino correction to them).  This is
-   useful when you have data which uses this convention for plumbed legs.
+   (or ±100 grads, etc) as UP/DOWN, so it will not apply the clino correction
+   to them.  This is useful when you have data which uses this convention for
+   plumbed legs.
 
    ``*infer equates on`` tells cavern to interpret a leg with a tape reading of
    zero as a ``*equate`` which this prevents tape corrections being applied to
