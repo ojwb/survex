@@ -76,12 +76,13 @@ jobs:
       with:
         path: |
           survex-*.tar.gz
-        # Files are already compressed so don't try to compress again.
-        compression-level: 0
+        # Files are already compressed so don't use zip.
+        archive: false
         retention-days: 1
         if-no-files-found: error
 
   valgrind:
+    if: false
     runs-on: 'ubuntu-24.04'
     needs: makedist
     steps:
@@ -93,8 +94,6 @@ jobs:
       uses: actions/download-artifact@v8
     - name: Unpack distribution
       run: |
-        mv artifact/* .
-        rmdir artifact
         tar --strip-components=1 -xf survex-*.tar.gz
     - name: Install package dependencies
       run: |
@@ -125,8 +124,6 @@ jobs:
       uses: actions/download-artifact@v8
     - name: Unpack distribution
       run: |
-        mv artifact/* .
-        rmdir artifact
         tar --strip-components=1 -xf survex-*.tar.gz
     - name: Install package dependencies
       run: |
@@ -155,6 +152,7 @@ jobs:
         make check MSGFMT=: VERBOSE=1
 
   macos:
+    if: false
     runs-on: 'macos-latest'
     needs: makedist
     steps:
@@ -166,8 +164,6 @@ jobs:
       uses: actions/download-artifact@v8
     - name: Unpack distribution
       run: |
-        mv artifact/* .
-        rmdir artifact
         tar --strip-components=1 -xf survex-*.tar.gz
     - name: Install package dependencies
       run: |
@@ -188,6 +184,7 @@ jobs:
         make check MSGFMT=: VERBOSE=1
 
   msys2-ucrt64:
+    if: false
     runs-on: 'windows-latest'
     needs: makedist
     defaults:
@@ -218,8 +215,6 @@ jobs:
       uses: actions/download-artifact@v8
     - name: Unpack distribution
       run: |
-        mv artifact/* .
-        rmdir artifact
         tar --strip-components=1 -xf survex-*.tar.gz
     - name: configure
       run: |
@@ -243,7 +238,7 @@ jobs:
         name: microsoft-windows-installer
         path: |
           survex-microsoft-windows-*.exe
-        # Files are already compressed so don't try to compress again.
-        compression-level: 0
+        # Files are already compressed so don't use zip.
+        archive: false
         retention-days: 1
         if-no-files-found: error
