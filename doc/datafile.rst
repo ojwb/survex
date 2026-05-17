@@ -1422,11 +1422,19 @@ Description
    them.  This is useful when you have data which uses this convention for
    equating stations.
 
-   ``*infer exports on`` is necessary when you have a dataset which is partly
-   annotated with ``*export``.  It tells cavern not to complain about missing
-   ``*export`` commands in the parts of the dataset it is enabled for.  Also
-   stations which were used to join surveys are marked as exported in the 3d
-   file.
+   ``*infer exports on`` relaxes the requirement that a station must be
+   ``*export``-ed to be able to refer to it from outside the survey it is in.
+   When active, such stations are treated as if they were marked with ``*export``
+   (including being flagged as "exported" in the .3d file).  For compatibility
+   with datasets from before ``*export`` was added, a dataset which never uses
+   ``*export`` is processed as if it used ``*infer exports on``.  It can be
+   useful to be able to turn it on explicitly for part of a dataset, for
+   example it allows combining a dataset which doesn't used ``*export`` with
+   one which does, and it supports a phased conversion of a dataset to using
+   ``*export``.  You might also decide to use it if having to mark survey
+   stations as exported doesn't seem worth the benefit of catching mis-ties -
+   for example, if you're surveying a maze cave where a lot of stations are
+   junctions.
 
 INSTRUMENT
 ----------
