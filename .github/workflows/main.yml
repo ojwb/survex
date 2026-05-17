@@ -82,7 +82,6 @@ jobs:
         if-no-files-found: error
 
   valgrind:
-    if: false
     runs-on: 'ubuntu-24.04'
     needs: makedist
     steps:
@@ -152,7 +151,6 @@ jobs:
         make check MSGFMT=: VERBOSE=1
 
   macos:
-    if: false
     runs-on: 'macos-latest'
     needs: makedist
     steps:
@@ -184,7 +182,6 @@ jobs:
         make check MSGFMT=: VERBOSE=1
 
   msys2-ucrt64:
-    if: false
     runs-on: 'windows-latest'
     needs: makedist
     defaults:
