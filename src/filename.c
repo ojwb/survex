@@ -93,6 +93,10 @@ extern void
 safe_fclose(FILE *f)
 {
    SVX_ASSERT(f);
+#ifdef _WIN32
+   // Untested attempt to address https://trac.survex.com/ticket/147
+   _commit(fileno(f));
+#endif
    /* NB: use of | rather than || - we always want to call fclose() */
    if (FERROR(f) | (fclose(f) == EOF)) {
       filelist *p;

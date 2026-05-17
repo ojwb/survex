@@ -400,6 +400,10 @@ MovieMaker::release()
     oc = NULL;
 
     if (fh_to_close) {
+#ifdef _WIN32
+	// Untested attempt to address https://trac.survex.com/ticket/147
+	_commit(fileno(fh_to_close));
+#endif
 	fclose(fh_to_close);
 	fh_to_close = NULL;
     }

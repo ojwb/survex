@@ -3680,8 +3680,14 @@ img_close(img *pimg)
 	    }
 	 }
 	 if (FERROR(pimg->fh)) result = 0;
-	 if (pimg->close_func && pimg->close_func(pimg->fh))
-	     result = 0;
+	 if (pimg->close_func) {
+#ifdef _WIN32
+	     // Untested attempt to address https://trac.survex.com/ticket/147
+	     if (result && !pimg->fRead) _commit(fileno(pimg->fh));
+#endif
+	     if (pimg->close_func(pimg->fh))
+		 result = 0;
+	 }
 	 if (!result) img_errno = pimg->fRead ? IMG_READERROR : IMG_WRITEERROR;
       }
       if (pimg->data) {

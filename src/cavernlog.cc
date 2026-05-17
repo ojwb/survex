@@ -664,6 +664,10 @@ CavernLogWindow::OnSave(wxCommandEvent &)
 	return;
     }
     FWRITE_(log_txt.data(), log_txt.size(), 1, fh_log);
+#ifdef _WIN32
+    // Untested attempt to address https://trac.survex.com/ticket/147
+    _commit(fileno(fh_log));
+#endif
     fclose(fh_log);
 }
 

@@ -391,6 +391,10 @@ class AvenPresList : public wxListCtrl {
 		}
 		PUTC('\n', fh_pres);
 	    }
+#ifdef _WIN32
+	    // Untested attempt to address https://trac.survex.com/ticket/147
+	    _commit(fileno(fh_pres));
+#endif
 	    fclose(fh_pres);
 	    filename = fnm;
 	    modified = false;

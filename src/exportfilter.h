@@ -34,7 +34,15 @@ class ExportFilter {
   public:
     ExportFilter() { }
     // FIXME: deal with errors closing file... (safe_fclose?)
-    virtual ~ExportFilter() { if (fh) fclose(fh); }
+    virtual ~ExportFilter() {
+	if (fh) {
+#ifdef _WIN32
+	    // Untested attempt to address https://trac.survex.com/ticket/147
+	    _commit(fileno(fh));
+#endif
+	    fclose(fh);
+	}
+    }
     virtual const int * passes() const;
     virtual bool fopen(const wxString& fnm_out) {
 	fh = wxFopen(fnm_out.fn_str(), wxT("wb"));
