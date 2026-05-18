@@ -1,4 +1,4 @@
-up to: 73c0981e8b8eddf9fa16e5a03872fce026b352fa
+up to: 7a331acfc9cd1242d28e6ccaa8fb528badf5d7fb
 
 Changes in 1.4.21 (2026-05-??):
 
@@ -90,8 +90,7 @@ Changes in 1.4.21 (2026-05-??):
 
 * Test suite: Add test coverage for Walls compass/clino in mils.
 
-* Adjust French translation not to translate "grads" when refering to the
-  keyword "grads" in a .svx file.
+* Minor improvements to French translation.
 
 * Merge updates to Polish translation from Paweł Gogolak.
 
