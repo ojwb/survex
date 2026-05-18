@@ -4,7 +4,7 @@
 //  Main frame handling for Aven.
 //
 //  Copyright (C) 2000-2002,2005,2006 Mark R. Shinwell
-//  Copyright (C) 2001-2025 Olly Betts
+//  Copyright (C) 2001-2026 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -53,6 +53,10 @@
 #include <float.h>
 #include <functional>
 #include <vector>
+
+#ifdef _WIN32
+# include <io.h> // For _commit().
+#endif
 
 // XPM files declare the array as static, but we also want it to be const too.
 // This avoids a compiler warning, and also means the data can go in a

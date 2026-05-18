@@ -1,5 +1,5 @@
 /* OS dependent filename manipulation routines
- * Copyright (c) Olly Betts 1998-2003,2004,2005,2010,2011,2014,2025
+ * Copyright (c) Olly Betts 1998-2003,2004,2005,2010,2011,2014,2025,2026
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,10 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdio.h>
+
+#ifdef _WIN32
+# include <io.h> // For _commit().
+#endif
 
 typedef struct filelist {
    char *fnm;

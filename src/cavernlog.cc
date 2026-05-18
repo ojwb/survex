@@ -1,7 +1,7 @@
 /* cavernlog.cc
  * Run cavern inside an Aven window
  *
- * Copyright (C) 2005-2024 Olly Betts
+ * Copyright (C) 2005-2026 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,10 @@
 #include <unistd.h>
 
 #include <wx/process.h>
+
+#ifdef _WIN32
+# include <io.h> // For _commit().
+#endif
 
 #define GVIM_COMMAND "gvim +'call cursor($l,$c)' $f"
 #define VIM_COMMAND "x-terminal-emulator -e vim +'call cursor($l,$c)' $f"

@@ -1,7 +1,7 @@
 /* img.c
  * Routines for reading and writing processed survey data files
  *
- * Copyright (C) 1993-2025 Olly Betts
+ * Copyright (C) 1993-2026 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+
+#ifdef _WIN32
+# include <io.h> // For _commit().
+#endif
 
 #include "img.h"
 

@@ -2,7 +2,7 @@
  * Export to GIS formats, CAD formats, and other formats.
  */
 
-/* Copyright (C) 2005-2024 Olly Betts
+/* Copyright (C) 2005-2026 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,10 @@
 
 #include <stdio.h>
 #include <wx/wx.h>
+
+#ifdef _WIN32
+# include <io.h> // For _commit().
+#endif
 
 #include "img_for_survex.h"
 
