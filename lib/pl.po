@@ -405,7 +405,7 @@ msgstr "Nieznana rola w zespole “%s”"
 #: n:536
 #, c-format
 msgid "Unknown instrument type “%s”"
-msgstr ""
+msgstr "Nieznany typ przyrządu: “%s”"
 
 #. TRANSLATORS: Survex has long misdefined "mils" as an alias for
 #. "grads", of which there are 400 in a circle.  There are several
@@ -418,7 +418,7 @@ msgstr ""
 #: n:479
 #, c-format
 msgid "Units “%s” are deprecated, assuming “grads” - see manual for details"
-msgstr ""
+msgstr "Jednostka “%s” jest przestarzała, zakładam “grads” - sprawdź instrukcję aby poznać szczegóły"
 
 #: ../src/commands.c:2559
 #: ../src/commands.c:2638
@@ -476,13 +476,13 @@ msgstr "Należy wskazać wejściowy układ współrzędnych dla “%s”"
 #: ../src/datain.c:3785
 #: n:488
 msgid "Output coordinate system not set"
-msgstr ""
+msgstr "Nie ustawiono wyjściowego systemu koordynatów"
 
 #: ../src/datain.c:3287
 #: n:503
 #, c-format
 msgid "Datum “%s” not supported"
-msgstr ""
+msgstr "Układ “%s” nie jest wspierany"
 
 #: ../src/commands.c:2082
 #: n:309
@@ -504,7 +504,7 @@ msgstr "Brak danych o dacie pomiaru - przyjmuję 0 jako deklinację magnetyczną
 #: n:484
 #, c-format
 msgid "Declination: %s, grid convergence: %.1f%s"
-msgstr ""
+msgstr "Deklinacja: %s, konwergencja siatki: %.1f%s"
 
 #. TRANSLATORS: Cavern computes the grid convergence at the
 #. representative location(s) specified by the
@@ -522,7 +522,7 @@ msgstr ""
 #: n:531
 #, c-format
 msgid "Approximate full range of grid convergence: %.1f%s at %s to %.1f%s at %s\n"
-msgstr ""
+msgstr "Przybliżony pełny zakres konwergencji siatki: %.1f%s w %s do %.1f%s w %s\n"
 
 #. TRANSLATORS: Used when a BEGIN command has no survey, but the
 #. END command does, e.g.:
@@ -607,7 +607,7 @@ msgstr "Punkt już został ustalony lub zrównany z punktem ustalonym"
 #: ../src/datain.c:2730
 #: n:493
 msgid "Previously fixed or equated here"
-msgstr ""
+msgstr "Wcześniej ustalone lub połączone tutaj"
 
 #: ../src/cavern.c:312
 #: ../src/filename.c:83
@@ -710,13 +710,13 @@ msgstr "*EXPORT musi następować bezpośrednio po “*BEGIN <SURVEY>”"
 #: n:76
 #, c-format
 msgid "Assuming 2 digit year is %d"
-msgstr ""
+msgstr "Zakładam 2 cyfrowy rok to %d"
 
 #: ../src/commands.c:2937
 #: n:158
 #, c-format
 msgid "Interpreting as an ISO-format date - use “*date surveyed %d-%02d” to suppress this warning, or “*date %d %d” if you wanted a date range"
-msgstr ""
+msgstr "Interpretuję jako datę w formacie ISO - użyj “*date surveyed %d-%02d” aby wyłączyć to ostrzeżenie albo “*date %d %d” jeśli chciałeś ustawić zakres dat"
 
 #: ../src/commands.c:2877
 #: ../src/commands.c:2951
@@ -731,7 +731,7 @@ msgstr "Wprowadź rok pomiędzy 1900 a 2078"
 #: ../src/commands.c:2360
 #: n:534
 msgid "Invalid year"
-msgstr ""
+msgstr "Nieprawidłowy rok"
 
 #. TRANSLATORS: Suspicious means something like 410 degrees or -20
 #. degrees
@@ -818,7 +818,7 @@ msgstr "Zdublowana wartość “%s”"
 #: n:416
 #, c-format
 msgid "Duplicate date type “%s”"
-msgstr ""
+msgstr "Duplikat typu daty “%s”"
 
 #: ../src/commands.c:1368
 #: n:68
@@ -1445,7 +1445,7 @@ msgstr "Przekrój patrząc na %s"
 #: ../src/survexport.cc:140
 #: n:462
 msgid "plan view (equivalent to --tilt=-90)"
-msgstr ""
+msgstr "widok planu (równoznaczne z --tilt=-90)"
 
 #. TRANSLATORS: This is used on printouts of tilted elevations, with
 #. the first %s replaced by something like "123°", and the second by
@@ -1461,7 +1461,7 @@ msgstr "Przekrój patrząc na %s, pochylony o %s"
 #: ../src/survexport.cc:142
 #: n:463
 msgid "elevation view (equivalent to --tilt=0)"
-msgstr ""
+msgstr "widok przekroju (równoznaczne z --tilt=0)"
 
 #. TRANSLATORS: This is used on printouts of extended elevations.
 #: ../src/printing.cc:1236
@@ -1693,9 +1693,8 @@ msgstr "ustaw ścieżkę plików wyjściowych"
 #. TRANSLATORS: --help output for cavern --quiet option
 #: ../src/cavern.c:117
 #: n:163
-#, fuzzy
 msgid "fewer messages (-qq for even fewer)"
-msgstr "wyświetl tylko krótkie podsumowanie (-qq pokaże tylko błędy)"
+msgstr "mniej wiadomości (-qq aby uzyskać jeszcze mniej)"
 
 #. TRANSLATORS: --help output for cavern --no-auxiliary-files option
 #: ../src/cavern.c:119
@@ -1778,7 +1777,7 @@ msgstr "Wybierz plik terenu do wczytania"
 #: ../src/mainfrm.cc:1498
 #: n:496
 msgid "Select a geodata file to overlay"
-msgstr ""
+msgstr "Wybierz plik danych geograficznych aby nałożyć"
 
 #: ../src/mainfrm.cc:1462
 #: n:452
@@ -1788,7 +1787,7 @@ msgstr "Pliki terenu"
 #: ../src/mainfrm.cc:1494
 #: n:495
 msgid "Geodata files"
-msgstr ""
+msgstr "Pliki geodanych"
 
 #. TRANSLATORS: Aven shows a circle of terrain covering the area
 #. of the survey plus a bit, but the terrain data file didn't
@@ -1796,7 +1795,7 @@ msgstr ""
 #: ../src/gfxcore.cc:3175
 #: n:161
 msgid "No terrain data near area of survey"
-msgstr ""
+msgstr "Brak danych terenu blisko obszaru pomiarowego"
 
 #. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
 #. - it should be translated to the terminology that cavers using the
@@ -1867,7 +1866,7 @@ msgstr "Pliki Compass CLP"
 #: ../src/mainfrm.cc:1423
 #: n:504
 msgid "Walls project files"
-msgstr ""
+msgstr "Pliki projektu Walls"
 
 #. TRANSLATORS: "Walls" is David McKenzie's cave
 #. surveying package, so should not be translated
@@ -1938,13 +1937,13 @@ msgstr "Pliki JSON"
 #: ../src/printing.cc:376
 #: n:523
 msgid "Shapefiles (lines)"
-msgstr ""
+msgstr "Shapefiles (linie)"
 
 #: ../src/export.cc:108
 #: ../src/printing.cc:377
 #: n:524
 msgid "Shapefiles (points)"
-msgstr ""
+msgstr "Shapefiles (punkty)"
 
 #. TRANSLATORS: Log files from running cavern (extension .log)
 #: ../src/cavernlog.cc:652
@@ -2217,7 +2216,7 @@ msgstr ""
 #: ../src/pos.cc:90
 #: n:100
 msgid "Station Name"
-msgstr ""
+msgstr "Nazwa stacji"
 
 #: ../src/printing.cc:496
 #: n:260
@@ -2228,13 +2227,13 @@ msgstr "Nazwy punktów"
 #: ../src/printing.cc:500
 #: n:537
 msgid "Anonymous stations"
-msgstr ""
+msgstr "Anonimowe stacje"
 
 #. TRANSLATORS: Option description in `survexport --help` output.
 #: ../src/survexport.cc:149
 #: n:538
 msgid "anonymous stations"
-msgstr ""
+msgstr "anonimowe stacje"
 
 #: ../src/survexport.cc:147
 #: n:475
@@ -2762,7 +2761,7 @@ msgstr "Szukaj"
 #: ../src/mainfrm.cc:1033
 #: n:333
 msgid "Find stations"
-msgstr ""
+msgstr "Znajdź stacje"
 
 #. TRANSLATORS: Find station tooltip when stations are found.  %d is
 #. replaced by the number of matching stations and %s%s%s by the
@@ -2771,14 +2770,14 @@ msgstr ""
 #: n:334
 #, c-format
 msgid "%d stations match %s%s%s"
-msgstr ""
+msgstr "%d stacji pasujących do wzorca %s%s%s"
 
 #. TRANSLATORS: Tooltip for aven's station search control.
 #: ../src/mainfrm.cc:1037
 #: ../src/mainfrm.cc:2365
 #: n:533
 msgid "Station name search (substring or wildcard)"
-msgstr ""
+msgstr "Wyszukiwanie nazwy stacji (podciąg lub symbol wieloznaczny)"
 
 #: ../src/mainfrm.cc:1050
 #: n:535
@@ -3564,12 +3563,12 @@ msgstr "pokaż daty pomiarów (jeśli dostępne)"
 #: ../src/dump3d.c:52
 #: n:509
 msgid "equivalent to --show-dates=-"
-msgstr ""
+msgstr "równoważne z --show-dates=-"
 
 #: ../src/dump3d.c:53
 #: n:486
 msgid "convert MOVE and LINE into LEG"
-msgstr ""
+msgstr "przekonwertuj MOVE i LINE do LEG"
 
 #: ../src/gpx.cc:86
 #: ../src/kml.cc:85
@@ -3591,7 +3590,7 @@ msgstr "Błąd podczas inicjalizacji wyjściowego układu współrzednych “%s�
 #: n:492
 #, c-format
 msgid "File “%s” not georeferenced"
-msgstr ""
+msgstr "Plik “%s” bez georeferencji"
 
 #: ../src/survexport.cc:158
 #: n:148
@@ -3686,18 +3685,18 @@ msgstr "Nie określony format eksportu i nie jest znany z rozszerzenia pliku wyj
 #: ../src/survexport.cc:416
 #: n:253
 msgid "Export format not specified"
-msgstr ""
+msgstr "Nie określony format eksportu"
 
 #: ../src/survexport.cc:157
 #: n:155
 msgid "include items exported by default"
-msgstr ""
+msgstr "dołącz domyślne elementy eksportu"
 
 #: ../src/datain.c:2515
 #: n:499
 #, c-format
 msgid "Macro “%s” not defined"
-msgstr ""
+msgstr "Nie zdefiniowane Makro “%s”"
 
 #: ../src/datain.c:2244
 #: ../src/datain.c:2276
@@ -3706,7 +3705,7 @@ msgstr ""
 #: n:506
 #, c-format
 msgid "Ignoring “%s”"
-msgstr ""
+msgstr "ignoruje “%s”"
 
 #. TRANSLATORS: Warning issued about a dubious case in survey data in
 #. Walls format (.srv).  Real world example:
@@ -3721,30 +3720,30 @@ msgstr ""
 #: ../src/datain.c:4453
 #: n:508
 msgid "Parsing as “to” station but may be isolated LRUD with missing closing delimiter"
-msgstr ""
+msgstr "Odczytuję jako stacja docelowa ale możę być to pomiar LRUD z możliwym błędem symbolu zakończenia"
 
 #: ../src/gdalexport.cc:47
 #: ../src/gdalexport.cc:53
 #: n:527
 #, c-format
 msgid "Failed to initialise GDAL “%s” driver"
-msgstr ""
+msgstr "Niepowodzenie w inicjalizacji sterownika GDAL “%s”"
 
 #: ../src/gdalexport.cc:142
 #: n:528
 msgid "Failed to create GDAL layer"
-msgstr ""
+msgstr "Niepowodzenie w stworzeniu warstwy GDAL"
 
 #: ../src/gdalexport.cc:152
 #: n:529
 msgid "Failed to create GDAL field"
-msgstr ""
+msgstr "Niepowodzenie w stworzeniu pola GDAL"
 
 #: ../src/gdalexport.cc:189
 #: ../src/gdalexport.cc:207
 #: n:530
 msgid "Failed to create GDAL feature"
-msgstr ""
+msgstr "Niepowodzenie w stworzeniu właściwości GDAL"
 
 #, c-format
 #~ msgid "Error in format of font file “%s”"
