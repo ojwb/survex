@@ -2031,7 +2031,6 @@ msgstr "[PLIK_POMIAROWY]"
 #. Part of cavern --help
 #: ../src/cavern.c:227
 #: n:507
-#, fuzzy
 msgid "[SURVEY_DATA_FILE]"
 msgstr "[PLIK_POMIAROWY]"
 
@@ -2843,7 +2842,7 @@ msgstr "Panel &boczny"
 #: n:338
 #, c-format
 msgid "%.2f E, %.2f N"
-msgstr "%.2f W, %.2f Pn"
+msgstr "%.2f Wsch., %.2f Płn."
 
 #. TRANSLATORS: Used in Aven:
 #. From <stationname>: H 12.24m, Brg 234.5°
@@ -3698,12 +3697,12 @@ msgstr "wyjście w formacie Survex POS"
 #: ../src/survexport.cc:173
 #: n:525
 msgid "produce Shapefile (lines) output"
-msgstr ""
+msgstr "wyjście w formacie Shapefile (linie)"
 
 #: ../src/survexport.cc:174
 #: n:526
 msgid "produce Shapefile (points) output"
-msgstr "stwórz Shapefile (punkty)"
+msgstr "wyjście w formacie Shapefile (punkty)"
 
 #: ../src/survexport.cc:175
 #: n:160
