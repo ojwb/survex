@@ -147,6 +147,7 @@ main(int argc, char **argv)
 	{HLP_ENCODELONG(8),   /*splay legs*/465, 0, 0},
 	{HLP_ENCODELONG(9),   /*station markers*/474, 0, 0},
 	{HLP_ENCODELONG(10),  /*station labels*/475, 0, 0},
+	// TRANSLATORS: Option description in `survexport --help` output.
 	{HLP_ENCODELONG(11),  /*anonymous stations*/538, 0, 0},
 	{HLP_ENCODELONG(12),  /*entrances*/466, 0, 0},
 	{HLP_ENCODELONG(13),  /*fixed points*/467, 0, 0},

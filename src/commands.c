@@ -567,13 +567,15 @@ get_units(unsigned long qmask, bool percent_ok)
 			 s_str(&token));
       return UNITS_NULL;
    }
-   /* Survex has long misdefined "mils" as an alias for "grads", of which
-    * there are 400 in a circle.  There are several definitions of "mils"
-    * with a circle containing 2000π SI milliradians, 6400 NATO mils, 6000
-    * Warsaw Pact mils, and 6300 Swedish streck, and they aren't in common
-    * use by cave surveyors, so we now just warn if mils are used.
-    */
    if (units == UNITS_DEPRECATED_ALIAS_FOR_GRADS) {
+       /* TRANSLATORS: Survex has long misdefined "mils" as an alias for
+	* "grads", of which there are 400 in a circle.  There are several
+	* definitions of "mils" with a circle containing 2000π SI milliradians,
+	* 6400 NATO mils, 6000 Warsaw Pact mils, and 6300 Swedish streck, and
+	* they aren't in common use by cave surveyors, so we now just warn if
+	* mils are used.  Here “grads” should not be translated as it shows
+	* what cavern is assuming should be written in the .svx file instead.
+	*/
       compile_diagnostic(DIAG_WARN|DIAG_TOKEN|DIAG_SKIP,
 			 /*Units “%s” are deprecated, assuming “grads” - see manual for details*/479,
 			 s_str(&token));
@@ -1074,6 +1076,18 @@ cmd_end(void)
 	  fseek(file.fh, begin_lpos + begin_col - 1, SEEK_SET);
 	  nextch();
       }
+     /* TRANSLATORS: Used when a BEGIN command has a survey name, but the
+      * END command omits it, e.g.:
+      *
+      * *begin entrance
+      * 1 2 10.00 178 -01
+      * *end
+      *
+      * gives:
+      *
+      * eg.svx:3: warning: Survey name omitted from END
+      * eg.svx:1: info: Corresponding BEGIN was here
+      */
       compile_diagnostic(DIAG_INFO|word_flag, /*Corresponding %s was here*/22, "BEGIN");
       file = file_save;
       set_pos(&fp_save);

@@ -497,6 +497,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 			   wxDefaultPosition, wxDefaultSize, 0,
 			   BitValidator(&m_layout.show_mask, LABELS)),
 	    0, wxALIGN_LEFT|wxALL, 2);
+    // TRANSLATORS: Label for a checkbox in the print/export dialog.
     v2->Add(new wxCheckBox(this, svx_ANON_STNS, wmsg(/*Anonymous Stations*/537),
 			   wxDefaultPosition, wxDefaultSize, 0,
 			   BitValidator(&m_layout.show_mask, EXPORTS)),

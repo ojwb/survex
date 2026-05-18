@@ -763,6 +763,9 @@ void MainFrm::CreateMenuBar()
     /* TRANSLATORS: Open a "Terrain file" - i.e. a digital model of the
      * terrain. */
     filemenu->Append(menu_FILE_OPEN_TERRAIN, wmsg(/*Open &Terrain...*/453));
+    /* TRANSLATORS: This is a menu item which allows displaying a GPX, KML,
+     * shapefile, etc over the survey in Aven.
+     */
     filemenu->Append(menu_FILE_OVERLAY_GEODATA, wmsg(/*Overlay &Geodata...*/494));
     filemenu->AppendCheckItem(menu_FILE_LOG, wmsg(/*Show &Log*/144));
     filemenu->AppendSeparator();

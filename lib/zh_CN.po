@@ -407,7 +407,14 @@ msgstr ""
 msgid "Unknown instrument type “%s”"
 msgstr ""
 
-#: ../src/commands.c:553
+#. TRANSLATORS: Survex has long misdefined "mils" as an alias for
+#. "grads", of which there are 400 in a circle.  There are several
+#. definitions of "mils" with a circle containing 2000π SI milliradians,
+#. 6400 NATO mils, 6000 Warsaw Pact mils, and 6300 Swedish streck, and
+#. they aren't in common use by cave surveyors, so we now just warn if
+#. mils are used.  Here “grads” should not be translated as it shows
+#. what cavern is assuming should be written in the .svx file instead.
+#: ../src/commands.c:580
 #: n:479
 #, c-format
 msgid "Units “%s” are deprecated, assuming “grads” - see manual for details"
@@ -3111,6 +3118,8 @@ msgstr "打开(&O)...\tCtrl+O"
 msgid "Open &Terrain..."
 msgstr "打开地形...(&T)"
 
+#. TRANSLATORS: This is a menu item which allows displaying a GPX, KML,
+#. shapefile, etc over the survey in Aven.
 #: ../src/mainfrm.cc:757
 #: n:494
 msgid "Overlay &Geodata..."
@@ -3509,6 +3518,17 @@ msgstr ""
 msgid "Originally entered here"
 msgstr ""
 
+#. TRANSLATORS: Used when a BEGIN command has a survey name, but the
+#. END command omits it, e.g.:
+#.
+#. *begin entrance
+#. 1 2 10.00 178 -01
+#. *end
+#.
+#. gives:
+#.
+#. eg.svx:3: warning: Survey name omitted from END
+#. eg.svx:1: info: Corresponding BEGIN was here
 #: ../src/commands.c:1123
 #: n:22
 #, c-format
