@@ -418,7 +418,7 @@ msgstr ""
 #: n:479
 #, c-format
 msgid "Units “%s” are deprecated, assuming “grads” - see manual for details"
-msgstr "Les unités « %s » sont obsolètes, supposant que ce sont des « gradiants » - voir le manuel pour plus de détails"
+msgstr "Les unités « %s » sont obsolètes, supposant que ce sont des « grads » - voir le manuel pour plus de détails"
 
 #: ../src/commands.c:2559
 #: ../src/commands.c:2638
