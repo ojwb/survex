@@ -3290,7 +3290,10 @@ msgstr "stasiun anonim"
 msgid "Can't have a leg between two anonymous stations"
 msgstr "Tidak bisa memiliki kaki antara dua stasiun anonim"
 
-#: ../src/mainfrm.cc:850
+#. TRANSLATORS: A sub-menu in aven which allows selecting how to display
+#. survey legs with the "splay" flag set (options in the sub-menu
+#. are "Hide"/"Dashed"/"Fade"/"Show").
+#: ../src/mainfrm.cc:866
 #: ../src/printing.cc:488
 #: n:406
 msgid "Spla&y Legs"
@@ -3301,7 +3304,10 @@ msgstr "Kaki Leba&r"
 msgid "splay legs"
 msgstr "kaki lebar"
 
-#: ../src/mainfrm.cc:857
+#. TRANSLATORS: A sub-menu in aven which allows selecting how to display
+#. survey legs with the "duplicate" flag set (options in the sub-menu
+#. are "Hide"/"Dashed"/"Fade"/"Show").
+#: ../src/mainfrm.cc:877
 #: n:251
 #, fuzzy
 msgid "&Duplicate Legs"

@@ -3289,7 +3289,10 @@ msgstr "anonymous station"
 msgid "Can't have a leg between two anonymous stations"
 msgstr "Can't have a shot between two anonymous stations"
 
-#: ../src/mainfrm.cc:850
+#. TRANSLATORS: A sub-menu in aven which allows selecting how to display
+#. survey legs with the "splay" flag set (options in the sub-menu
+#. are "Hide"/"Dashed"/"Fade"/"Show").
+#: ../src/mainfrm.cc:866
 #: ../src/printing.cc:488
 #: n:406
 msgid "Spla&y Legs"
@@ -3300,7 +3303,10 @@ msgstr "Spla&y Shots"
 msgid "splay legs"
 msgstr "splay shots"
 
-#: ../src/mainfrm.cc:857
+#. TRANSLATORS: A sub-menu in aven which allows selecting how to display
+#. survey legs with the "duplicate" flag set (options in the sub-menu
+#. are "Hide"/"Dashed"/"Fade"/"Show").
+#: ../src/mainfrm.cc:877
 #: n:251
 msgid "&Duplicate Legs"
 msgstr "&Duplicate Shots"

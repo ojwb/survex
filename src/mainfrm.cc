@@ -859,6 +859,10 @@ void MainFrm::CreateMenuBar()
     /* TRANSLATORS: Item in the "Splay Legs" and "Duplicate Legs" submenus - if
      * this is selected, such legs are shown the same as other legs. */
     splaymenu->AppendCheckItem(menu_SPLAYS_SHOW_NORMAL, wmsg(/*&Show*/409));
+    /* TRANSLATORS: A sub-menu in aven which allows selecting how to display
+     * survey legs with the "splay" flag set (options in the sub-menu
+     * are "Hide"/"Dashed"/"Fade"/"Show").
+     */
     viewmenu->Append(menu_VIEW_SPLAYS, wmsg(/*Spla&y Legs*/406), splaymenu);
 
     wxMenu* dupemenu = new wxMenu;
@@ -866,6 +870,10 @@ void MainFrm::CreateMenuBar()
     dupemenu->AppendCheckItem(menu_DUPES_SHOW_DASHED, wmsg(/*&Dashed*/250));
     dupemenu->AppendCheckItem(menu_DUPES_SHOW_FADED, wmsg(/*&Fade*/408));
     dupemenu->AppendCheckItem(menu_DUPES_SHOW_NORMAL, wmsg(/*&Show*/409));
+    /* TRANSLATORS: A sub-menu in aven which allows selecting how to display
+     * survey legs with the "duplicate" flag set (options in the sub-menu
+     * are "Hide"/"Dashed"/"Fade"/"Show").
+     */
     viewmenu->Append(menu_VIEW_DUPES, wmsg(/*&Duplicate Legs*/251), dupemenu);
 
     viewmenu->AppendSeparator();

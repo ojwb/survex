@@ -3289,7 +3289,10 @@ msgstr "punkt anonimowy"
 msgid "Can't have a leg between two anonymous stations"
 msgstr "Nie można dokonać pomiaru pomiędzy dwoma anonimowymi punktami"
 
-#: ../src/mainfrm.cc:850
+#. TRANSLATORS: A sub-menu in aven which allows selecting how to display
+#. survey legs with the "splay" flag set (options in the sub-menu
+#. are "Hide"/"Dashed"/"Fade"/"Show").
+#: ../src/mainfrm.cc:866
 #: ../src/printing.cc:488
 #: n:406
 msgid "Spla&y Legs"
@@ -3300,7 +3303,10 @@ msgstr "Domiary &boczne"
 msgid "splay legs"
 msgstr "domiary boczne"
 
-#: ../src/mainfrm.cc:857
+#. TRANSLATORS: A sub-menu in aven which allows selecting how to display
+#. survey legs with the "duplicate" flag set (options in the sub-menu
+#. are "Hide"/"Dashed"/"Fade"/"Show").
+#: ../src/mainfrm.cc:877
 #: n:251
 #, fuzzy
 msgid "&Duplicate Legs"
