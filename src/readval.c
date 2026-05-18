@@ -706,6 +706,9 @@ read_quadrant(bool f_optional)
       if (isOmit(ch)) {
 	 compile_diagnostic(DIAG_ERR|DIAG_COL, /*Field may not be omitted*/114);
       }
+      // TRANSLATORS: Quadrant bearings have the format e.g. S34E or N65.5W.
+      // They're enabled by `*units bearing quadrants` and supported in
+      // Walls format data.
       compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/483);
       longjmp(jbSkipLine, 1);
    }

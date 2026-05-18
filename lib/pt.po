@@ -233,7 +233,16 @@ msgstr "Distância não pode ser omitido"
 msgid "End of line not blank"
 msgstr "Final da linha não está em branco"
 
-#: ../src/commands.c:369
+#. TRANSLATORS: Warning if there's no "blank" character (space, tab
+#. and comma by default) after a token, e.g. it would be issued
+#. after the token "fix" here:
+#.
+#. *fix1 0 0 0
+#.
+#. This is a warning rather than an error because it was quietly
+#. accepted for a long time.  That wasn't intentional, but we don't
+#. want to suddenly break processing existing datasets.
+#: ../src/commands.c:403
 #: n:74
 msgid "No blank after token"
 msgstr ""
@@ -1344,8 +1353,10 @@ msgstr "OPÇÃO"
 msgid "Scale"
 msgstr "Escala"
 
-#. TRANSLATORS: These example input values should not be translated.
-#: ../src/survexport.cc:134
+#. TRANSLATORS: Used in survexport --help output.  The --scale option
+#. accepts any of these ways of specifying the scale.  These example
+#. input values should not be translated.
+#: ../src/survexport.cc:139
 #: n:217
 msgid "scale (50, 0.02, 1:50 and 2:100 all mean 1:50)"
 msgstr ""
@@ -1587,10 +1598,13 @@ msgstr "“%s”, “%s” ou “%s” eram esperados"
 msgid "Expecting “%s”, “%s”, “%s”, or “%s”"
 msgstr "“%s”, “%s”, “%s” ou “%s” eram esperados"
 
-#: ../src/readval.c:692
-#: ../src/readval.c:700
-#: ../src/readval.c:708
-#: ../src/readval.c:716
+#. TRANSLATORS: Quadrant bearings have the format e.g. S34E or N65.5W.
+#. They're enabled by `*units bearing quadrants` and supported in
+#. Walls format data.
+#: ../src/readval.c:712
+#: ../src/readval.c:720
+#: ../src/readval.c:728
+#: ../src/readval.c:736
 #: n:483
 #, c-format
 msgid "Expecting quadrant bearing, found “%s”"
@@ -1730,8 +1744,13 @@ msgstr ""
 msgid ".espec file to control extending"
 msgstr ""
 
-#. TRANSLATORS: --help output for extend --show-breaks option
-#: ../src/extend.c:490
+#. TRANSLATORS: --help output for extend --show-breaks option.  When
+#. generating an extended elevation, the survey gets broken (disconnected)
+#. when there's a loop, and the station we break at appears twice in the
+#. output.  This option adds a leg between copies of a station, flagged as
+#. "surface" (so they can be toggled on off, and appear as dotted lines in
+#. aven).
+#: ../src/extend.c:496
 #: n:91
 msgid "show breaks with surface survey legs in output"
 msgstr ""
@@ -2212,8 +2231,11 @@ msgstr "Uma página"
 msgid "Bearing"
 msgstr "Azimute"
 
-#. TRANSLATORS: These example input values should not be translated.
-#: ../src/survexport.cc:136
+#. TRANSLATORS: Used in survexport --help output.  The --bearing option
+#. accepts any of these ways of specifying how much to rotate the
+#. survey about a vertical axis.  These example input values should not
+#. be translated.
+#: ../src/survexport.cc:145
 #: n:460
 msgid "bearing (90, 90d, 100g all mean 90°)"
 msgstr ""
@@ -2338,8 +2360,11 @@ msgstr "assente no chão"
 msgid "Tilt angle"
 msgstr "Grau de inclinação"
 
-#. TRANSLATORS: These example input values should not be translated.
-#: ../src/survexport.cc:138
+#. TRANSLATORS: Used in survexport --help output.  The --tilt option
+#. accepts any of these ways of specifying how much to rotate the
+#. survey about a horizontol axis.  These example input values should
+#. not be translated.
+#: ../src/survexport.cc:151
 #: n:461
 msgid "tilt (45, 45d, 50g, 100% all mean 45°)"
 msgstr ""
@@ -2556,8 +2581,10 @@ msgstr ""
 msgid "Colour by &Survey"
 msgstr ""
 
-#: ../src/gfxcore.cc:4471
-#: ../src/mainfrm.cc:871
+#. TRANSLATORS: Menu item in Aven.  Selects colouring survey legs by
+#. the survey style ("normal", diving, "nosurvey", etc).
+#: ../src/gfxcore.cc:4474
+#: ../src/mainfrm.cc:883
 #: n:482
 msgid "Colour by St&yle"
 msgstr ""
@@ -2790,7 +2817,9 @@ msgstr ""
 msgid "Station name search (substring or wildcard)"
 msgstr ""
 
-#: ../src/mainfrm.cc:1050
+#. TRANSLATORS: Tooltip for Z exaggeration control.  Vertical distances
+#. in aven are scaled by this factor.
+#: ../src/mainfrm.cc:1064
 #: n:535
 msgid "Z exaggeration factor"
 msgstr ""
@@ -3096,6 +3125,10 @@ msgstr "Mostrar tudo"
 msgid "Hide others"
 msgstr "Ocultar outros"
 
+#. TRANSLATORS: Menu item for Aven's survey tree.  Bring up the menu
+#. on a survey in the tree and select this and all the other surveys
+#. at the same level will be hidden, leaving only the chosen survey
+#. showing.
 #: ../src/aventreectrl.cc:389
 #: n:388
 msgid "Hide si&blings"

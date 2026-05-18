@@ -4469,6 +4469,8 @@ bool GfxCore::HandleRClick(wxPoint point)
 	menu.AppendCheckItem(menu_COLOUR_BY_GRADIENT, wmsg(/*Colour by &Gradient*/85));
 	menu.AppendCheckItem(menu_COLOUR_BY_LENGTH, wmsg(/*Colour by &Length*/82));
 	menu.AppendCheckItem(menu_COLOUR_BY_SURVEY, wmsg(/*Colour by &Survey*/448));
+        // TRANSLATORS: Menu item in Aven.  Selects colouring survey legs by
+        // the survey style ("normal", diving, "nosurvey", etc).
 	menu.AppendCheckItem(menu_COLOUR_BY_STYLE, wmsg(/*Colour by St&yle*/482));
 	menu.AppendSeparator();
 	/* TRANSLATORS: Menu item which turns off the colour key.

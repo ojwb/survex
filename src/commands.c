@@ -391,6 +391,15 @@ do_legacy_token_warning(void)
 {
     if (!s_empty(&token)) {
 	if (!isBlank(ch) && !isComm(ch) && !isEol(ch)) {
+	    // TRANSLATORS: Warning if there's no "blank" character (space, tab
+	    // and comma by default) after a token, e.g. it would be issued
+	    // after the token "fix" here:
+	    //
+	    // *fix1 0 0 0
+	    //
+	    // This is a warning rather than an error because it was quietly
+	    // accepted for a long time.  That wasn't intentional, but we don't
+	    // want to suddenly break processing existing datasets.
 	    compile_diagnostic(DIAG_WARN|DIAG_COL, /*No blank after token*/74);
 	}
     }

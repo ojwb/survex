@@ -64,8 +64,14 @@ while (<ARGV>) {
 	push @{$uses[$msgno]}, "$ARGV:$.";
     }
 } continue {
-    # Reset $. for each input file.
-    close ARGV if eof;
+    if (eof) {
+	if (defined $translator_comment) {
+	    print STDERR "$ARGV:$.: Ignored TRANSLATORS comment: $translator_comment\n";
+	    undef $translator_comment;
+	}
+	# Reset $. for each input file.
+	close ARGV;
+    }
 }
 
 my $num_list = Locale::PO->load_file_asarray("survex.pot");

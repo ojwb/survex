@@ -1058,7 +1058,8 @@ void MainFrm::MakeToolBar()
     z_stretch->SetIncrement(0.1);
     toolbar->AddSeparator();
     toolbar->AddControl(z_stretch);
-    // TRANSLATORS: Tooltip for Z exaggeration control.
+    // TRANSLATORS: Tooltip for Z exaggeration control.  Vertical distances
+    // in aven are scaled by this factor.
     GetToolBar()->SetToolShortHelp(spinctrl_Z_STRETCH,
 				   wmsg(/*Z exaggeration factor*/535));
 

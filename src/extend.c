@@ -486,7 +486,13 @@ static struct help_msg help[] = {
    {HLP_ENCODELONG(0),        /*only load the sub-survey with this prefix*/199, 0, 0},
    /* TRANSLATORS: --help output for extend --specfile option */
    {HLP_ENCODELONG(1),        /*.espec file to control extending*/90, 0, "ESPEC_FILE"},
-   /* TRANSLATORS: --help output for extend --show-breaks option */
+   /* TRANSLATORS: --help output for extend --show-breaks option.  When
+    * generating an extended elevation, the survey gets broken (disconnected)
+    * when there's a loop, and the station we break at appears twice in the
+    * output.  This option adds a leg between copies of a station, flagged as
+    * "surface" (so they can be toggled on off, and appear as dotted lines in
+    * aven).
+    */
    {HLP_ENCODELONG(2),        /*show breaks with surface survey legs in output*/91, 0, 0},
    {0, 0, 0, 0}
 };
