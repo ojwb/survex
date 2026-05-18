@@ -228,7 +228,7 @@ Changes in 1.4.18 (2025-11-04):
     help detect typos in data entry.
 
   + We now skip to the closing `;` for unknown commands and commands we
-    ignore as not relevant to us, whereas previously we're just skip the
+    ignore as not relevant to us, whereas previously we'd just skip the
     initial character which gives the type of command and then look for
     another command.  This doesn't seem to make any difference in practice as
     none of these commands appear to be able to contain text which could be
