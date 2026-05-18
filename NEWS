@@ -1,6 +1,6 @@
-up to: 84a61242e8ac204cd3cad21fcc4b65733d21b46a
+up to: 73c0981e8b8eddf9fa16e5a03872fce026b352fa
 
-Changes in 1.4.21 (2026-0?-??):
+Changes in 1.4.21 (2026-05-??):
 
 * cavern:
 
@@ -9,9 +9,9 @@ Changes in 1.4.21 (2026-0?-??):
     to handle when a piece had been simplified to only anonymous stations, but
     this was buggy and was only checking the first entry in the removed
     traverse list.  We now check the full list, and if we somehow fail to find
-    an neighbouring named station, we report the anonymous station (we give the
-    filename and line number which is enough context by itself).  Reported by
-    Paweł Gogolak.
+    a neighbouring named station, we now report the anonymous station (we give
+    the filename and line number which is enough context by itself).  Reported
+    by Paweł Gogolak.
 
   + `*entrance` now also suppresses unused fixed point warnings when it appears
     before the `*fix` (previously this only worked for `*entrance` after
@@ -27,7 +27,7 @@ Changes in 1.4.21 (2026-0?-??):
     will pick `:`, so Walls station names in the .3d file should match the
     names as shown in Walls.  If a dataset mixes data in Walls format with
     Survex and/or Compass data, then it's possible `:` is used in a Survex or
-    Compass station name and if so a different separator will be chosen.
+    Compass station name - if so a different separator will be chosen.
 
   + The Walls manual says to represent underwater data using the combination of
     `TAPE=SS` with `ORDER=DA` or `ORDER=AD`, so we now map this to Survex's
@@ -59,13 +59,20 @@ Changes in 1.4.21 (2026-0?-??):
 * aven/survexport:
 
   + Allow exporting/not exporting anonymous stations.  The default is chosen as
-    most appropriate for each format.
+    most appropriate for each export format.
 
   + Fix memory leak in PLT export.
 
   + Fix memory leak and speed up SVG export.
 
+* (Microsoft Windows version): Try to ensure output files are fully written to
+  disk before we close them.  Should fix #147, reported by Philip Schuchardt.
+
 * Documentation:
+
+  + Clarify purpose of `*infer exports`.  Highlighted by Philip Sargent.
+
+  + Clarify `*infer plumbs` works for any angle units, not just degrees.
 
   + Say "directive" instead of "command" in Walls docs since this is the
     terminology Walls uses.
@@ -83,6 +90,9 @@ Changes in 1.4.21 (2026-0?-??):
 
 * Test suite: Add test coverage for Walls compass/clino in mils.
 
+* Adjust French translation not to translate "grads" when refering to the
+  keyword "grads" in a .svx file.
+
 * Merge updates to Polish translation from Paweł Gogolak.
 
 * Merge updates to Russian translation from Vasily Vl. Suhachev.
@@ -91,6 +101,8 @@ Changes in 1.4.21 (2026-0?-??):
   with current Fedora because some dependencies have been renamed, which
   suggests nobody is regularly using it, which isn't a surprise as there's
   now a Fedora package of Survex.  Reported by Bill Gee.
+
+* Fix warnings about old-style parameter lists in the imported getopt code.
 
 Changes in 1.4.20 (2026-03-04):
 
