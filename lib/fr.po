@@ -1957,14 +1957,16 @@ msgstr "Fichiers JSON"
 #: ../src/export.cc:105
 #: ../src/printing.cc:376
 #: n:523
+#, fuzzy
 msgid "Shapefiles (lines)"
-msgstr ""
+msgstr "Fichiers Shapefiles (lignes)"
 
 #: ../src/export.cc:108
 #: ../src/printing.cc:377
 #: n:524
+#, fuzzy
 msgid "Shapefiles (points)"
-msgstr ""
+msgstr "Fichiers Shapefiles (points)"
 
 #. TRANSLATORS: Log files from running cavern (extension .log)
 #: ../src/cavernlog.cc:652
@@ -3704,13 +3706,15 @@ msgstr "produire une sortie POS Survex"
 
 #: ../src/survexport.cc:173
 #: n:525
+#, fuzzy
 msgid "produce Shapefile (lines) output"
-msgstr ""
+msgstr "produire une sortie Shapefile (lignes)"
 
 #: ../src/survexport.cc:174
 #: n:526
+#, fuzzy
 msgid "produce Shapefile (points) output"
-msgstr ""
+msgstr "produire une sortie Shapefile (points)"
 
 #: ../src/survexport.cc:175
 #: n:160
