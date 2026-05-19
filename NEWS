@@ -1,6 +1,4 @@
-up to: 7a331acfc9cd1242d28e6ccaa8fb528badf5d7fb
-
-Changes in 1.4.21 (2026-05-??):
+Changes in 1.4.21 (2026-05-20):
 
 * cavern:
 
@@ -65,6 +63,9 @@ Changes in 1.4.21 (2026-05-??):
 
   + Fix memory leak and speed up SVG export.
 
+* (Microsoft Windows version): aven: Try to fix the extra blank window which
+  opens under aven's window in recent releases.  Reported by Juan Corrin.
+
 * (Microsoft Windows version): Try to ensure output files are fully written to
   disk before we close them.  Should fix #147, reported by Philip Schuchardt.
 
@@ -102,6 +103,9 @@ Changes in 1.4.21 (2026-05-??):
   now a Fedora package of Survex.  Reported by Bill Gee.
 
 * Fix warnings about old-style parameter lists in the imported getopt code.
+
+* Require at least automake 1.14 to bootstrap the source tree from git.  This
+  was released in 2013 so should be available everywhere now.
 
 Changes in 1.4.20 (2026-03-04):
 
