@@ -4,7 +4,7 @@ dnl Need autoconf 2.50 or later for AC_ARG_VAR.  2.59 has been around for
 dnl long enough, that we might as well just require that.
 AC_PREREQ(2.59)
 AC_INIT([survex], [1.4.20], [https://trac.survex.com/])
-AM_INIT_AUTOMAKE([1.5 gnu -Wall -Wportability -Werror])
+AM_INIT_AUTOMAKE([1.14 gnu -Wall -Wportability -Werror])
 RELEASE=1
 
 AC_SUBST(RELEASE)
@@ -71,8 +71,6 @@ AC_PROG_CXXCPP
 
 dnl Probe for any options needed to enable C++11 support.
 AX_CXX_COMPILE_STDCXX_11
-
-AM_PROG_CC_C_O
 
 AC_LANG([C])
 
