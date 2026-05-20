@@ -65,7 +65,6 @@ bin_PROGRAMS += wrapaven wrapsurvexport
 wrapaven_SOURCES = wrapaven.c
 # Link in the resources so wrapper gets aven's icon.
 wrapaven_LDADD = avenrc.o
-wrapaven_LDFLAGS = -mwindows -municode
 
 wrapsurvexport_SOURCES = wrapsurvexport.c
 endif

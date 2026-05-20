@@ -1,7 +1,7 @@
 /* wrapaven.c
  * Set OPENSSL_MODULES to .exe's directory and run real .exe
  *
- * Copyright (C) 2002,2010,2014,2024,2025 Olly Betts
+ * Copyright (C) 2002,2010,2014,2024,2025,2026 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,13 +22,13 @@
 #include <string.h>
 #include <windows.h>
 
-int APIENTRY
-wWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPWSTR lpCmdLine, int nCmdShow)
+int
+main(int argc, char **argv)
 {
    DWORD len = 256;
    wchar_t *buf = NULL;
-   (void)hInst; /* suppress compiler warning */
-   (void)hPrevInst; /* suppress compiler warning */
+   (void)argc; /* suppress compiler warning */
+   (void)argv; /* suppress compiler warning */
    while (1) {
        DWORD got;
        buf = realloc(buf, len * sizeof(wchar_t));
@@ -60,10 +60,12 @@ wWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPWSTR lpCmdLine, int nCmdShow)
        }
        len += len;
    }
-   /* ShellExecute returns an HINSTANCE for some strange reason - the docs say
-    * the only valid operation is to convert it to "INT_PTR" (which seems to
-    * actually be an integer type.  Marvellous. */
-   if ((INT_PTR)ShellExecuteW(NULL, NULL, buf, lpCmdLine, NULL, nCmdShow) <= 32) {
+
+   PROCESS_INFORMATION process_info = {};
+   STARTUPINFOW startup_info;
+   GetStartupInfoW(&startup_info);
+   if (CreateProcessW(buf, GetCommandLineW(), NULL, NULL, TRUE, 0,
+		      NULL, NULL, &startup_info, &process_info) == 0) {
        return 1;
    }
    return 0; 
