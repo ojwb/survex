@@ -49,8 +49,7 @@ git push --follow-tags
 ssh "$HOST" bin/survex-git-mirror
 
 msw=survex-microsoft-windows-$VERSION.exe
-echo "Download CI built microsoft-windows-installer.zip and unzip"
-echo "putting $msw into `pwd`"
+echo "Download CI built `$msw` and copy into `pwd`"
 
 while test ! -f "$msw" ; do sleep 1 ; done
 
