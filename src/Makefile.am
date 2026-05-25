@@ -65,6 +65,8 @@ bin_PROGRAMS += wrapaven wrapsurvexport
 wrapaven_SOURCES = wrapaven.c
 # Link in the resources so wrapper gets aven's icon.
 wrapaven_LDADD = avenrc.o
+# -mwindows: no console window flashes when the wrapper launches.
+wrapaven_LDFLAGS = -mwindows
 
 wrapsurvexport_SOURCES = wrapsurvexport.c
 endif
@@ -73,7 +75,11 @@ AM_CFLAGS += $(PROJ_CFLAGS)
 
 aven_CFLAGS = $(AM_CFLAGS) $(WX_CFLAGS) -DAVEN
 aven_CXXFLAGS = $(AM_CXXFLAGS) $(GDAL_CFLAGS) $(PROJ_CFLAGS) $(FFMPEG_CFLAGS) $(WX_CXXFLAGS)
+if WIN32
+aven_LDFLAGS = -mwindows
+else
 aven_LDFLAGS =
+endif
 
 survexport_CXXFLAGS = $(AM_CXXFLAGS) $(GDAL_CFLAGS) $(PROJ_CFLAGS) $(WX_CXXFLAGS)
 survexport_LDFLAGS =
