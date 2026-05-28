@@ -177,7 +177,7 @@ Code      Language
 ``it``    Italian
 ``pl``    Polish
 ``pt``    Portuguese
-``pt_BR`` Brazillian Portuguese
+``pt_BR`` Brazilian Portuguese
 ``ro``    Romanian
 ``ru``    Russian
 ``sk``    Slovak

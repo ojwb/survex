@@ -321,7 +321,7 @@ Here are some notes on this support:
   based on that used in URLs: each replacement was ``%`` follow by two lowercase
   hex digits, e.g. space became ``%20``.  Additionally, ``%`` became ``%25``.
   The drawback of this encoding was that it needed 3 characters to represent
-  each escaped one, which wass unhelpful as PLT format documents a 12 character
+  each escaped one, which was unhelpful as PLT format documents a 12 character
   limit on station names.
 
   Survex 1.2.0 and earlier didn't do any escaping.

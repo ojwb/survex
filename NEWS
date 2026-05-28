@@ -369,7 +369,7 @@ Changes in 1.4.17 (2025-03-20):
 * Simplify handling of errors loading the messages file.  The error
   messages for this case are now stored as separate ASCII strings in
   the executables which reduces the startup overhead a little as we
-  no longer need to scan them and potentially reencode them.
+  no longer need to scan them and potentially re-encode them.
 
 * img library: The img struct's filename_opened member was always NULL when
   used outside of Survex (and set but never actually used inside of Survex)
@@ -4906,7 +4906,7 @@ Changes in 1.1.4 (2005.09.19):
 
 * aven: Make pressing "Return" in the tree control expand/collapse a subtree.
 
-* aven: Speed up intialisation by delaying creation of OpenGL lists until
+* aven: Speed up initialisation by delaying creation of OpenGL lists until
   they're needed.
 
 * aven: Added Mark Shinwell's bounding box with shadow of the survey.

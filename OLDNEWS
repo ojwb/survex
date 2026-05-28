@@ -589,7 +589,7 @@ Changes in 1.0.6:
 
 * aven: added hourglass for "find" operation.
 
-* aven: reenabled loading of files by drag-and-drop (accidentally disabled
+* aven: re-enabled loading of files by drag-and-drop (accidentally disabled
   in 1.0.4 and 1.0.5).
 
 * aven: improved handling of flat surveys (e.g. output of extend, surveys
@@ -793,7 +793,7 @@ Changes in 0.99-prerelease9:
 
 * Updated manual (notably added documentation for interleaved data styles).
 
-* German and Brazillian Portuguese translations updated.
+* German and Brazilian Portuguese translations updated.
 
 Changes in 0.99-prerelease8:
 
@@ -1087,7 +1087,7 @@ Changes in 0.99-prerelease1:
 
 * Expanded testsuite further.
 
-* French, Brazillian Portuguese, and German translations brought
+* French, Brazilian Portuguese, and German translations brought
   almost completely up-to-date.
 
 * (Unix version): Lots of little improvements to debian packages
@@ -1552,7 +1552,7 @@ Changes in 0.97-prerelease1:
 * printer drivers: put "http://www.survex.com/" on printouts in case someone
   who gets a printout wants to know more about Survex.
 
-* cavern: added easting, northing, altitude added as prefered aliases for
+* cavern: added easting, northing, altitude added as preferred aliases for
   dx, dy, dz.
 
 * cavern: bug fix: "*prefix \" or "*begin \" would cause an internal error.
@@ -1914,7 +1914,7 @@ Changes in 0.92-prerelease3:
 
 * xcaverot: Fixed poor handling of keypresses when rotating
 
-* xcaverot: Reenabled buttons and made plan/elev button work properly
+* xcaverot: Re-enabled buttons and made plan/elev button work properly
 
 * aven: New experimental gtk-based xcaverot replacement
 
@@ -1980,7 +1980,7 @@ Changes in 0.92-prerelease1:
   check before resorting to the default.  LANG is a standard way to
   specify the language for GNU applications - SURVEXLANG is still
   useful as a way to specify an alternate language if Survex doesn't
-  support your prefered language.
+  support your preferred language.
 
 * Cured superfluous copy of svxdocs in doc/svxdocs in source distribution
 
