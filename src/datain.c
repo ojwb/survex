@@ -5821,6 +5821,7 @@ data_passage(void)
 {
    prefix *stn = NULL;
    const reading *ordering;
+   VAL(Left) = VAL(Right) = VAL(Up) = VAL(Down) = -1;
 
    for (ordering = pcs->ordering ; ; ordering++) {
       skipblanks();

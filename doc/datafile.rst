@@ -904,6 +904,24 @@ Description
              2  0.3 0.2 9.0 0.5
              4  0.0 0.5 6.5 1.5  Fossil on left wall
 
+         Survex 1.4.22 and later allow any (or even all) of the dimensions to
+         be omitted from the passage data style, which is equivalent to
+         omitting that dimension from each station.  For example, in a maze
+         cave you might use splays to locate the walls and only record up and
+         down dimensions at each station::
+
+             *data passage station up down
+             a 0.7 1.4
+             b 1.2 1.0
+
+         Omitting all dimensions allows using this style to record a
+         description of each survey station::
+
+             *data passage station ignoreall
+             1  Sticking out point on left wall
+             2  Point on left wall opposite side passage
+             3  Highest point of boulder
+
    ``IGNORE`` skips a field (it may be used any number of times), and
    ``IGNOREALL`` may be used last to ignore the rest of the data line.
 

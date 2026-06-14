@@ -1568,7 +1568,7 @@ cmd_data(void)
       0,
       BIT(Dir),
       0,
-      0, /* BIT(Left) | BIT(Right) | BIT(Up) | BIT(Down), */
+      BIT(Left) | BIT(Right) | BIT(Up) | BIT(Down),
       0
    };
 
