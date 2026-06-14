@@ -3098,7 +3098,7 @@ read_flagged_stations:
 	    walls_parse_segment(&p_walls_options->compass_dat_flags);
 	    break;
 	  case WALLS_CMD_SYMBOL:
-	    // Now to draw symbols.  Not really appropriate here as this is
+	    // How to draw symbols.  Not really appropriate here as this is
 	    // presentation information, so we just ignore it.
 	    skipline();
 	    break;
