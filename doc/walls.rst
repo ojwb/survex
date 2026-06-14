@@ -166,6 +166,13 @@ features are likely to be handled while more obscure features may not be.
   suppresses the unused fixed point warning) but the note text is
   currently ignored.
 
+- ``#SYMBOL`` directives are quietly ignored.  In Walls they specify a symbol
+  shape and colour to use for a named flag, which doesn't usefully map into
+  Survex.  The Walls manual notes *Since it's now easy to accomplished [sic]
+  this interactively via the Flag and Marker Symbols dialog, you may choose not
+  to use #Symbol directives at all* and they don't seem to be used much in
+  Walls datasets we've seen.
+
 - We don't currently support all the datum names which Walls does
   because we haven't managed to find an EPSG code for any UTM zones
   in some of these datums.  This probably means they're not actually
