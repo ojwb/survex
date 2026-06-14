@@ -13,3 +13,7 @@
 *data
 2 .3 .3 .3 .3
 4 .3 .3 .3 .3
+
+*data passage station left right ignore up down ignoreall
+1 1 .3 HELLO 1.8 1 HI THERE!
+3 2 2 x 2 2
