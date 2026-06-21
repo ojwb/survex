@@ -1,6 +1,6 @@
 /* cavern.h
  * SURVEX Cave surveying software - header file
- * Copyright (C) 1991-2025 Olly Betts
+ * Copyright (C) 1991-2026 Olly Betts
  * Copyright (C) 2004 Simeon Warner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -184,13 +184,15 @@ typedef enum {
     * Fr must be the first reading after this comment!
     */
    Fr, To, Station, Depth, DepthChange, Count, Dir,
-   Newline, IgnoreAllAndNewLine, Ignore, IgnoreAll,
+   Newline, Ignore, IgnoreAll,
    /* IgnoreAll must be the last reading before this comment!
     *
-    * Readings after this comment are only used in datain.c
-    * so can have enum values >= 32 because we only use a
-    * bitmask for those readings used in commands.c.
+    * Readings after this comment are not used in the bitmasks in commands.c
+    * which are used to detect repeated or missing readings so can have enum
+    * values >= 32.
     */
+   IgnoreAllAndNewLine,
+
    CompassDATFr, CompassDATTo,
    CompassDATComp, CompassDATClino, CompassDATBackComp, CompassDATBackClino,
    CompassDATLeft, CompassDATRight, CompassDATUp, CompassDATDown,
