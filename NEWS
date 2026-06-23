@@ -1,3 +1,66 @@
+up to: 403b2c57e30838397391f43338462ae7575e8b24
+
+Changes in 1.4.22 (UNRELEASED):
+
+* cavern:
+
+  + Add more explicit support for station notes with new reading types `note`
+    (for a quoted or single-word note) and `noteall` (for a note which lasts
+    for the rest of the line).
+
+  + Allow omitting any/all dimensions in passage data.  Dimensions not in
+    the style are handled like dimensions explicitly marked as omitted.
+    This may be helpful in cases where only some dimensions have been
+    measured, but probably more usefully it allows using `*data passage
+    note` or `*data passage noteall` to record station descriptions in
+    a survey where splays were used instead of recording LRUD.  Suggested by
+    Andrew Atkinson.
+
+  + "ignoreall" as the final reading in style "nosurvey" was getting
+    ignored - e.g. in:
+
+        *data nosurvey station ignoreall
+
+  + Report a clearer error for a reading after `ignoreall`:
+
+        Reading “...” not allowed after reading “ignoreall”
+
+    Previously we either reported:
+
+        Too few readings for data style “...”
+
+    or:
+
+        End of line not blank
+
+  + Report `NEWLINE can't be the last reading` when the readings list ends
+    `ignoreall newline` (we were reporting the less clear `Too few readings for
+    data style "..."`), e.g.:
+
+        *data cylpolar station depth ignoreall newline
+
+  + Fix reported context for `NEWLINE can't be the last reading` error to
+    indicate the whole `NEWLINE` token.
+
+* Manual:
+
+  + Document Walls `#SYMBOL` handling.
+
+  + Fix typos.
+
+* Test suite:
+
+  + Add test coverage for `ignore`/`ignoreall` in `*data passage`.
+
+  + Add test coverage for `*data normal` error cases.
+
+  + Improve test coverage for `*data cylpolar` and `*data nosurvey` error
+    cases.
+
+* (Microsoft Windows version): aven: Fix the extra blank window which opened
+  under aven's window in recent releases.  Reported by Juan Corrin.  Patch
+  from Philip Schuchardt.  Fixes #146.
+
 Changes in 1.4.21 (2026-05-20):
 
 * cavern:
