@@ -190,7 +190,7 @@ tabinhighlight.out tabinhighlight.svx\
 legacytokens.out legacytokens.svx\
 component_count_bug.svx component_count_bug.out\
 component_count_bug2.svx component_count_bug2.out\
-stationnotes.svx stationnotes.out stationotes.pos\
+stationnotes.svx stationnotes.out stationnotes.pos\
 3dexport.dump 3dexport.svx\
 dxffullcoords.dxf dxffullcoords.svx\
 dxfsurfequate.svx dxfsurfequate.dxf\
