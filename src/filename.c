@@ -385,7 +385,7 @@ fopen_portable(const char *pth, const char *fnm, const char *ext,
       if (fh == NULL) {
 	 bool had_lower = false;
 	 changed = false;
-	 for (char *p = fnm_trans; *p ; p++) {
+	 for (char *p = fnm_trans; *p; p++) {
 	    unsigned char ch = *p;
 	    if (isupper(ch)) {
 	       *p = tolower(ch);
@@ -408,7 +408,7 @@ fopen_portable(const char *pth, const char *fnm, const char *ext,
 	    if (fh == NULL && had_lower) {
 	       /* Finally, try upper casing the filename if it wasn't all
 		* upper case to start with. */
-	       for (char *p = fnm_trans; *p ; p++) {
+	       for (char *p = fnm_trans; *p; p++) {
 		  *p = toupper((unsigned char)*p);
 	       }
 	       fh = fopenWithPthAndExt(pth, fnm_trans, ext, mode, fnmUsed);

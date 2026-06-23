@@ -4724,7 +4724,7 @@ data_cartesian(void)
     * error in a reading, we might not, so make sure it has been cleared here.
     */
    pcs->flags &= ~(BIT(FLAGS_ANON_ONE_END) | BIT(FLAGS_IMPLICIT_SPLAY));
-   for (const reading *ordering = pcs->ordering ; ; ordering++) {
+   for (const reading *ordering = pcs->ordering; ; ordering++) {
       skipblanks();
       switch (*ordering) {
        case Fr:
@@ -5823,7 +5823,7 @@ data_passage(void)
    const reading *ordering;
    VAL(Left) = VAL(Right) = VAL(Up) = VAL(Down) = -1;
 
-   for (ordering = pcs->ordering ; ; ordering++) {
+   for (ordering = pcs->ordering; ; ordering++) {
       skipblanks();
       switch (*ordering) {
        case Station:
@@ -5896,7 +5896,7 @@ data_nosurvey(void)
 
    again:
 
-   for (ordering = pcs->ordering ; ; ordering++) {
+   for (ordering = pcs->ordering; ; ordering++) {
       skipblanks();
       switch (*ordering) {
        case Fr:

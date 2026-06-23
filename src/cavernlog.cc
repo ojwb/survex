@@ -122,7 +122,7 @@ CavernLogWindow::OnPaint(wxPaintEvent&)
     GetViewStart(&scroll_x, &scroll_y);
     int fsize = dc.GetFont().GetPixelSize().GetHeight();
     int limit = min((rect.y + rect.height + fsize - 1) / fsize + scroll_y, int(line_info.size()) - 1);
-    for (int i = max(rect.y / fsize, scroll_y); i <= limit ; ++i) {
+    for (int i = max(rect.y / fsize, scroll_y); i <= limit; ++i) {
 	LineInfo& info = line_info[i];
 	// Leave a small margin to the left.
 	int x = fsize / 2 - scroll_x * fsize;
