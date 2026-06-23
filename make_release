@@ -42,7 +42,9 @@ VERSION=`sed 's/^VERSION *= *//p;d' Makefile`
 HOST=thyestes.tartarus.org
 
 echo 'Tagging'
-git tag -s -m"Survex $VERSION" "v$VERSION"
+while ! git tag -s -m"Survex $VERSION" "v$VERSION" ; do
+    sleep 10
+done
 
 echo 'Pushing'
 git push --follow-tags
