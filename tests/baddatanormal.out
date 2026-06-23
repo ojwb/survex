@@ -1,0 +1,54 @@
+./baddatanormal.svx:4:22: error: Reading "foo" not allowed in data style "normal"
+ *data normal from to foo
+                      ^~~
+./baddatanormal.svx:11:41: error: Reading "foo" not allowed in data style "normal"
+ *data normal from to tape compass clino foo
+                                         ^~~
+./baddatanormal.svx:14:41: error: Reading "f0o" not allowed in data style "normal"
+ *data normal from to tape compass clino f0o
+                                         ^~~
+./baddatanormal.svx:17:7: error: Data style "n0rm4l" unknown
+ *data n0rm4l from to tape compass clino
+       ^~~~~~
+./baddatanormal.svx:19:22: error: NEWLINE can't be the last reading
+ *data normal station newline
+                      ^~~~~~~
+./baddatanormal.svx:21:32: error: NEWLINE can't be the last reading
+ *data normal station ignoreall newline
+                                ^~~~~~~
+./baddatanormal.svx:23:41: error: NEWLINE can only be preceded by STATION, DEPTH, and COUNT
+ *data normal from to tape compass clino newline
+                                         ^~~~~~~
+./baddatanormal.svx:25:51: error: NEWLINE can only be preceded by STATION, DEPTH, and COUNT
+ *data normal from to tape compass clino ignoreall newline
+                                                   ^~~~~~~
+./baddatanormal.svx:27:14: error: NEWLINE can't be the first reading
+ *data normal newline from to tape compass clino
+              ^~~~~~~
+./baddatanormal.svx:29: error: Interleaved readings, but no NEWLINE
+ *data normal station tape compass clino
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 2 survey stations, joined by 1 leg.
+There are 0 loops.
+Total length of survey legs =    3.00m (   3.00m adjusted)
+Total plan length of survey legs =    2.99m
+Total vertical length of survey legs =    0.26m
+Vertical range = 0.26m (from 3 at 0.26m to 1 at 0.00m)
+North-South range = 2.98m (from 3 at 2.98m to 1 at 0.00m)
+East-West range = 0.26m (from 3 at 0.26m to 1 at 0.00m)
+
+There were 0 warning(s) and 10 error(s) - no output files produced.

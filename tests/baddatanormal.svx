@@ -1,0 +1,30 @@
+; pos=fail warn=0 error=10
+*fix 1 reference 0 0 0
+; This next line should ignore the data until the next *data.
+*data normal from to foo
+1 2 3.00 004 05 06
+; Test handling of a comment right after an ignored reading.  Regression
+; test for bug fixed in 1.4.10.
+*data normal from to tape compass clino ignore
+1 3 3.00 005 05 06; comment
+; Check final token being bad gives an error (bug fixed in 1.4.11).
+*data normal from to tape compass clino foo
+1 4 2.00 270 05
+; Check tokens include numerics
+*data normal from to tape compass clino f0o
+1 5 1.00 090 00
+; An unknown data style should ignore data that follows.
+*data n0rm4l from to tape compass clino
+1 q 2 90 0
+*data normal station newline
+1 r 2 90 0
+*data normal station ignoreall newline
+1 s 2 90 0
+*data normal from to tape compass clino newline
+1 t 2 90 0
+*data normal from to tape compass clino ignoreall newline
+1 u 2 90 0
+*data normal newline from to tape compass clino
+1 v 2 90 0
+*data normal station tape compass clino
+1 w 2 90 0

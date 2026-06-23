@@ -10,6 +10,23 @@
 ./baddatacylpolar.svx:18:7: error: Data style "cylp0lar" unknown
  *data cylp0lar from to tape compass depthchange
        ^~~~~~~~
+./baddatacylpolar.svx:20:30: error: NEWLINE can't be the last reading
+ *data cylpolar station depth newline
+                              ^~~~~~~
+./baddatacylpolar.svx:22:40: error: NEWLINE can't be the last reading
+ *data cylpolar station depth ignoreall newline
+                                        ^~~~~~~
+./baddatacylpolar.svx:24:55: error: NEWLINE can only be preceded by STATION, DEPTH, and COUNT
+ *data cylpolar from to tape compass fromdepth todepth newline
+                                                       ^~~~~~~
+./baddatacylpolar.svx:26:65: error: NEWLINE can only be preceded by STATION, DEPTH, and COUNT
+ *data cylpolar from to tape compass fromdepth todepth ignoreall newline
+                                                                 ^~~~~~~
+./baddatacylpolar.svx:28:16: error: NEWLINE can't be the first reading
+ *data cylpolar newline from to tape compass fromdepth todepth
+                ^~~~~~~
+./baddatacylpolar.svx:30: error: Interleaved readings, but no NEWLINE
+ *data cylpolar station tape compass fromdepth todepth
 
 Removing trailing traverses...
 
@@ -34,4 +51,4 @@ Vertical range = 5.00m (from 3 at 5.00m to 1 at 0.00m)
 North-South range = 2.99m (from 3 at 2.99m to 1 at 0.00m)
 East-West range = 0.26m (from 3 at 0.26m to 1 at 0.00m)
 
-There were 0 warning(s) and 4 error(s) - no output files produced.
+There were 0 warning(s) and 10 error(s) - no output files produced.

@@ -19,6 +19,18 @@
 ./baddatanosurv.svx:21:24: error: Reading "to" duplicates previous reading(s)
  *data nosurvey station to
                         ^~
+./baddatanosurv.svx:24:26: error: Reading "station" not allowed after reading "ignoreall"
+ *data nosurvey ignoreall station
+                          ^~~~~~~
+./baddatanosurv.svx:27:24: error: Reading "tape" not allowed in data style "nosurvey"
+ *data nosurvey from to tape
+                        ^~~~
+./baddatanosurv.svx:29:24: error: Reading "tape" not allowed in data style "nosurvey"
+ *data nosurvey station tape
+                        ^~~~
+./baddatanosurv.svx:31:24: error: Reading "depth" not allowed in data style "nosurvey"
+ *data nosurvey station depth
+                        ^~~~~
 
 Removing trailing traverses...
 
@@ -40,4 +52,4 @@ Total length of survey legs =    0.00m (   0.00m adjusted)
 Total plan length of survey legs =    0.00m
 Total vertical length of survey legs =    0.00m
 
-There were 0 warning(s) and 7 error(s) - no output files produced.
+There were 0 warning(s) and 11 error(s) - no output files produced.

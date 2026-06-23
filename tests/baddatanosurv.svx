@@ -1,4 +1,4 @@
-; pos=fail warn=0 error=7
+; pos=fail warn=0 error=11
 *fix 1 reference 0 0 0
 ; this next line should ignore the data until the next *data
 *data nosurvey from too
@@ -20,3 +20,13 @@
 1 f
 *data nosurvey station to
 1 g
+; "ignoreall" must be last
+*data nosurvey ignoreall station
+1 h
+; Test readings which are valid in other styles but not in "nosurvey".
+*data nosurvey from to tape
+1 i
+*data nosurvey station tape
+1 j
+*data nosurvey station depth
+1 k

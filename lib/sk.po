@@ -2090,6 +2090,18 @@ msgstr "Vložené údaje, ale nie NEWLINE"
 msgid "Reading “%s” must occur before NEWLINE"
 msgstr "Údaj “%s” musí predchádzať NEWLINE"
 
+#. TRANSLATORS: The first %s is replaced by the problematic reading.
+#. The second %s is replaced a reading which consumes the rest of the
+#. current line.  An example bad command and the resulting error:
+#.
+#. *data nosurvey ignoreall station
+#. x.svx:1: Reading “station” not allowed after reading “ignoreall”
+#: ../src/commands.c:1679
+#: n:540
+#, c-format
+msgid "Reading “%s” not allowed after reading “%s”"
+msgstr ""
+
 #. TRANSLATORS: e.g.
 #.
 #. *data normal from to tape newline compass clino

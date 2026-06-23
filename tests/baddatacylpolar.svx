@@ -1,4 +1,4 @@
-; pos=fail warn=0 error=4
+; pos=fail warn=0 error=10
 *fix 1 reference 0 0 0
 ; this next line should ignore the data until the next *data - until
 ; 0.99pre7 it would switch to style cylpolar and cause an internal error
@@ -17,3 +17,15 @@
 ; An unknown data style should ignore data that follows.
 *data cylp0lar from to tape compass depthchange
 1 q 2 90 0
+*data cylpolar station depth newline
+1 r 2 90 0
+*data cylpolar station depth ignoreall newline
+1 s 2 90 0
+*data cylpolar from to tape compass fromdepth todepth newline
+1 t 2 90 0
+*data cylpolar from to tape compass fromdepth todepth ignoreall newline
+1 u 2 90 0
+*data cylpolar newline from to tape compass fromdepth todepth
+1 v 2 90 0
+*data cylpolar station tape compass fromdepth todepth
+1 w 2 90 0

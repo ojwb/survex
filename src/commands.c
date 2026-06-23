@@ -1654,12 +1654,12 @@ cmd_data(void)
    int kMac = 6; /* minimum for NORMAL style */
    reading *new_order = osmalloc(kMac * sizeof(reading));
    char *style_name = s_steal(&token);
-   do {
-      filepos fp;
-      get_pos(&fp);
+   while (true) {
+      skipblanks();
+      if (!isalpha((unsigned char)ch)) break;
       get_token();
       d = match_tok(dtab, TABSIZE(dtab));
-      if (d == End && !s_empty(&token)) {
+      if (d == End) {
 	 compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP,
 			    /*Reading “%s” not allowed in data style “%s”*/63,
 			    s_str(&token), style_name);
@@ -1670,8 +1670,19 @@ cmd_data(void)
 
       /* only token allowed after IGNOREALL is NEWLINE */
       if (k && new_order[k - 1] == IgnoreAll && d != Newline) {
-	 set_pos(&fp);
-	 break;
+	 /* TRANSLATORS: The first %s is replaced by the problematic reading.
+	  * The second %s is replaced a reading which consumes the rest of the
+	  * current line.  An example bad command and the resulting error:
+	  *
+	  * *data nosurvey ignoreall station
+	  * x.svx:1: Reading “station” not allowed after reading “ignoreall”
+	  */
+	 compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP,
+			    /*Reading “%s” not allowed after reading “%s”*/540,
+			    s_str(&token), "ignoreall");
+	 free(style_name);
+	 free(new_order);
+	 return;
       }
       /* Note: an unknown token is reported as trailing garbage */
       if (!TSTBIT(mask_all[style], d)) {
@@ -1704,7 +1715,7 @@ cmd_data(void)
       /* Check for duplicates unless it's a special reading:
        *   IGNOREALL,IGNORE (duplicates allowed) ; END (not possible)
        */
-      if (!((BIT(Ignore) | BIT(End) | BIT(IgnoreAll)) & BIT(d))) {
+      if (!((BIT(Ignore) | BIT(IgnoreAll)) & BIT(d))) {
 	 if (TSTBIT(mUsed, d)) {
 	    /* TRANSLATORS: complains about a situation like trying to define
 	     * two from stations per leg */
@@ -1791,39 +1802,61 @@ cmd_data(void)
 	 new_order = osrealloc(new_order, kMac * sizeof(reading));
       }
       new_order[k++] = d;
-   } while (d != End);
+   }
 
-   if (k >= 2 && new_order[k - 2] == Newline) {
+   if (k && (new_order[k - 1] == Newline ||
+             new_order[k - 1] == IgnoreAllAndNewLine)) {
       /* TRANSLATORS: error from:
        *
-       * *data normal from to tape compass clino newline */
+       * *data normal station newline */
       compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*NEWLINE can’t be the last reading*/223);
       free(style_name);
       free(new_order);
       return;
    }
 
-   if (style == STYLE_NOSURVEY) {
-      if (TSTBIT(mUsed, Station)) {
-	 if (k >= kMac) {
-	    kMac = kMac * 2;
-	    new_order = osrealloc(new_order, kMac * sizeof(reading));
-	 }
-	 new_order[k - 1] = Newline;
-	 new_order[k++] = End;
-      }
-   } else if (style == STYLE_PASSAGE) {
-      /* Station doesn't mean "multiline" for STYLE_PASSAGE. */
-   } else if (!TSTBIT(mUsed, Newline) && (m_multi & mUsed)) {
+   /* Station doesn't mean "multiline" for STYLE_PASSAGE.  In STYLE_NOSURVEY,
+    * "interleaved" style isn't really interleaved.
+    */
+   if (style != STYLE_NOSURVEY &&
+       style != STYLE_PASSAGE &&
+       !TSTBIT(mUsed, Newline) &&
+       (m_multi & mUsed)) {
       /* TRANSLATORS: Error given by something like:
        *
        * *data normal station tape compass clino
        *
-       * ("station" signifies interleaved data). */
+       * ("station" signifies interleaved data).
+       */
       compile_diagnostic(DIAG_ERR|DIAG_SKIP, /*Interleaved readings, but no NEWLINE*/224);
       free(style_name);
       free(new_order);
       return;
+   }
+
+   if (style == STYLE_NOSURVEY) {
+      // Add implicit Newline for STYLE_NOSURVEY, followed by End.
+      if (TSTBIT(mUsed, Station)) {
+	 if (k + 1 >= kMac) {
+	    kMac = kMac * 2;
+	    new_order = osrealloc(new_order, kMac * sizeof(reading));
+	 }
+	 if (k && new_order[k - 1] == IgnoreAll) {
+	     new_order[k - 1] = IgnoreAllAndNewLine;
+	 } else {
+	     new_order[k++] = Newline;
+	 }
+	 new_order[k++] = End;
+      }
+   } else if (k && new_order[k - 1] == IgnoreAll) {
+       // IgnoreAll serves in place of End.
+   } else {
+       // Add End.
+       if (k >= kMac) {
+	  kMac = kMac * 2;
+	  new_order = osrealloc(new_order, kMac * sizeof(reading));
+       }
+       new_order[k++] = End;
    }
 
 #if 0
