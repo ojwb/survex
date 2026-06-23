@@ -1834,27 +1834,25 @@ cmd_data(void)
       return;
    }
 
-   if (style == STYLE_NOSURVEY) {
-      // Add implicit Newline for STYLE_NOSURVEY, followed by End.
-      if (TSTBIT(mUsed, Station)) {
-	 if (k + 1 >= kMac) {
-	    kMac = kMac * 2;
-	    new_order = osrealloc(new_order, kMac * sizeof(reading));
-	 }
-	 if (k && new_order[k - 1] == IgnoreAll) {
-	     new_order[k - 1] = IgnoreAllAndNewLine;
-	 } else {
-	     new_order[k++] = Newline;
-	 }
-	 new_order[k++] = End;
-      }
-   } else if (k && new_order[k - 1] == IgnoreAll) {
+   if (style == STYLE_NOSURVEY && TSTBIT(mUsed, Station)) {
+       // Convert IgnoreAll to IgnoreAllAndNewLine or append Newline.
+       if (k && new_order[k - 1] == IgnoreAll) {
+	   new_order[k - 1] = IgnoreAllAndNewLine;
+       } else {
+	   if (k >= kMac) {
+	       kMac = kMac * 2;
+	       new_order = osrealloc(new_order, kMac * sizeof(reading));
+	   }
+	   new_order[k++] = Newline;
+       }
+   }
+   if (k && new_order[k - 1] == IgnoreAll) {
        // IgnoreAll serves in place of End.
    } else {
        // Add End.
        if (k >= kMac) {
-	  kMac = kMac * 2;
-	  new_order = osrealloc(new_order, kMac * sizeof(reading));
+	   kMac = kMac * 2;
+	   new_order = osrealloc(new_order, kMac * sizeof(reading));
        }
        new_order[k++] = End;
    }
