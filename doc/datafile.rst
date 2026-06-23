@@ -635,7 +635,7 @@ Example
 
    ::
 
-       *data normal station ignoreall newline compass tape clino
+       *data normal station noteall newline compass tape clino
 
 Description
    ``<style>``
@@ -878,9 +878,9 @@ Description
          new ``*data`` command with no arguments.
 
          Simple example of how to use this data style (note the use of
-         ignoreall to allow a free-form text description to be given)::
+         ``noteall`` to allow a free-form text description to be given)::
 
-             *data passage station left right up down ignoreall
+             *data passage station left right up down noteall
              1  0.1 2.3 8.0 1.4  Sticking out point on left wall
              2  0.0 1.9 9.0 0.5  Point on left wall
              3  1.0 0.7 9.0 0.8  Highest point of boulder
@@ -893,7 +893,7 @@ Description
 
          For example here the main passage is 1-2-3 and a side passage is 2-4::
 
-             *data passage station left right up down ignoreall
+             *data passage station left right up down noteall
              1  0.1 2.3 8.0 1.4  Sticking out point on left wall
              2  0.0 1.9 9.0 0.5  Point on left wall opposite side passage
              3  1.0 0.7 9.0 0.8  Highest point of boulder
@@ -917,18 +917,41 @@ Description
          Omitting all dimensions allows using this style to record a
          description of each survey station::
 
-             *data passage station ignoreall
+             *data passage station noteall
              1  Sticking out point on left wall
              2  Point on left wall opposite side passage
              3  Highest point of boulder
-
-   ``IGNORE`` skips a field (it may be used any number of times), and
-   ``IGNOREALL`` may be used last to ignore the rest of the data line.
 
    ``LENGTH`` is a synonym for ``TAPE``; ``BEARING`` for ``COMPASS``;
    ``GRADIENT`` for ``CLINO``; ``COUNT`` for ``COUNTER``.
 
    The units of each quantity may be set with the ``*units`` command.
+
+   ``IGNORE`` skips a field (it may be used any number of times), and
+   ``IGNOREALL`` may be used last to ignore the rest of the data line.
+
+   Survex 1.4.22 added support for ``NOTE`` and ``NOTEALL`` readings.
+
+   ``NOTE`` accepts a double-quoted string which describes the station
+   (the value doesn't need to be quoted if it is a single word).  An omit
+   character (``-`` by default) can be use to indicate there's no note, which
+   has the same effect as an empty string (``""``); if you actually want to
+   specify a note that's exactly ``-`` then use quotes, i.e. ``"-"``).
+
+   ``NOTEALL`` is an alternative to ``NOTE``, which instead takes the rest of
+   the line as the text describing the station.  Leading and trailing blanks
+   are not included in the note text.  At most one ``NOTE`` or ``NOTEALL``
+   can be used in a specified style.
+
+   Since the note describes a station, it can be use when ``STATION`` can be
+   (so you can't put station notes in non-interleaved data, because it's not
+   clear whether the note is for ``FROM`` or ``TO``).
+
+   Current the notes in ``NOTE`` and ``NOTEALL`` aren't processed further, but
+   the intention is a future version will carry them through so they can be
+   seen in Aven, etc.  So currently ``NOTEALL`` and ``IGNOREALL`` both actually
+   ignore the rest of the line - use ``NOTEALL`` when the text describes the
+   station and ``IGNOREALL`` in other situations.
 
 See Also
    ``*units``

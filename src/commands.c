@@ -206,6 +206,7 @@ init_default_translate_map(short * t)
    t['{'] |= SPECIAL_OPEN;
    t['}'] |= SPECIAL_CLOSE;
 #endif
+   t['"'] |= SPECIAL_DQUOTE_;
 }
 
 static void
@@ -750,6 +751,9 @@ cmd_set(void)
    for (i = 0; i < 256; i++)
       if (!isalnum(i)) pcs->Translate[i] &= ~mask;
 
+   // Set special flag for double quote.
+   pcs->Translate['"'] |= SPECIAL_DQUOTE_;
+
    /* now set this flag for all specified chars */
    while (!isEol(ch)) {
       int char_to_set;
@@ -778,6 +782,11 @@ cmd_set(void)
       pcs->Translate[char_to_set] |= mask;
       separator_map[char_to_set] |= mask;
       nextch();
+   }
+
+   // Clear special flag for double quote if it has been assigned a meaning.
+   if (pcs->Translate['"'] != SPECIAL_DQUOTE_) {
+       pcs->Translate['"'] &= ~SPECIAL_DQUOTE_;
    }
 
    output_separator = find_output_separator();
@@ -1531,6 +1540,8 @@ cmd_data(void)
 	{"LENGTH",       Tape },
 	{"NEWLINE",      Newline },
 	{"NORTHING",     Dy },
+	{"NOTE",         Note },
+	{"NOTEALL",      NoteAll },
 	{"RIGHT",        Right },
 	{"STATION",      Station }, /* Fr&To in multiline */
 	{"TAPE",	 Tape }, /* alternative name */
@@ -1541,7 +1552,9 @@ cmd_data(void)
 	{NULL,		 End }
    };
 
-#define MASK_stns BIT(Fr) | BIT(To) | BIT(Station)
+#define MASK_note BIT(Note) | BIT(NoteAll)
+#define MASK_station BIT(Station) | MASK_note
+#define MASK_stns BIT(Fr) | BIT(To) | MASK_station
 #define MASK_tape BIT(Tape) | BIT(BackTape) | BIT(FrCount) | BIT(ToCount) | BIT(Count)
 #define MASK_dpth BIT(FrDepth) | BIT(ToDepth) | BIT(Depth) | BIT(DepthChange)
 #define MASK_comp BIT(Comp) | BIT(BackComp)
@@ -1552,7 +1565,7 @@ cmd_data(void)
 #define MASK_CARTESIAN MASK_stns | BIT(Dx) | BIT(Dy) | BIT(Dz)
 #define MASK_CYLPOLAR  MASK_stns | BIT(Dir) | MASK_tape | MASK_comp | MASK_dpth
 #define MASK_NOSURVEY MASK_stns
-#define MASK_PASSAGE BIT(Station) | BIT(Left) | BIT(Right) | BIT(Up) | BIT(Down)
+#define MASK_PASSAGE MASK_station | BIT(Left) | BIT(Right) | BIT(Up) | BIT(Down)
 #define MASK_IGNORE 0 // No readings in this style.
 
    // readings which may be given for each style (index is STYLE_*)
@@ -1563,23 +1576,30 @@ cmd_data(void)
 
    // readings which may be omitted for each style (index is STYLE_*)
    static const unsigned long mask_optional[] = {
-      BIT(Dir) | BIT(Clino) | BIT(BackClino),
-      BIT(Dir) | BIT(Clino) | BIT(BackClino),
-      0,
-      BIT(Dir),
-      0,
-      BIT(Left) | BIT(Right) | BIT(Up) | BIT(Down),
+      // STYLE_NORMAL:
+      MASK_note | BIT(Dir) | MASK_clin,
+      // STYLE_DIVING:
+      MASK_note | BIT(Dir) | MASK_clin,
+      // STYLE_CARTESIAN:
+      MASK_note,
+      // STYLE_CYLPOLAR:
+      MASK_note | BIT(Dir),
+      // STYLE_NOSURVEY:
+      MASK_note,
+      // STYLE_IGNORE:
+      MASK_note | BIT(Left) | BIT(Right) | BIT(Up) | BIT(Down),
       0
    };
 
+#define MASK_common BIT(Ignore) | BIT(IgnoreAll) | BIT(End)
    /* all valid readings */
    static const unsigned long mask_all[] = {
-      MASK_NORMAL | BIT(Newline) | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
-      MASK_DIVING | BIT(Newline) | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
-      MASK_CARTESIAN | BIT(Newline) | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
-      MASK_CYLPOLAR | BIT(Newline) | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
-      MASK_NOSURVEY | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
-      MASK_PASSAGE | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
+      MASK_NORMAL | BIT(Newline) | MASK_common,
+      MASK_DIVING | BIT(Newline) | MASK_common,
+      MASK_CARTESIAN | BIT(Newline) | MASK_common,
+      MASK_CYLPOLAR | BIT(Newline) | MASK_common,
+      MASK_NOSURVEY | MASK_common,
+      MASK_PASSAGE | MASK_common,
       MASK_IGNORE
    };
 #define STYLE_DEFAULT   -2
@@ -1598,7 +1618,7 @@ cmd_data(void)
 	{NULL,		 STYLE_UNKNOWN }
    };
 
-#define m_multi (BIT(Station) | BIT(Count) | BIT(Depth))
+#define m_multi (BIT(Station) | BIT(Count) | BIT(Depth) | BIT(Note) | BIT(NoteAll))
 
    int style, k = 0;
    reading d;
@@ -1668,8 +1688,10 @@ cmd_data(void)
 	 return;
       }
 
-      /* only token allowed after IGNOREALL is NEWLINE */
-      if (k && new_order[k - 1] == IgnoreAll && d != Newline) {
+      /* only token allowed after IGNOREALL or NOTEALL is NEWLINE */
+      if (k &&
+	  (new_order[k - 1] == IgnoreAll || new_order[k - 1] == NoteAll) &&
+	  d != Newline) {
 	 /* TRANSLATORS: The first %s is replaced by the problematic reading.
 	  * The second %s is replaced a reading which consumes the rest of the
 	  * current line.  An example bad command and the resulting error:
@@ -1753,12 +1775,16 @@ cmd_data(void)
 	       if (mUsed & (BIT(FrDepth) | BIT(ToDepth) | BIT(Depth)))
 		  fBad = true;
 	       break;
+	     case Note: case NoteAll:
+	       if (mUsed & (BIT(Note) | BIT(NoteAll)))
+		  fBad = true;
+	       break;
 	     case Newline:
 	       if (mUsed & ~m_multi) {
 		  /* TRANSLATORS: e.g.
 		   *
 		   * *data normal from to tape newline compass clino */
-		  compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*NEWLINE can only be preceded by STATION, DEPTH, and COUNT*/226);
+		  compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*NEWLINE can only be preceded by STATION, DEPTH, and COUNT*/226);//FIXME: NOTE, NOTEALL
 		  free(style_name);
 		  free(new_order);
 		  return;

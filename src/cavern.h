@@ -60,6 +60,7 @@ typedef double real; /* so we can change the precision used easily */
 #define SPECIAL_PLUS		0x0400
 #define SPECIAL_OPEN		0x0800
 #define SPECIAL_CLOSE		0x1000
+#define SPECIAL_DQUOTE_		0x2000
 
 extern char *fnm_output_base;
 extern bool fnm_output_base_is_dir;
@@ -184,6 +185,7 @@ typedef enum {
     * Fr must be the first reading after this comment!
     */
    Fr, To, Station, Depth, DepthChange, Count, Dir,
+   Note, NoteAll,
    Newline, Ignore, IgnoreAll,
    /* IgnoreAll must be the last reading before this comment!
     *
@@ -460,7 +462,7 @@ extern bool fSuppress; /* only output 3d file */
 #define isSign(c)   (pcs->Translate[(c)] & (SPECIAL_PLUS | SPECIAL_MINUS))
 #define isData(c)   (pcs->Translate[(c)] & (SPECIAL_OMIT | SPECIAL_ROOT|\
    SPECIAL_SEPARATOR | SPECIAL_NAMES | SPECIAL_DECIMAL | SPECIAL_PLUS |\
-   SPECIAL_MINUS))
+   SPECIAL_MINUS | SPECIAL_DQUOTE_))
 
 typedef struct nosurveylink {
    node *fr, *to;

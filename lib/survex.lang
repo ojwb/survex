@@ -84,6 +84,8 @@
       right|
       up|
       down|
+      noteall|
+      note|
       ignoreall|
       ignore|
       length|

@@ -105,6 +105,7 @@ TESTS_=
  cmd_declination_conv cmd_declination_conv_proj_bug\
  lech level 2fixbug dot17 3dcorner\
  unconnected-bug\
+ stationnotes\
  backread.dat corrections.dat depthguage.dat flags.dat karstcompat.dat\
  lrud.dat nomeasure.dat noteam.dat\
  badmak.mak\

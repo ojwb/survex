@@ -8,3 +8,5 @@
 2 3
 *data nosurvey to from ignore
 4 3 42; Test handling of a comment right after an ignored reading.
+*data nosurvey to from ignoreall
+4 3 Testing ignoreall

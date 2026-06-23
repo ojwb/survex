@@ -1,13 +1,13 @@
 " Vim syntax file
 " Language:     Survex
 " Maintainer:   David Loeffler <dave@cucc.survex.com>
-" Last Change:  2024-08-09
+" Last Change:  2026-06-23
 " Filenames:    *.svx
 " URL:          [NONE]
-" Note:         This should be up to date for Survex 1.4.11
+" Note:         This should be up to date for Survex 1.4.12
 "
 " Copyright (C) 2005 David Loeffler
-" Copyright (C) 2006,2016,2017,2024 Olly Betts
+" Copyright (C) 2006,2016,2017,2024,2026 Olly Betts
 "
 " This program is free software; you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -77,6 +77,7 @@ syn keyword svxField contained nextgroup=svxField skipwhite     fromcount fromde
 syn keyword svxField contained nextgroup=svxField skipwhite     ignoreall length newline northing
 syn keyword svxField contained nextgroup=svxField skipwhite     station tape to tocount todepth
 syn keyword svxField contained nextgroup=svxField skipwhite     left right up down ceiling floor
+syn keyword svxField contained nextgroup=svxField skipwhite     note noteall
 
 syn keyword svxCmd contained nextgroup=svxFlag,svxNot skipwhite        flags
 syn keyword svxFlag contained nextgroup=svxFlag,svxNot skipwhite       duplicate surface splay

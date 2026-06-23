@@ -4757,6 +4757,19 @@ data_cartesian(void)
        case WallsSRVExtras:
 	  read_walls_extras(&compass_dat_flags);
 	  break;
+       case Note: {
+	  if (isOmit(ch)) {
+	      nextch();
+	      break;
+	  }
+	  string note = S_INIT;
+	  read_string(&note);
+	  s_free(&note);
+	  break;
+       }
+       case NoteAll:
+	  skipline();
+	  break;
        case Ignore:
 	 skipword(); break;
        case IgnoreAllAndNewLine:
@@ -5560,6 +5573,19 @@ data_normal(void)
        case WallsSRVExtras:
 	  read_walls_extras(&compass_dat_flags);
 	  break;
+       case Note: {
+	  if (isOmit(ch)) {
+	      nextch();
+	      break;
+	  }
+	  string note = S_INIT;
+	  read_string(&note);
+	  s_free(&note);
+	  break;
+       }
+       case NoteAll:
+	  skipline();
+	  break;
        case Ignore:
 	  skipword(); break;
        case IgnoreAllAndNewLine:
@@ -5842,6 +5868,19 @@ data_passage(void)
 	 }
 	 break;
        }
+       case Note: {
+	  if (isOmit(ch)) {
+	      nextch();
+	      break;
+	  }
+	  string note = S_INIT;
+	  read_string(&note);
+	  s_free(&note);
+	  break;
+       }
+       case NoteAll:
+	  skipline();
+	  break;
        case Ignore:
 	 skipword(); break;
        case IgnoreAll:
@@ -5911,6 +5950,19 @@ data_nosurvey(void)
 	  fr = to;
 	  to = read_prefix(PFX_STATION);
 	  first_stn = To;
+	  break;
+       case Note: {
+	  if (isOmit(ch)) {
+	      nextch();
+	      break;
+	  }
+	  string note = S_INIT;
+	  read_string(&note);
+	  s_free(&note);
+	  break;
+       }
+       case NoteAll:
+	  skipline();
 	  break;
        case Ignore:
 	 skipword(); break;

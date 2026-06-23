@@ -1,0 +1,57 @@
+; pos=yes warn=0
+*fix 1 0 0 0
+*data normal station noteall newline tape compass clino
+1 blah blah wobble
+  1.00 000 0
+2 ; test
+  1.00 090 0 ; test
+3
+
+*data normal station noteall newline tape compass clino ignoreall
+3
+  1.00 180 0 _-=-_
+  ; testing
+4 ickity ick
+  ; testing
+  1.00 270 0 and the rest
+5 6 7 8 9 10
+
+*data normal note station newline tape compass clino
+"Tag bolt"  5
+		1.00 180 0
+LHW	    6
+		2.00 090 0
+""	    7
+		3.00 000 0
+-	    8
+		4.00 270 0
+"-"	    9
+
+*data diving station depth noteall newline tape compass
+9    0.0  sump pool
+  1.00 090
+10  -0.5
+
+*data diving station note depth newline tape compass
+10  "" -1.0
+  1.00 180
+11  "limit of exploration" -1.0
+
+*data nosurvey station noteall
+8 note 8
+4 note 4
+
+*data nosurvey station note
+1 "note 1"
+3 -
+6 "note 6"
+8 ""
+
+*data passage station left right noteall
+1 0.5 0.5 Passage note
+2 0.4 0.6 Note #2
+
+*data passage station left right note
+3 0.3 0.4 "A note"
+4 0.4 0.3 -
+5 0.2 0.6 ""
