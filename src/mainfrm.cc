@@ -248,7 +248,7 @@ class AvenPresList : public wxListCtrl {
 	}
 
 	void OnBeginLabelEdit(wxListEvent& event) {
-	    event.Veto(); // No editting allowed
+	    event.Veto(); // No editing allowed
 	}
 	void OnDeleteItem(wxListEvent& event) {
 	    long item = event.GetIndex();
