@@ -81,6 +81,42 @@ jobs:
         retention-days: 1
         if-no-files-found: error
 
+  # Job with asan+ubsan enabled.  Uses GCC - the clang versions of the
+  # sanitisers support some extra things, but I failed to get the build to work
+  # with clang+sanitisers.  In case we want to try again in the future, I think
+  # it needs -stdlib=libstdc++ because we used a packaged wxwidgets, which is a
+  # C++ library and built with GCC (and so libstdc++).
+  sanitisers:
+    runs-on: 'ubuntu-24.04'
+    needs: makedist
+    steps:
+    - name: Install CCache
+      uses: hendrikmuhs/ccache-action@v1.2.21
+      with:
+        key: ${{ github.job }}
+    - name: Fetch distribution
+      uses: actions/download-artifact@v8
+    - name: Unpack distribution
+      run: |
+        tar --strip-components=1 -xf survex-*.tar.gz
+    - name: Install package dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install \
+            libwxgtk3.2-dev \
+            libavcodec-dev \
+            libavformat-dev \
+            libgdal-dev \
+            libproj-dev \
+            libswscale-dev
+    - name: configure
+      run: ./configure CC='ccache gcc' CXX='ccache g++' CFLAGS='-g -O2 -Werror -fsanitize=address,undefined,float-divide-by-zero -fsanitize-address-use-after-scope -fsanitize-recover=all -fno-omit-frame-pointer' CXXFLAGS='-g -O2 -Werror -fsanitize=address,undefined,float-divide-by-zero -fsanitize-address-use-after-scope -fsanitize-recover=all -fno-omit-frame-pointer' LIBS=-lm
+    - name: make
+      run: make -j2
+    - name: Run tests
+      run: |
+        make check MSGFMT=: VERBOSE=1
+
   valgrind:
     runs-on: 'ubuntu-24.04'
     needs: makedist
