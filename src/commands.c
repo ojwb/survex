@@ -33,6 +33,7 @@
 #include "datain.h"
 #include "date.h"
 #include "debug.h"
+#include "filelist.h"
 #include "filename.h"
 #include "message.h"
 #include "netbits.h"
@@ -2469,6 +2470,7 @@ typedef enum {
     CS_EPSG,
     CS_ESRI,
     CS_EUR79Z30,
+    CS_FILE,
     CS_IJTSK,
     CS_IJTSK03,
     CS_JTSK,
@@ -2486,6 +2488,7 @@ static const sztok cs_tab[] = {
      {"EPSG",     CS_EPSG},	/* EPSG:<number> */
      {"ESRI",     CS_ESRI},	/* ESRI:<number> */
      {"EUR79Z30", CS_EUR79Z30},
+     {"FILE",     CS_FILE},	/* FILE <filename> */
      {"IJTSK",    CS_IJTSK},
      {"IJTSK03",  CS_IJTSK03},
      {"JTSK",     CS_JTSK},
@@ -2499,6 +2502,71 @@ static const sztok cs_tab[] = {
      // entries in this lookup table.
      {NULL,       CS_NONE}
 };
+
+/* Read a coordinate system description from the file FNM, as specified by
+ * `*cs file FILENAME`.  FP is the position of FILENAME, which any diagnostic
+ * is reported against.
+ *
+ * Returns the description, or NULL if the file couldn't be opened (in which
+ * case a diagnostic has been reported).
+ */
+static char *
+read_cs_from_file(const char *fnm, const filepos *fp)
+{
+   char *pth = path_from_fnm(file.filename);
+   char *fnm_used = NULL;
+   FILE *fh = fopen_portable(pth, fnm, EXT_PRJ, "rb", &fnm_used);
+   free(pth);
+   if (fh == NULL) {
+      set_pos(fp);
+      compile_diagnostic(DIAG_ERR|DIAG_STRING, /*Couldn’t open file “%s”*/1,
+			 fnm);
+      return NULL;
+   }
+
+   /* We store the coordinate system in the .3d file as a single line, so join
+    * the lines with a space, dropping blanks at the start and end of each.
+    * Neither WKT nor PROJJSON allows a newline inside a quoted name, so only
+    * insignificant whitespace is affected.
+    */
+   string cs = S_INIT;
+   /* s_clear() gives cs a buffer, which s_steal() needs even for an empty
+    * file. */
+   s_clear(&cs);
+   string blanks = S_INIT;
+   bool line_break = false;
+   for (int c = GETC(fh); c != EOF; c = GETC(fh)) {
+      if (c == '\n' || c == '\r') {
+	 line_break = true;
+	 s_clear(&blanks);
+	 continue;
+      }
+      if (c == ' ' || c == '\t') {
+	 /* Only keep blanks which turn out to be between two non-blanks on
+	  * the same line. */
+	 if (cs.len) s_appendch(&blanks, c);
+	 continue;
+      }
+      if (cs.len) {
+	 if (line_break) {
+	    s_appendch(&cs, ' ');
+	 } else {
+	    s_appends(&cs, &blanks);
+	 }
+      }
+      s_clear(&blanks);
+      line_break = false;
+      s_appendch(&cs, c);
+   }
+   s_free(&blanks);
+
+   if (FERROR(fh))
+      fatalerror_in_file(fnm_used, 0, /*Error reading file*/18);
+   fclose(fh);
+   free(fnm_used);
+
+   return s_steal(&cs);
+}
 
 static void
 cmd_cs(void)
@@ -2567,6 +2635,20 @@ cmd_cs(void)
 	   proj_str = s_steal(&str);
 	   cs_sub = 0;
 	   break;
+	 case CS_FILE: {
+	   ok_for_output = MAYBE;
+	   get_pos(&fp);
+	   string fnm_str = S_INIT;
+	   read_string(&fnm_str);
+	   proj_str = read_cs_from_file(s_str(&fnm_str), &fp);
+	   s_free(&fnm_str);
+	   if (!proj_str) {
+	      skipline();
+	      return;
+	   }
+	   cs_sub = 0;
+	   break;
+	 }
 	 case CS_EPSG: case CS_ESRI:
 	   ok_for_output = MAYBE;
 	   if (ch == ':' && isdigit(nextch())) {
@@ -2638,7 +2720,8 @@ cmd_cs(void)
 	   break;
        }
    }
-   if (cs_sub == INT_MIN || (cs != CS_CUSTOM && isalnum(ch))) {
+   if (cs_sub == INT_MIN ||
+       (cs != CS_CUSTOM && cs != CS_FILE && isalnum(ch))) {
       set_pos(&fp);
       compile_diagnostic(DIAG_ERR|DIAG_WORD, /*Unknown coordinate system*/434);
       skipline();
@@ -2649,6 +2732,7 @@ cmd_cs(void)
       case CS_NONE:
 	 break;
       case CS_CUSTOM:
+      case CS_FILE:
 	 /* proj_str already set */
 	 break;
       case CS_EPSG:
@@ -2780,6 +2864,7 @@ cmd_cs(void)
 	 /* Same as the current output projection, so valid for input. */
       } else if (pcs->proj_str && strcmp(proj_str, pcs->proj_str) == 0) {
 	 /* Same as the current input projection, so nothing to do! */
+	 free(proj_str);
 	 return;
       } else if (ok_for_output == MAYBE) {
 	 /* (ok_for_output == MAYBE) also happens to indicate whether we need
@@ -2793,6 +2878,7 @@ cmd_cs(void)
 			       proj_context_errno_string(PJ_DEFAULT_CTX,
 							 proj_context_errno(PJ_DEFAULT_CTX)));
 	    skipline();
+	    free(proj_str);
 	    return;
 	 }
 	 proj_destroy(pj);

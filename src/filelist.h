@@ -24,3 +24,4 @@
 #define EXT_SVX_MSG  "msg"
 #define EXT_INI      "ini"
 #define EXT_LOG      "log"
+#define EXT_PRJ      "prj"

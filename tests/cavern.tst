@@ -123,7 +123,8 @@ TESTS_=
  passage hanging_lrud equatenosuchstn surveytypo\
  skipafterbadomit passagebad badreadingdotplus badcalibrate calibrate_clino\
  badunits badbegin anonstn anonstnbad anonstnrev doubleinc reenterlots\
- cs csbad csbadsdfix csfeet cslonglat omitfixaroundsolve repeatreading\
+ cs csbad csbadsdfix csfeet cslonglat csprj csprj2 csprjbad\
+ omitfixaroundsolve repeatreading\
  mixedeols utf8bom nonewlineateof suspectreadings cmd_data_default\
  cmd_data_ignore\
  quadrant_bearing bad_quadrant_bearing\

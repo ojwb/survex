@@ -1,0 +1,24 @@
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Approximate full range of grid convergence: 0.0dg at entrance to 0.0dg at b
+Survey contains 3 survey stations, joined by 2 legs.
+There are 0 loops.
+Total length of survey legs =   55.00m (  55.00m adjusted)
+Total plan length of survey legs =   54.87m
+Total vertical length of survey legs =    3.49m
+Vertical range = 2.61m (from entrance at 200.00m to a at 197.39m)
+North-South range = 17.67m (from a at 41819.44m to b at 41801.78m)
+East-West range = 47.55m (from b at 10891.01m to entrance at 10843.46m)

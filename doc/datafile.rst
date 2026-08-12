@@ -523,6 +523,11 @@ Example
        ; Output in the coordinate system used in the Totes Gebirge in Austria
        *cs out custom "+proj=tmerc +lat_0=0 +lon_0=13d20 +k=1 +x_0=0 +y_0=-5200000 +ellps=bessel +towgs84=577.326,90.129,463.919,5.137,1.474,5.297,2.4232"
 
+   ::
+
+       ; Output in a low distortion projection described by mammoth.prj
+       *cs out file "mammoth.prj"
+
 Description
    ``*cs`` allows the coordinate systems used for fixed points and for
    processed survey data to be specified.
@@ -559,6 +564,30 @@ Description
 
    * ``EUR79Z30`` for UTM zone 30, EUR79 datum.  Supported since Survex
      1.2.15.
+
+   * ``FILE`` followed by the name of a file which describes the coordinate
+     system (like in the example above).  The description may be a PROJ string,
+     but the point of reading it from a file is that it can also be WKT or
+     PROJJSON, which are made up of double quoted strings written over several
+     lines and so are awkward to write in a ``.svx`` file.  It means a ``.prj``
+     file such as those which accompany ESRI shapefiles can be used directly,
+     so you can georeference a survey to match GIS data you already have.
+
+     WKT can also express datums which a PROJ string can't, such as
+     NAD83(2011), ETRS89 and GDA2020.
+
+     The file is resolved relative to the directory which the file containing
+     the ``*cs`` is in, and if the name as specified is not found cavern will
+     try adding a ``.prj`` extension.  If the filename contains spaces, it must
+     be enclosed in double quotes, and you can double the quote character to
+     include it in the filename.
+
+     The lines of the file are joined with a single space, since the coordinate
+     system is stored in the ``.3d`` file as a single line.  Neither WKT nor
+     PROJJSON allows a newline inside a quoted name, so only insignificant
+     whitespace is affected.
+
+     Supported since Survex 1.4.23.
 
    * ``IJTSK`` for the modified version of the Czechoslovak S-JTSK system
      where the axes point East and North.  Supported since Survex 1.2.15.

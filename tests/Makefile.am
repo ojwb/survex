@@ -181,6 +181,9 @@ csbad.altout csbad.out csbad.svx\
 csbadsdfix.altout csbadsdfix.out csbadsdfix.svx\
 csfeet.out csfeet.pos csfeet.svx\
 cslonglat.out cslonglat.svx\
+csprj.out csprj.pos csprj.prj csprj.svx\
+csprj2.out csprj2.pos csprj2.prj csprj2.svx\
+csprjbad.out csprjbad.svx csprjbom.prj\
 omitfixaroundsolve.out omitfixaroundsolve.svx\
 repeatreading.svx repeatreading.out repeatreading.pos\
 mixedeols.out mixedeols.svx\

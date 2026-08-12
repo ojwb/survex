@@ -1,0 +1,36 @@
+./csprjbad.svx:3:14: error: Couldn't open file "nosuchfile.prj"
+ *cs out FILE nosuchfile.prj
+              ^~~~~~~~~~~~~~
+./csprjbad.svx:5:14: error: Invalid coordinate system: Invalid PROJ string syntax
+ *cs out FILE csprjbom.prj
+              ^~~~~~~~~~~~
+./csprjbad.svx:8:21: error: End of line not blank
+ *cs FILE "csprj.prj"x
+                     ^
+./csprjbad.svx:11: error: The input projection is set but the output projection isn't
+ *fix entrance -86.0905 37.1966 200
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 2 survey stations, joined by 1 leg.
+There are 0 loops.
+Total length of survey legs =   30.00m (  30.00m adjusted)
+Total plan length of survey legs =   29.89m
+Total vertical length of survey legs =    2.61m
+Vertical range = 2.61m (from entrance at 200.00m to a at 197.39m)
+North-South range = 0.00m (from a at 37.20m to a at 37.20m)
+East-West range = 29.89m (from a at -56.20m to entrance at -86.09m)
+
+There were 0 warning(s) and 4 error(s) - no output files produced.

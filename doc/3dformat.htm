@@ -60,7 +60,14 @@ There's no length limit on this string.
 which can be passed to PROJ.  For a coordinate system with an EPSG code
 <code>EPSG:</code> followed by the code number can be used (we recommend
 using this if an EPSG code exists).  Similarly, an ESRI code can be specified
-with <code>ESRI:</code> followed by the code number.
+with <code>ESRI:</code> followed by the code number.  Any other description
+PROJ accepts may be used, such as a PROJ string, WKT or PROJJSON - this is how
+a coordinate system based on a datum PROJ has no <code>+datum=</code> keyword
+for gets recorded.  Since the metadata ends at a linefeed, the string must be
+written on a single line - WKT and PROJJSON are usually pretty printed over
+several lines, so a writer needs to join those lines (a single space in place
+of each line break works, as neither format allows a newline inside a quoted
+name).
   <li>Survey hierarchy separator character.  Survey station names form a
 hierarchy, and this character separates levels in the hierarchy.  E.g.
 <code>161.entrance.6</code>.  Defaults to <code>.</code> if this item is not
