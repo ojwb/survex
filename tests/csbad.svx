@@ -1,4 +1,4 @@
-; pos=fail warn=0 error=29
+; pos=fail warn=0 error=31
 *fix 1 reference 0 0 0
 *cs EPSG:-1
 *cs ERSI:1234
@@ -21,6 +21,8 @@
 *cs s-m3rc
 *cs custom "+proj=ection"
 *cs custom "+proj=ection +with +spaces"
+*cs custom "+proj=tmerc +lat_0=0 +lon_0=13d20 +k=1 +x_0=0 +y_0=-5200000 +ellps=bessel +towgs84=577.326,90.129,463.919,5.137,1.474,5.297,2.4232"x
+*cs custom bad
 *cs out lat-long
 *cs out long-lat
 *cs out jtsk

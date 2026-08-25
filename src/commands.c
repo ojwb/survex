@@ -2624,7 +2624,7 @@ cmd_cs(void)
 	   break;
        }
    }
-   if (cs_sub == INT_MIN || isalnum(ch)) {
+   if (cs_sub == INT_MIN || (cs != CS_CUSTOM && isalnum(ch))) {
       set_pos(&fp);
       compile_diagnostic(DIAG_ERR|DIAG_WORD, /*Unknown coordinate system*/434);
       skipline();
