@@ -62,7 +62,7 @@ public:
     void pages_required();
     int get_effective_show_mask() const {
 	int result = show_mask;
-	if (view == tilt) {
+	if (view == TILT) {
 	    result &= ~(XSECT|WALLS|PASG);
 	}
 	return result;
