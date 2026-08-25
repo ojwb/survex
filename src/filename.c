@@ -166,18 +166,15 @@ path_from_fnm(const char *fnm)
 extern char *
 base_from_fnm(const char *fnm)
 {
-   char *p;
-
-   p = strrchr(fnm, FNM_SEP_EXT);
+   const char *ext_sep = strrchr(fnm, FNM_SEP_EXT);
    /* Trim off any leaf extension, but dirs can have extensions too */
-   if (p && !strchr(p, FNM_SEP_LEV)
+   if (ext_sep && !strchr(ext_sep, FNM_SEP_LEV)
 #ifdef FNM_SEP_LEV2
-       && !strchr(p, FNM_SEP_LEV2)
+       && !strchr(ext_sep, FNM_SEP_LEV2)
 #endif
        ) {
-      size_t len = (const char *)p - fnm;
-
-      p = osmalloc(len + 1);
+      size_t len = ext_sep - fnm;
+      char *p = osmalloc(len + 1);
       memcpy(p, fnm, len);
       p[len] = '\0';
       return p;
@@ -189,12 +186,9 @@ base_from_fnm(const char *fnm)
 extern char *
 baseleaf_from_fnm(const char *fnm)
 {
-   const char *p;
-   const char *q;
-   size_t len;
 
-   p = fnm;
-   q = strrchr(p, FNM_SEP_LEV);
+   const char *p = fnm;
+   const char *q = strrchr(p, FNM_SEP_LEV);
    if (q) p = q + 1;
 #ifdef FNM_SEP_LEV2
    q = strrchr(p, FNM_SEP_LEV2);
@@ -202,7 +196,8 @@ baseleaf_from_fnm(const char *fnm)
 #endif
 
    q = strrchr(p, FNM_SEP_EXT);
-   if (q) len = (const char *)q - p; else len = strlen(p);
+   size_t len;
+   if (q) len = q - p; else len = strlen(p);
 
    char* res = osmalloc(len + 1);
    memcpy(res, p, len);
