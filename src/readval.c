@@ -912,7 +912,16 @@ read_string_(string *pstr, int diag_type)
 	    return false;
 	 }
 
-	 if (ch == '\"') break;
+	 if (ch == '\"') {
+	     // Support doubling the quote to escape it, e.g.
+	     // *title "Title with a literal "" in it"
+	     filepos fp_quote;
+	     get_pos(&fp_quote);
+	     if (nextch() != '\"') {
+		 set_pos(&fp_quote);
+		 break;
+	     }
+	 }
 
 	 s_appendch(pstr, ch);
 	 nextch();

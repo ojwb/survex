@@ -19,3 +19,21 @@ a b 1 0 0
 *fix z 0 0 0
 z x 1 0 0
 *end survey3
+
+*begin survey4
+*title "title with escaped "" in it"
+*fix z 0 0 0
+z x 1 0 0
+*end survey4
+
+*begin survey5
+*title "title ending with escaped """
+*fix z 0 0 0
+z x 1 0 0
+*end survey5
+
+*begin survey6
+*title """ at start"
+*fix z 0 0 0
+z x 1 0 0
+*end survey6
