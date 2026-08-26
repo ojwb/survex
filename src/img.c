@@ -1660,6 +1660,7 @@ img_write_stream(FILE *stream, int (*close_func)(FILE*),
       img_errno = IMG_OUTOFMEMORY;
       return NULL;
    }
+   pimg->label = pimg->label_buf;
 
    pimg->data = NULL;
 
