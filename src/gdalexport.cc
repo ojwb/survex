@@ -94,50 +94,61 @@ ExportWithGDAL::start_pass(int layer)
 
     const char* name = nullptr;
     OGRwkbGeometryType type = wkbUnknown;
+    char** createflags = nullptr;
 
     switch (layer) {
 	case PASG:
 	    name = "passages";
 	    type = wkbPolygon;
+	    createflags = CSLSetNameValue(createflags, "SHPT", "POLYGONZ");
 	    break;
 	case XSECT:
 	    name = "passages";
 	    type = wkbPolygon;
+	    createflags = CSLSetNameValue(createflags, "SHPT", "POLYGONZ");
 	    break;
 	case WALL1|WALL2:
 	    name = "walls";
 	    type = wkbLineString;
+	    createflags = CSLSetNameValue(createflags, "SHPT", "ARCZ");
 	    break;
 	case LEGS:
 	    name = "legs";
 	    type = wkbLineString;
+	    createflags = CSLSetNameValue(createflags, "SHPT", "ARCZ");
 	    break;
 	case SPLAYS:
 	    name = "splays";
 	    type = wkbLineString;
+	    createflags = CSLSetNameValue(createflags, "SHPT", "ARCZ");
 	    break;
 	case SURF:
 	    name = "surface legs";
 	    type = wkbLineString;
+	    createflags = CSLSetNameValue(createflags, "SHPT", "ARCZ");
 	    break;
 	case LABELS:
 	    name = "stations";
 	    type = wkbPoint;
+	    createflags = CSLSetNameValue(createflags, "SHPT", "POINTZ");
 	    break;
 	case ENTS:
 	    name = "entrances";
 	    type = wkbPoint;
+	    createflags = CSLSetNameValue(createflags, "SHPT", "POINTZ");
 	    break;
 	case FIXES:
 	    name = "fixed points";
 	    type = wkbPoint;
+	    createflags = CSLSetNameValue(createflags, "SHPT", "POINTZ");
 	    break;
 	case EXPORTS:
 	    name = "exported points";
 	    type = wkbPoint;
+	    createflags = CSLSetNameValue(createflags, "SHPT", "POINTZ");
 	    break;
     }
-    gdal_layer = gdal_dataset->CreateLayer(name, srs, type, nullptr);
+    gdal_layer = gdal_dataset->CreateLayer(name, srs, type, createflags);
     if (!gdal_layer) {
 	throw wmsg(/*Failed to create GDAL layer*/528);
     }
