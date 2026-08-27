@@ -1,0 +1,3 @@
+{"type":"Feature","properties":{"FID":0},"geometry":{"type":"LineString","coordinates":[[174.7767,-41.2784,30.0],[174.7778887,-41.2784229,21.28],[174.7778583,-41.2793196,12.57]]}}
+{"type":"Feature","properties":{"FID":1},"geometry":{"type":"LineString","coordinates":[[174.7778583,-41.2793196,12.57],[174.7790469,-41.2793426,3.85]]}}
+{"type":"Feature","properties":{"FID":2},"geometry":{"type":"LineString","coordinates":[[174.7790469,-41.2793426,3.85],[174.7790198,-41.2801406,-3.9]]}}

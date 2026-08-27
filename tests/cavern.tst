@@ -52,6 +52,8 @@ esac
 : ${DUMP3D="$testdir"/../src/dump3d}
 : ${SURVEXPORT="$testdir"/../src/survexport}
 
+: ${GDAL=gdal}
+
 # FIXME survexport is failing to run in CI on msys+mingw.
 TESTS_=
 [ "$OSTYPE" = "cygwin" ] || TESTS_="3dexport \
@@ -61,6 +63,8 @@ TESTS_=
  jsonexport\
  kmlexport kmlexportanon\
  pltexport\
+ shplexport\
+ shppexport\
  svgexport"
 
 : ${TESTS=${*:-"singlefix singlereffix oneleg midpoint lollipop fixedlollipop\
@@ -198,6 +202,8 @@ for file in $TESTS ; do
   # json : Convert to JSON with survexport and compare with <testcase_name>.json
   # kml : Convert to KML with survexport and compare with <testcase_name>.kml
   # plt : Convert to PLT with survexport and compare with <testcase_name>.plt
+  # shp : Convert to SHP with survexport, convert to geojsonl with gdal, and
+  #       compare with <testcase_name>.geojsonl
   # svg : Convert to SVG with survexport and compare with <testcase_name>.svg
   pos=
 
@@ -354,7 +360,7 @@ for file in $TESTS ; do
       exit 1
     fi
     ;;
-  dxf|gpx|hpgl|json|kml|plt|svg)
+  dxf|gpx|hpgl|json|kml|plt|shp|svg)
     # $pos gives us the file extension here.
     expectedfile=$basefile.$pos
     tmpfile=tmp.$pos
@@ -395,6 +401,11 @@ for file in $TESTS ; do
       gpx)
 	sed 's,<time>[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]Z</time>,<time>REDACTED</time>,;s,survex [0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*,survex REDACTED,' < "$tmpfile" > tmp.tmp
 	mv tmp.tmp "$tmpfile"
+	;;
+      shp)
+	$GDAL vector convert --quiet --overwrite "$tmpfile" tmp.geojsonl
+	tmpfile=tmp.geojsonl
+	expectedfile=$basefile.geojsonl
 	;;
     esac
 

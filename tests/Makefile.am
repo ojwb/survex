@@ -201,6 +201,7 @@ jsonexport.json jsonexport.svx\
 kmlexport.kml kmlexport.svx\
 kmlexportanon.kml kmlexportanon.svx\
 pltexport.plt pltexport.svx\
+shplexport.geojsonl shplexport.svx\
 svgexport.svg svgexport.svx
 
 EXTRA_DIST +=\
