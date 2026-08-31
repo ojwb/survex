@@ -2444,6 +2444,17 @@ cmd_copyright(void)
     }
     s_free(&text);
 
+    if (isBlank(ch)) {
+	skipblanks();
+	if (!isComm(ch) && !isEol(ch)) {
+	    if (!read_string_warning(&text)) {
+		skipline();
+		return;
+	    }
+	    s_free(&text);
+	}
+    }
+
     skipblanks();
     if (!isComm(ch) && !isEol(ch))
 	compile_diagnostic(DIAG_WARN|DIAG_TAIL, /*End of line not blank*/15);

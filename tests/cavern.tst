@@ -401,7 +401,8 @@ for file in $TESTS ; do
 	;;
       shp)
 	expectedfile=$basefile.geojsonl
-	if `which gdal >/dev/null 2>/dev/null` ; then
+	if `which gdalX >/dev/null 2>/dev/null` ; then
+	  exit 1
 	  gdal vector convert --overwrite --quiet "$tmpfile" tmp.geojsonl
 	  tmpfile=tmp.geojsonl
 	elif `which ogr2ogr >/dev/null 2>/dev/null` ; then

@@ -22,9 +22,9 @@
 ./cmd_copyright_bad.svx:10:12: warning: Invalid year
  *copyright "Wrong Order" 2000
             ^
-./cmd_copyright_bad.svx:11:20: warning: End of line not blank
- *copyright 1999 No quotes
-                    ^~~~~~
+./cmd_copyright_bad.svx:11:12: warning: Invalid year
+ *copyright Unquoted wrong_order 1999
+            ^
 ./cmd_copyright_bad.svx:12:12: warning: Invalid year
  *copyright 999 BadYear
             ^~~
@@ -37,60 +37,63 @@
 ./cmd_copyright_bad.svx:15:34: warning: Missing "
  *copyright 1999 "No_closing_quote
                                   ^
-./cmd_copyright_bad.svx:16:20: warning: End of line not blank
+./cmd_copyright_bad.svx:16:28: warning: End of line not blank
  *copyright 1999 No opening quote"
-                    ^~~~~~~~~~~~~~
+                            ^~~~~~
 ./cmd_copyright_bad.svx:17:12: warning: Invalid year
  *copyright WrongOrder 2000-2001
             ^
 ./cmd_copyright_bad.svx:18:12: warning: Invalid year
  *copyright "Wrong Order" 2000-2001
             ^
-./cmd_copyright_bad.svx:19:25: warning: End of line not blank
- *copyright 1999-2000 No quotes
-                         ^~~~~~
-./cmd_copyright_bad.svx:20:12: warning: Invalid year
+./cmd_copyright_bad.svx:19:12: warning: Invalid year
  *copyright 999-1000 BadYear
             ^~~
-./cmd_copyright_bad.svx:21:12: warning: Invalid year
+./cmd_copyright_bad.svx:20:12: warning: Invalid year
  *copyright 998-999 "Bad Year"
             ^~~
-./cmd_copyright_bad.svx:21:16: warning: Invalid year
+./cmd_copyright_bad.svx:20:16: warning: Invalid year
  *copyright 998-999 "Bad Year"
                 ^~~
-./cmd_copyright_bad.svx:22:39: warning: Missing "
+./cmd_copyright_bad.svx:21:39: warning: Missing "
  *copyright 1999-2020 "No closing quote
                                        ^
-./cmd_copyright_bad.svx:23:39: warning: Missing "
+./cmd_copyright_bad.svx:22:39: warning: Missing "
  *copyright 1999-2012 "No_closing_quote
                                        ^
-./cmd_copyright_bad.svx:24:25: warning: End of line not blank
+./cmd_copyright_bad.svx:23:33: warning: End of line not blank
  *copyright 1999-2001 No opening quote"
-                         ^~~~~~~~~~~~~~
-./cmd_copyright_bad.svx:25:17: warning: End of date range is before the start
+                                 ^~~~~~
+./cmd_copyright_bad.svx:24:17: warning: End of date range is before the start
  *copyright 2000-1999 "Doctor Who"
                  ^~~~
-./cmd_copyright_bad.svx:26:17: warning: End of date range is before the start
+./cmd_copyright_bad.svx:25:17: warning: End of date range is before the start
  *copyright 2000-1999 DrWho
                  ^~~~
-./cmd_copyright_bad.svx:27:12: warning: Date is in the future!
+./cmd_copyright_bad.svx:26:12: warning: Date is in the future!
  *copyright 2078 "Doctor Who"
             ^~~~
-./cmd_copyright_bad.svx:28:17: warning: Date is in the future!
+./cmd_copyright_bad.svx:27:17: warning: Date is in the future!
  *copyright 1900-2078 "Doctor Who"
                  ^~~~
+./cmd_copyright_bad.svx:28:12: warning: Date is in the future!
+ *copyright 2077-2078 "Doctor Who"
+            ^~~~
+./cmd_copyright_bad.svx:28:17: warning: Date is in the future!
+ *copyright 2077-2078 "Doctor Who"
+                 ^~~~
 ./cmd_copyright_bad.svx:29:12: warning: Date is in the future!
- *copyright 2077-2078 "Doctor Who"
-            ^~~~
-./cmd_copyright_bad.svx:29:17: warning: Date is in the future!
- *copyright 2077-2078 "Doctor Who"
-                 ^~~~
-./cmd_copyright_bad.svx:30:12: warning: Date is in the future!
  *copyright 2078-2077 "Doctor Who"
             ^~~~
-./cmd_copyright_bad.svx:30:17: warning: End of date range is before the start
+./cmd_copyright_bad.svx:29:17: warning: End of date range is before the start
  *copyright 2078-2077 "Doctor Who"
                  ^~~~
+./cmd_copyright_bad.svx:30:52: warning: Missing "
+ *copyright 1999-2000 "Doctor Who" "No closing quote
+                                                    ^
+./cmd_copyright_bad.svx:31:45: warning: Missing "
+ *copyright 1999-2000 DrWho "No closing quote
+                                             ^
 
 Removing trailing traverses...
 
@@ -115,4 +118,4 @@ Vertical range = 0.00m (from survey.2 at 0.00m to survey.2 at 0.00m)
 North-South range = 1.00m (from survey.2 at 1.00m to survey.1 at 0.00m)
 East-West range = 0.00m (from survey.2 at 0.00m to survey.2 at 0.00m)
 
-There were 31 warning(s).
+There were 32 warning(s).

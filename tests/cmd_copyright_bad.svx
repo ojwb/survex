@@ -1,4 +1,4 @@
-; pos=no warn=31
+; pos=no warn=32
 *begin survey
 *copyright
 *copyright "
@@ -8,7 +8,7 @@
 *copyright "No year"
 *copyright WrongOrder 2000
 *copyright "Wrong Order" 2000
-*copyright 1999 No quotes
+*copyright Unquoted wrong_order 1999
 *copyright 999 BadYear
 *copyright 999 "Bad Year"
 *copyright 1999 "No closing quote
@@ -16,7 +16,6 @@
 *copyright 1999 No opening quote"
 *copyright WrongOrder 2000-2001
 *copyright "Wrong Order" 2000-2001
-*copyright 1999-2000 No quotes
 *copyright 999-1000 BadYear
 *copyright 998-999 "Bad Year"
 *copyright 1999-2020 "No closing quote
@@ -28,6 +27,8 @@
 *copyright 1900-2078 "Doctor Who"
 *copyright 2077-2078 "Doctor Who"
 *copyright 2078-2077 "Doctor Who"
+*copyright 1999-2000 "Doctor Who" "No closing quote
+*copyright 1999-2000 DrWho "No closing quote
 *fix 1 0 0 0
 1 2 1 0 0
 *end survey

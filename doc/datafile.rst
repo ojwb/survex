@@ -439,6 +439,8 @@ COPYRIGHT
 Syntax
    ``*copyright <year> <text>``
    ``*copyright <year1>-<year2> <text>``
+   ``*copyright <year> <text> <licence>``
+   ``*copyright <year1>-<year2> <text> <licence>``
 
 Example
    ::
@@ -458,12 +460,23 @@ Example
        ; Escaping quotes like this is supported by Survex >= 1.4.23
        *copyright 1999 "Mike ""the animal"" Richardson"
 
+   ::
+
+       ; Specifying licensing information is supported by Survex >= 1.4.23.
+       *copyright 1976-2024 "CUCC Expo" GPLv2+
+
+   ::
+
+       ; Licensing information needs quotes if it contains a space (or a
+       ; comment character).
+       *copyright 2026 "Creative Commons Caving Club" "CC BY-SA"
+
 Validity
    valid at the start of a ``*begin``/``*end`` block.
 
 Description
-   ``*copyright`` allows the copyright information to be recorded in a way that
-   can be automatically collated.
+   ``*copyright`` allows copyright and licensing information to be recorded in
+   a way that can be automatically collated.
 
    The date can be specified as a single year or a range of years.  Two digit
    years are not allowed and the end of the range can not be before the start.
@@ -472,6 +485,9 @@ Description
    the name of a person or group.  Unless it is a single word you should put
    double quotes around it.  Since Survex 1.4.23, you can double the quote
    character to include it in the string (see example above).
+
+   Survex 1.4.23 added support for an optional additional string to specify
+   licensing information.
 
    Prior to Survex 1.4.17 there weren't any checks of the syntax.  Essentially
    ``*copyright`` used to be treated like a named comment line.

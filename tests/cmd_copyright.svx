@@ -3,6 +3,12 @@
 *copyright 1999 Wookey
 *copyright 1066 "William the Conqueror"
 *copyright 2000-2001 "Space Oddity Speleos"
+*copyright 1999 Wookey GPL2+
+*copyright 1066 "William the Conqueror" BSD
+*copyright 2000-2001 "Space Oddity Speleos" MIT/X
+*copyright 1999 Wookey "GNU GPL2+"
+*copyright 1066 "William the Conqueror" "public domain"
+*copyright 2000-2001 "Space Oddity Speleos" "CC BY-SA"
 *fix 1 0 0 0
 1 2 1 0 0
 *end survey
