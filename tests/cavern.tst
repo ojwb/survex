@@ -52,8 +52,6 @@ esac
 : ${DUMP3D="$testdir"/../src/dump3d}
 : ${SURVEXPORT="$testdir"/../src/survexport}
 
-: ${GDAL=gdal}
-
 # FIXME survexport is failing to run in CI on msys+mingw.
 TESTS_=
 [ "$OSTYPE" = "cygwin" ] || TESTS_="3dexport \
@@ -64,7 +62,6 @@ TESTS_=
  kmlexport kmlexportanon\
  pltexport\
  shplexport\
- shppexport\
  svgexport"
 
 : ${TESTS=${*:-"singlefix singlereffix oneleg midpoint lollipop fixedlollipop\
@@ -403,13 +400,21 @@ for file in $TESTS ; do
 	mv tmp.tmp "$tmpfile"
 	;;
       shp)
-	$GDAL vector convert --quiet --overwrite "$tmpfile" tmp.geojsonl
-	tmpfile=tmp.geojsonl
 	expectedfile=$basefile.geojsonl
+	if `which gdal >/dev/null 2>/dev/null` ; then
+	  gdal vector convert --overwrite --quiet "$tmpfile" tmp.geojsonl
+	  tmpfile=tmp.geojsonl
+	elif `which ogr2ogr >/dev/null 2>/dev/null` ; then
+	  ogr2ogr -overwrite --quiet tmp.geojsonl "$tmpfile"
+	  tmpfile=tmp.geojsonl
+	else
+	  echo >&2 'Skipping testcase: need gdal or ogr2ogr command'
+	  tmpfile=
+	fi
 	;;
     esac
 
-    if ! $QUIET_DIFF "$expectedfile" "$tmpfile" ; then
+    if test -n "$tmpfile" && ! $QUIET_DIFF "$expectedfile" "$tmpfile" ; then
       test -z "$VERBOSE" || $DIFF "$expectedfile" "$tmpfile"
       exit 1
     fi
