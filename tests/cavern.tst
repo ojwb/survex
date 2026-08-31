@@ -405,7 +405,7 @@ for file in $TESTS ; do
 	  gdal vector convert --overwrite --quiet "$tmpfile" tmp.geojsonl
 	  tmpfile=tmp.geojsonl
 	elif `which ogr2ogr >/dev/null 2>/dev/null` ; then
-	  ogr2ogr -overwrite --quiet tmp.geojsonl "$tmpfile"
+	  ogr2ogr -overwrite -q tmp.geojsonl "$tmpfile"
 	  tmpfile=tmp.geojsonl
 	else
 	  echo >&2 'Skipping testcase: need gdal or ogr2ogr command'
