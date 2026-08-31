@@ -405,7 +405,11 @@ for file in $TESTS ; do
 	  gdal vector convert --overwrite --quiet "$tmpfile" tmp.geojsonl
 	  tmpfile=tmp.geojsonl
 	elif `which ogr2ogr >/dev/null 2>/dev/null` ; then
-	  ogr2ogr -overwrite -q tmp.geojsonl "$tmpfile"
+	  ogr2ogr -overwrite -q tmp.0.geojsonl "$tmpfile"
+	  # Normalises whitespace in output by stripping spaces.  NB This
+	  # may need making more sophisticated if a new testcase requires
+	  # spaces in quoted strings.
+	  sed 's/ //g' < tmp.0.geojsonl > tmp.geojsonl
 	  tmpfile=tmp.geojsonl
 	else
 	  echo >&2 'Skipping testcase: need gdal or ogr2ogr command'
