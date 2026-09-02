@@ -1,3 +1,38 @@
+up to: 9bdcce8cedf50173f56f9f7ee1192a9e78733dc8
+
+Changes in 1.4.23 (UNRELEASED):
+
+* cavern:
+
+  + Allow escaping " in quoted strings in .svx files by doubling it.
+
+  + Allow optional licensing info in *copyright.  Suggested by Andrew Atkinson.
+
+  + Improve reported context for `*cs custom` errors.
+
+* aven/survexport:
+
+  + Cross-sections, walls and passages are meant to be turned off for an
+    export or printout of a tilted view (i.e. one which isn't plan or
+    elevation), but a typo meant this wasn't working correctly.
+
+  + Include Z coordinates in exported shapefiles.  Patch from echarlie.
+    Fixes #151.
+
+* INSTALL: Document that GDAL is now used to export geodata too.
+
+* img library:
+
+  + Initialise `label` member when writing.  Its value isn't actually used
+    when writing, but it gets updated relative to `label_buf` when the
+    latter grows, which is undefined behaviour (though unlikely to
+    be a problem in practice).
+
+* Avoid calling `memcpy(ptr, NULL, 0)` which is undefined behaviour (though
+  unlikely to be a problem in practice).
+
+* Fix "discarded-qualifiers" compiler warning from GCC15 and newer.
+
 Changes in 1.4.22 (2026-06-23):
 
 * cavern:
@@ -6,8 +41,8 @@ Changes in 1.4.22 (2026-06-23):
     (for a quoted or single-word note) and `noteall` (for a note which lasts
     for the rest of the line).
 
-  + Allow omitting any/all dimensions in passage data.  Dimensions not in
-    the style are handled like dimensions explicitly marked as omitted.
+  + Allow omitting any/all dimensions in `*data passage` style.  Dimensions not
+    in the style are handled like dimensions explicitly marked as omitted.
     This may be helpful in cases where only some dimensions have been
     measured, but probably more usefully it allows using `*data passage
     note` or `*data passage noteall` to record station descriptions in
