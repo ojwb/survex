@@ -111,6 +111,29 @@ features are likely to be handled while more obscure features may not be.
     #note *8 ; Suppress Survex warning that this looks like broken LRUD
     P25     *8 5 16 3.58
 
+- In Europe a comma is customarily used for the decimal point.  Walls ``.svy``
+  format treats comma (``,``) like a space and allows optional instrument and
+  target heights on each survey leg which can result in the data meaning
+  something different to what the user intended.
+
+  A real world example::
+
+    GB1        GB2        5,00    0       30
+
+  Walls treats this as equivalent to::
+
+    GB1        GB2        5 00    0       30
+
+  This emans Walls quietly parses this as length ``5``, compass ``00``, clino
+  ``0`` and (optional field) instrument height ``30``.
+
+  Survex 1.4.23 and later issue a warning about such cases, which is suppressed
+  if there's a decimal point in the component on either side of the comma.  If
+  you have data where this warning fires but the comma is meant to be separate
+  readings, you can workaround by changing the comma to a space, or adding a
+  ``.0`` to one of the readings adjacent to the comma.   Please also report
+  such cases and we'll try to adjust the warning conditions to avoid them.
+
 - Walls allows hanging surveys, apparently without any complaint, and
   as a result large Walls datasets are likely to have hanging surveys.
   A hanging survey used to be an error in Survex but since 1.4.10

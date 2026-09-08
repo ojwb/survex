@@ -1,4 +1,4 @@
-; pos=dump warn=31 dummycrprotection=
+; pos=dump warn=34 dummycrprotection=
 #u o=EUN v=g
 #Fix U0 0 1 0
 #seg FOO
@@ -120,6 +120,17 @@ U23 suf2c i126.5 15:10:30 -2:51.744
 U23 suf2d 3.2131m 15.175d -2:51:44.64
 ; Test mils (360d=6400m)
 U23 suf2e 3.2131m 269.7778m -50.8871m
+; Test warning about `,` being interpreted as a space.
+U23        U24        5,00    0       30
+U23        U25        5.00    0,0     30
+U23        U26        5.00    0       30,5
+; Test we don't warn when there's a decimal point as well.
+U23        U24a       5.0,00   0       30
+U23        U24b       5,0.0    0       30
+U23        U25a       5.00    0.0,0    30
+U23        U25b       5.00    0,0.0    30
+U23        U26a       5.00    0       30.0,5
+U23        U26b       5.00    0       30,5.0
 
 ; FIXME: These should all work now - make sure they are tested.
 ; :50 = 50 minutes (0.8333333333333d)

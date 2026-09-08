@@ -91,6 +91,15 @@
 ./walls.srv:111:5: warning: Parsing as "to" station but may be isolated LRUD with missing closing delimiter
  U23 <8 5 15 3.58
      ^~
+./walls.srv:124:24: warning: Interpreting "," as separating readings but may be intended as a decimal point
+ U23        U24        5,00    0       30
+                        ^
+./walls.srv:125:32: warning: Interpreting "," as separating readings but may be intended as a decimal point
+ U23        U25        5.00    0,0     30
+                                ^
+./walls.srv:126:41: warning: Interpreting "," as separating readings but may be intended as a decimal point
+ U23        U26        5.00    0       30,5
+                                         ^
 
 Removing trailing traverses...
 
@@ -106,15 +115,15 @@ Calculating trailing traverses...
 
 Calculating statistics...
 
-Survey contains 54 survey stations, joined by 52 legs.
+Survey contains 63 survey stations, joined by 61 legs.
 There are 0 loops.
 Survey has 2 connected components.
-Total length of survey legs =  200.64m ( 200.64m adjusted)
-Total plan length of survey legs =  165.80m
-Total vertical length of survey legs =   75.90m
+Total length of survey legs =  245.64m ( 245.64m adjusted)
+Total plan length of survey legs =  208.79m
+Total vertical length of survey legs =   83.40m
 Vertical range = 56.04m (from U12b at 51.00m to anonymous station at -5.04m)
 Vertical range = 55.37m (from U12b at 51.00m to 12#4 at -4.37m)
 North-South range = 53.08m (from U12b at 40.00m to 12#4 at -13.08m)
 East-West range = 31.49m (from U12a at 30.00m to U1 at -1.49m)
 
-There were 31 warning(s).
+There were 34 warning(s).

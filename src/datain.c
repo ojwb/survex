@@ -1785,6 +1785,39 @@ walls_reset(void)
     walls_update_data_order();
 }
 
+static void
+walls_comma_warning(bool f_decimal_point)
+{
+    if (f_decimal_point) return;
+
+    filepos fp;
+    get_pos(&fp);
+    if (!isdigit(nextch())) {
+	set_pos(&fp);
+	return;
+    }
+
+    while (isdigit(nextch())) { }
+    int following_ch = ch;
+    set_pos(&fp);
+    if (following_ch == '.') return;
+
+    // TRANSLATORS: Warning issued about a dubious case in survey data in Walls
+    // format (.srv).  Real world example:
+    //
+    // GB1        GB2        5,00    0       30
+    //
+    // In Europe a comma is customarily used for the decimal point, and the
+    // user intended this to be a leg of length 5, compass 0, clino 30.
+    // However Walls treats comma like a space so this is equivalent to:
+    //
+    // GB1        GB2        5 00    0       30
+    //
+    // Walls quietly parses this as length 5, compass 00, clino 0 and (optional
+    // field) instrument height 30.
+    compile_diagnostic(DIAG_WARN|DIAG_COL, /*Interpreting “,” as separating readings but may be intended as a decimal point*/539);
+}
+
 static real
 read_walls_angle(real default_units)
 {
@@ -1865,6 +1898,9 @@ bad_distance_units:
 		while (!isBlank(ch) && !isEol(ch)) nextch();
 	    }
 	} else {
+	    if (ch == ',') {
+		walls_comma_warning(f_decimal_point);
+	    }
 	    distance *= default_units;
 	}
     }
@@ -5252,6 +5288,9 @@ data_normal(void)
 			  VAL(Comp) *= M_PI / 180.0 / pcs->units[Q_BEARING];
 			  break;
 			}
+			case ',':
+			  walls_comma_warning(f_decimal_point);
+			  break;
 		      }
 		  }
 	      }
@@ -5414,6 +5453,9 @@ data_normal(void)
 		      clin *= M_PI / 180.0 / pcs->units[Q_GRADIENT];
 		      break;
 		    }
+		    case ',':
+		      walls_comma_warning(f_decimal_point);
+		      // FALLTHRU
 		    default:
 		      if (pcs->f_clino_percent) {
 			  clin = atan(clin * 0.01) / pcs->units[Q_GRADIENT];
