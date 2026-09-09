@@ -1,0 +1,50 @@
+./baddate.srv:10:15: warning: Invalid day of the month
+ #date 2003-09-31
+               ^~
+./baddate.srv:12:15: warning: Invalid day of the month
+ #date 2003-02-29
+               ^~
+./baddate.srv:14:15: warning: Invalid day of the month
+ #date 1900-02-29
+               ^~
+./baddate.srv:16:7: warning: Invalid year (< 1900 or > 2078)
+ #date 2100-02-29
+       ^~~~
+./baddate.srv:28:12: error: Invalid month
+ #date 2004-00-29
+            ^~
+./baddate.srv:30:12: error: Invalid month
+ #date 2004-13-29
+            ^~
+./baddate.srv:32:15: error: Invalid day of the month
+ #date 2004-11-32
+               ^~
+./baddate.srv:34:12: error: Invalid month
+ #date 2004-13-32
+            ^~
+./baddate.srv:36:1: info: Survey has no fixed points. Therefore I've fixed A at (0,0,0)
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 2 survey stations, joined by 1 leg.
+There are 0 loops.
+Total length of survey legs =    1.00m (   1.00m adjusted)
+Total plan length of survey legs =    1.00m
+Total vertical length of survey legs =    0.05m
+Vertical range = 0.05m (from B at 0.05m to A at 0.00m)
+North-South range = 1.00m (from B at 1.00m to A at 0.00m)
+East-West range = 0.03m (from B at 0.03m to A at 0.00m)
+
+There were 4 warning(s) and 4 error(s) - no output files produced.

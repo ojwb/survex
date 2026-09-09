@@ -113,7 +113,7 @@ TESTS_=
  fixfeet.mak utm.mak\
  clptest.dat clptest.clp\
  walls.srv\
- badomit.srv badopts.srv badreadings.srv\
+ baddate.srv badomit.srv badopts.srv badreadings.srv\
  unknowndirective.srv\
  wallsbaddatum.wpj\
  wallsdecl.wpj\

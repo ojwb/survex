@@ -205,6 +205,13 @@ features are likely to be handled while more obscure features may not be.
   it 'also accepts "some date formats common in the U.S. (``mm/dd/yy``,
   ``mm-dd-yyyy``, etc.)' but doesn't say how it interprets ``yy``.
 
+- Walls checking of valid dates seems to assume all months have 31
+  days as it quietly accepts invalid dates such as ``2025-09-31``,
+  ``2024-02-30`` and ``2025-02-29``.  Survex warns about these cases.
+  Since 1.4.23, Survex issues an error for invalid dates which Walls
+  issues an error for, such as month < 1 or > 13, or day < 1 or > 31
+  (previously Survex only warned about these too).
+
 - The documentation specifies that the ``SAVE`` and ``RESTORE`` options
   should be processed before other options.  Currently Survex just
   processes all options in the order specified, which makes no

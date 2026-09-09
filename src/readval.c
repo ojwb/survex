@@ -1018,14 +1018,20 @@ read_walls_srv_date(int *py, int *pm, int *pd)
 
     if (m < 1 || m > 12) {
 	set_pos(&fp_month);
-	compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Invalid month*/86);
+	compile_diagnostic(DIAG_ERR|DIAG_UINT, /*Invalid month*/86);
 	longjmp(jbSkipLine, 1);
     }
 
     if (d < 1 || d > (unsigned)last_day(y, m)) {
 	set_pos(&fp_day);
+	int diag_type = DIAG_ERR;
+	// Walls checking of the day of the month only rejects < 1 or > 31, and
+	// so it quietly accepts some invalid dates.  We issue a warning
+	// instead of an error for these cases.
+	if (d <= 31) diag_type = DIAG_WARN;
+
 	/* TRANSLATORS: e.g. 31st of April, or 32nd of any month */
-	compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Invalid day of the month*/87);
+	compile_diagnostic(diag_type|DIAG_UINT, /*Invalid day of the month*/87);
 	longjmp(jbSkipLine, 1);
     }
 
