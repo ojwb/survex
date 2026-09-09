@@ -1,6 +1,6 @@
 /* extend.c
  * Produce an extended elevation
- * Copyright (C) 1995-2025 Olly Betts
+ * Copyright (C) 1995-2026 Olly Betts
  * Copyright (C) 2004,2005 John Pybus
  *
  * This program is free software; you can redistribute it and/or modify
@@ -718,6 +718,9 @@ main(int argc, char **argv)
    printf(msg(/*Writing %s…*/522), fnm_out);
    putnl();
    pimg_out = img_open_write(fnm_out, desc, img_FFLAG_EXTENDED);
+   if (!pimg_out) {
+      fatalerror(img_error2msg(img_error()), fnm_out);
+   }
 
    /* Only does single connected component currently. */
    do_stn(start, 0.0, NULL, ERIGHT, 0, 0.0, 0.0);
