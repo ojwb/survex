@@ -1639,7 +1639,7 @@ img_write_stream(FILE *stream, int (*close_func)(FILE*),
    img *pimg;
 
    if (stream == NULL) {
-      img_errno = IMG_FILENOTFOUND;
+      img_errno = IMG_CANTOPENOUT;
       return NULL;
    }
 

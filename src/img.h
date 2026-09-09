@@ -12,7 +12,7 @@
  *
  * Writing Survex ".3d" image files is supported.
  *
- * Copyright (C) Olly Betts 1993-2025
+ * Copyright (C) Olly Betts 1993-2026
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -335,8 +335,9 @@ img *img_open_write_cs(const char *fnm, const char *title, const char * cs,
 /* Write a .3d file to a stream
  *
  * stream is a FILE* open on the stream (can be NULL which will give error
- * IMG_FILENOTFOUND so you don't need to handle that case specially).  The
- * stream should be opened for writing in binary mode.
+ * IMG_CANTOPENOUT so you don't need to handle that case specially; older
+ * versions of img gave error IMG_FILENOTFOUND in this case).  The stream
+ * should be opened for writing in binary mode.
  *
  * close_func is a function to call to close the stream (most commonly
  * fclose, or pclose if the stream was opened using popen()) or NULL if
