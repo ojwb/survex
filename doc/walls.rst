@@ -124,7 +124,7 @@ features are likely to be handled while more obscure features may not be.
 
     GB1        GB2        5 00    0       30
 
-  This emans Walls quietly parses this as length ``5``, compass ``00``, clino
+  This means Walls quietly parses this as length ``5``, compass ``00``, clino
   ``0`` and (optional field) instrument height ``30``.
 
   Survex 1.4.23 and later issue a warning about such cases, which is suppressed
