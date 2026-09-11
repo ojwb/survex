@@ -15,6 +15,8 @@ of ``Walls32.exe`` on example data.
 
 As of 1.4.10, some large Walls datasets can be successfully processed
 (e.g. Mammoth Cave, the Thailand dataset from https://cave-registry.org.uk/,
+the Tatra Cave Registry from
+https://github.com/dlubom/Jaskiniowy-Kataster-Tatr-Zachodnich
 and Big Bat Cave).  Behaviour is not identical and station positions after
 loop closure will inevitably be different, but large or apparently systematic
 errors are worth reporting.  An easy way to compare is to export a Shapefile
