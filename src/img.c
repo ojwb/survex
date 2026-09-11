@@ -1397,7 +1397,7 @@ v03d:
 	   if (real_len != title_len) {
 	       char * cs = title + real_len + 1;
 	       real_len += strlen(cs) + 1;
-	       if (memcmp(cs, "+init=", 6) == 0) {
+	       if (strncmp(cs, "+init=", 6) == 0) {
 		   /* PROJ 5 and later don't handle +init=esri:<number> but
 		    * that's what cavern used to put in .3d files for
 		    * coordinate systems specified using ESRI codes.  We parse
@@ -1411,8 +1411,8 @@ v03d:
 		    * EPSG:<number>.
 		    */
 		   char * p = cs + 6;
-		   if (p[4] == ':' && isdigit((unsigned char)p[5]) &&
-		       ((memcmp(p, "epsg", 4) == 0 || memcmp(p, "esri", 4) == 0))) {
+		   if ((strncmp(p, "epsg:", 5) == 0 || strncmp(p, "esri:", 5) == 0) &&
+		       isdigit((unsigned char)p[5])) {
 		       p = p + 6;
 		       while (isdigit((unsigned char)*p)) {
 			   ++p;
@@ -1431,19 +1431,19 @@ v03d:
 			   *p = '\0';
 		       }
 		   }
-	       } else if (memcmp(cs, "+proj=", 6) == 0) {
+	       } else if (strncmp(cs, "+proj=", 6) == 0) {
 		   /* Convert S_MERC and UTM proj strings which cavern used
 		    * to generate to their corresponding EPSG:<number> codes.
 		    */
 		   char * p = cs + 6;
-		   if (memcmp(p, "utm +ellps=WGS84 +datum=WGS84 +units=m +zone=", 45) == 0) {
+		   if (strncmp(p, "utm +ellps=WGS84 +datum=WGS84 +units=m +zone=", 45) == 0) {
 		       int n = 0;
 		       p += 45;
 		       while (isdigit((unsigned char)*p)) {
 			   n = n * 10 + (*p - '0');
 			   ++p;
 		       }
-		       if (memcmp(p, " +south", 7) == 0) {
+		       if (strncmp(p, " +south", 7) == 0) {
 			   p += 7;
 			   n += 32700;
 		       } else {
@@ -1455,12 +1455,12 @@ v03d:
 			* might not.
 			*/
 		       if (*p == '\0' || strcmp(p, " +no_defs") == 0) {
-			   /* There are at least 45 bytes (see memcmp above)
+			   /* There are at least 45 bytes (see strncmp above)
 			    * which is ample for EPSG: plus an integer.
 			    */
 			   SNPRINTF(cs, 45, "EPSG:%d", n);
 		       }
-		   } else if (memcmp(p, "merc +lat_ts=0 +lon_0=0 +k=1 +x_0=0 +y_0=0 +a=6378137 +b=6378137 +units=m +nadgrids=@null", 89) == 0) {
+		   } else if (strncmp(p, "merc +lat_ts=0 +lon_0=0 +k=1 +x_0=0 +y_0=0 +a=6378137 +b=6378137 +units=m +nadgrids=@null", 89) == 0) {
 		       p = p + 89;
 		       /* Allow +no_defs to be omitted as it seems to not
 			* actually do anything with recent PROJ - cavern always
