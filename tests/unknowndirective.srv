@@ -34,3 +34,8 @@
 #<>
 #!/bin/sh
 Q0 U0  0 0 0 #sygment /TYPO
+
+; In Survex < 1.4.23 these caused the same error to be repeated until we hit
+; the error limit.
+#units 2.5
+#units "2.5"

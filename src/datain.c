@@ -2642,6 +2642,16 @@ walls_parse_options(void)
 		set_pos(&fp);
 		s_clear(&token);
 	    }
+	    if (s_len(&token) == 0) {
+		// If there wasn't a valid token, read a word for a better
+		// error and so the parser actually advances.  This case lead
+		// to reporting the same error over and over for an unexpected
+		// number in `#units` in Survex < 1.4.23.
+		while (!isBlank(ch) && !isComm(ch) && !isEol(ch) && ch != '=') {
+		    s_appendch(&token, ch);
+		    nextch();
+		}
+	    }
 	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Unknown command “%s”*/12, s_str(&token));
 	    if (ch == '=') {
 		// Skip over `=` and the rest of the argument so we handle a
