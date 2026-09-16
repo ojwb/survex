@@ -276,9 +276,10 @@ features are likely to be handled while more obscure features may not be.
   not enforce any limit.
 
 - In the option ``UNITS=`` the documentation says `CASE = Upper / Lower /
-  Mixed` but it seems actually any string is allowed and if it starts
-  with a letter other than ``U`` or ``L`` then it's treated as ``Mixed``.
-  Since Survex 1.4.10.
+  Mixed` but it seems actually any non-empty string is allowed and if it starts
+  with a character other than ``U`` or ``L`` then it's treated as ``Mixed``.
+  Handled since Survex 1.4.10.  Survex 1.4.23 and later emit a warning
+  if the value starts with a character other than ``U``, ``L`` or ``M``.
 
 - Walls explicitly documents that `Unprefixed names [...] must not contain any
   colons, semicolons, commas, pound signs (#), or embedded tabs or spaces.` but

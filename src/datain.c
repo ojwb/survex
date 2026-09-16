@@ -2453,7 +2453,13 @@ walls_parse_options(void)
 	      case 'U':
 		pcs->Case = UPPER;
 		break;
+	      case 'M':
+		pcs->Case = OFF;
+		break;
 	      default:
+		compile_diagnostic(DIAG_WARN|DIAG_TOKEN,
+				   /*Expecting “%s”, “%s”, or “%s”*/188,
+				   "L", "U", "M");
 		pcs->Case = OFF;
 		break;
 	    }

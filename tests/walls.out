@@ -16,6 +16,9 @@
 ./walls.srv:22:19: warning: Expecting numeric field, found ""
  u0 u1dms6 10.0 12: 0d
                    ^
+./walls.srv:23:26: warning: Expecting "L", "U", or "M"
+ #units v=d vb=d a=d case=none ; undocumented but unknown "case=" values -> "mixed"
+                          ^~~~
 ./walls.srv:38:28: warning: CLINO reading and BACKCLINO reading disagree by 4dg
  :U1 U2 10.1m N79E/S79W -28/24 *15 25 4 3*
                             ^~
@@ -126,4 +129,4 @@ Vertical range = 55.37m (from U12b at 51.00m to 12#4 at -4.37m)
 North-South range = 53.08m (from U12b at 40.00m to 12#4 at -13.08m)
 East-West range = 31.49m (from U12a at 30.00m to U1 at -1.49m)
 
-There were 34 warning(s).
+There were 35 warning(s).
