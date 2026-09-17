@@ -1,4 +1,4 @@
-; pos=fail error=7
+; pos=fail error=15
 *fix 1 reference 0 0 0 ; so there's some survey data
 
 *sd tape metres
@@ -8,3 +8,11 @@
 *sd tape tripe 0.9 feet
 *sd tape compass 0.4 meters
 *sd 0.9 feet
+*sd compass 0.5
+*sd compass 00 degrees
+*sd compass 00
+*sd clino degrees
+*sd clino -1 degrees
+*sd compass clino -1
+*sd compass clino - degrees
+*sd compass -

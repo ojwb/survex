@@ -2331,9 +2331,12 @@ cmd_sd(void)
       default_grade(pcs);
       return;
    }
+   filepos fp;
+   get_pos(&fp);
    sd = read_numeric(false);
    if (sd <= (real)0.0) {
-      compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_COL, /*Standard deviation must be positive*/48);
+      set_pos(&fp);
+      compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_NUM, /*Standard deviation must be positive*/48);
       return;
    }
    units = get_units(qmask, false);
