@@ -87,14 +87,16 @@ char* grab_line(void);
 #define DIAG_COL		0x08
 // Set caret_width to s_len(&token):
 #define DIAG_TOKEN		0x10
+// Like DIAG_TOKEN but allow for optional double quotes.
+#define DIAG_QTOKEN		0x18
 // The following codes say to parse and discard a value from the current file
 // position - caret_width is set to its length:
-#define DIAG_WORD		0x18	// Span of non-blanks and non-comments.
-#define DIAG_UINT		0x20	// Span of digits.
-#define DIAG_DATE		0x28	// Span of digits and full stops.
-#define DIAG_NUM		0x30	// Real number.
-#define DIAG_STRING		0x38	// Possibly quoted string value.
-#define DIAG_TAIL		0x40	// Rest of the line (not including
+#define DIAG_WORD		0x20	// Span of non-blanks and non-comments.
+#define DIAG_UINT		0x28	// Span of digits.
+#define DIAG_DATE		0x30	// Span of digits and full stops.
+#define DIAG_NUM		0x38	// Real number.
+#define DIAG_STRING		0x40	// Possibly quoted string value.
+#define DIAG_TAIL		0x48	// Rest of the line (not including
 					// trailing blanks or comment).
 
 // A non-zero caret_width value can be encoded in the upper bits.

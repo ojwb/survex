@@ -39,3 +39,5 @@ Q0 U0  0 0 0 #sygment /TYPO
 ; the error limit.
 #units 2.5
 #units "2.5"
+#units typevb=N =C
+#units =C

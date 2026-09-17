@@ -91,9 +91,15 @@
 ./unknowndirective.srv:40:8: error: Unknown command "2.5"
  #units 2.5
         ^~~
-./unknowndirective.srv:41:8: error: Unknown command ""2.5""
+./unknowndirective.srv:41:9: error: Unknown command "2.5"
  #units "2.5"
-        ^~~~~
+         ^~~
+./unknowndirective.srv:43:17: error: Unknown command ""
+ #units typevb=N =C
+                 ^
+./unknowndirective.srv:44:8: error: Unknown command ""
+ #units =C
+        ^
 ./unknowndirective.srv:36:1: info: Survey has no fixed points. Therefore I've fixed Q0 at (0,0,0)
 
 Removing trailing traverses...
@@ -116,4 +122,4 @@ Total length of survey legs =    0.00m (   0.00m adjusted)
 Total plan length of survey legs =    0.00m
 Total vertical length of survey legs =    0.00m
 
-There were 24 warning(s) and 8 error(s) - no output files produced.
+There were 24 warning(s) and 10 error(s) - no output files produced.

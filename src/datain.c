@@ -335,34 +335,36 @@ compile_diagnostic(int diag_flags, int en, ...)
    int diag_context_code = (diag_flags & DIAG_CONTEXT_MASK);
    if (diag_context_code) {
       int len = 0;
-      if (diag_context_code != DIAG_COL && diag_context_code != DIAG_TOKEN) {
-	 skipblanks();
-      }
       switch (diag_context_code) {
 	case DIAG_COL:
 	 break;
 	case DIAG_TOKEN:
+	case DIAG_QTOKEN:
 	 len = s_len(&token);
 	 break;
 	case DIAG_WORD:
+	 skipblanks();
 	 while (!isBlank(ch) && !isComm(ch) && !isEol(ch)) {
 	    ++len;
 	    nextch();
 	 }
 	 break;
 	case DIAG_UINT:
+	 skipblanks();
 	 while (isdigit(ch)) {
 	    ++len;
 	    nextch();
 	 }
 	 break;
 	case DIAG_DATE:
+	 skipblanks();
 	 while (isdigit(ch) || ch == '.') {
 	    ++len;
 	    nextch();
 	 }
 	 break;
 	case DIAG_STRING: {
+	 skipblanks();
 	 string p = S_INIT;
 	 len = ftell(file.fh);
 	 read_string(&p);
@@ -372,6 +374,7 @@ compile_diagnostic(int diag_flags, int en, ...)
 	 break;
 	}
 	case DIAG_TAIL: {
+	 skipblanks();
 	 filepos fp_last_nonblank = {0}; // Initialise to avoid warning.
 	 int len_last_nonblank = len;
 	 while (!isComm(ch) && !isEol(ch)) {
@@ -390,6 +393,7 @@ compile_diagnostic(int diag_flags, int en, ...)
 	 break;
 	}
 	case DIAG_NUM:
+	 skipblanks();
 	 if (isMinus(ch) || isPlus(ch)) {
 	    ++len;
 	    nextch();
@@ -410,6 +414,14 @@ compile_diagnostic(int diag_flags, int en, ...)
       }
       caret_width = len;
       fpos = ftell(file.fh);
+      if (diag_context_code == DIAG_QTOKEN) {
+	 fseek(file.fh, fpos - 2, SEEK_SET);
+	 if (GETC(file.fh) == '"') {
+	     // Adjust for token in double quotes.
+	     --fpos;
+	 }
+	 fseek(file.fh, fpos, SEEK_SET);
+      }
    } else if (diag_flags & DIAG_FROM_MASK) {
       caret_width = diag_flags >> DIAG_FROM_SHIFT;
       fpos = ftell(file.fh);
@@ -1314,23 +1326,28 @@ walls_swap_macro_tables()
 
 // Takes ownership of the contents of p_name and of value.
 // Passing NULL for value sets empty string.
+// Note that p_name includes the leading `$`.
 static void
 walls_set_macro(walls_macro ***table, string *p_name, char *val)
 {
-    //printf("MACRO: $|%s|=\"%s\":\n", name, val);
     if (!*table) {
 	*table = osmalloc(WALLS_MACRO_HASH_SIZE * sizeof(walls_macro*));
 	for (size_t i = 0; i < WALLS_MACRO_HASH_SIZE; i++)
 	    (*table)[i] = NULL;
     }
 
-    unsigned h = hash_data(s_str(p_name), s_len(p_name)) &
-		 (WALLS_MACRO_HASH_SIZE - 1);
+    // Adjust to skip the leading `$`.
+    int name_len = s_len(p_name) - 1;
+    char *name = s_steal(p_name) + 1;
+    //printf("MACRO: $|%s|=\"%s\":\n", name, val);
+
+    unsigned h = hash_data(name, name_len) & (WALLS_MACRO_HASH_SIZE - 1);
     walls_macro *p = (*table)[h];
     while (p) {
-	if (s_eqlen(p_name, p->name, p->name_len)) {
+	if (name_len == p->name_len && memcmp(name, p->name, name_len) == 0) {
+	    // Adjust back for skipping the leading `$`.
+	    free(name - 1);
 	    // Update existing definition of macro.
-	    s_free(p_name);
 	    free(p->value);
 	    p->value = val;
 	    return;
@@ -1339,8 +1356,8 @@ walls_set_macro(walls_macro ***table, string *p_name, char *val)
     }
 
     walls_macro *entry = osnew(walls_macro);
-    entry->name_len = s_len(p_name);
-    entry->name = s_steal(p_name);
+    entry->name_len = name_len;
+    entry->name = name;
     entry->value = val;
     entry->next = (*table)[h];
     (*table)[h] = entry;
@@ -2168,6 +2185,34 @@ convert_compass_dat_flags(unsigned long compass_dat_flags)
 }
 
 static void
+walls_get_option_token(void)
+{
+    s_clear(&token);
+    s_clear(&uctoken);
+    if (ch == '"') {
+	// Apparently undocumented quoted token syntax.
+	// FIXME: Warn?
+	nextch();
+	while (ch != '"') {
+	    if (isEol(ch)) {
+		compile_diagnostic(DIAG_ERR|DIAG_COL, /*Missing \"*/69);
+		return;
+	    }
+	    s_appendch(&token, ch);
+	    s_appendch(&uctoken, toupper(ch));
+	    nextch();
+	}
+	nextch();
+	return;
+    }
+    while (!isBlank(ch) && !isComm(ch) && !isEol(ch) && ch != '=') {
+	s_appendch(&token, ch);
+	s_appendch(&uctoken, toupper(ch));
+	nextch();
+    }
+}
+
+static void
 walls_parse_options(void)
 {
     // Track if we need to call walls_update_data_order().  We postpone
@@ -2176,7 +2221,7 @@ walls_parse_options(void)
     bool update_data_order = false;
     skipblanks();
     while (!isEol(ch)) {
-	get_token();
+	walls_get_option_token();
 	if (s_empty(&token) && isComm(ch)) {
 	    break;
 	}
@@ -2238,7 +2283,7 @@ walls_parse_options(void)
 		pcs->units[Q_DZ] = METRES_PER_FOOT;
 	    break;
 	  case WALLS_UNITS_OPT_D:
-	    get_token();
+	    walls_get_option_token();
 	    // From testing it seems Walls only checks the initial letter - e.g.
 	    // "M", "METERS", "METRES", "F", "FEET" and even "FISH" are accepted,
 	    // but "X" gives an error.
@@ -2256,7 +2301,7 @@ walls_parse_options(void)
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_A:
-	    get_token();
+	    walls_get_option_token();
 	    // It seems Walls only checks the initial letter.
 	    if (s_str(&uctoken)[0] == 'D') {
 		// Degrees.
@@ -2279,7 +2324,7 @@ walls_parse_options(void)
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_AB:
-	    get_token();
+	    walls_get_option_token();
 	    // It seems Walls only checks the initial letter.
 	    if (s_str(&uctoken)[0] == 'D') {
 		// Degrees.
@@ -2302,7 +2347,7 @@ walls_parse_options(void)
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_V:
-	    get_token();
+	    walls_get_option_token();
 	    pcs->f_clino_percent = false;
 	    // It seems Walls only checks the initial letter.
 	    if (s_str(&uctoken)[0] == 'D') {
@@ -2329,7 +2374,7 @@ walls_parse_options(void)
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_VB:
-	    get_token();
+	    walls_get_option_token();
 	    pcs->f_backclino_percent = false;
 	    // It seems Walls only checks the initial letter.
 	    if (s_str(&uctoken)[0] == 'D') {
@@ -2356,7 +2401,7 @@ walls_parse_options(void)
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_S:
-	    get_token();
+	    walls_get_option_token();
 	    // From testing it seems Walls only checks the initial letter - e.g.
 	    // "M", "METERS", "METRES", "F", "FEET" and even "FISH" are accepted,
 	    // but "X" gives an error.
@@ -2378,11 +2423,11 @@ walls_parse_options(void)
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_ORDER: {
-	    get_token();
+	    walls_get_option_token();
 	    int order = match_tok(walls_order_tab,
 				  TABSIZE(walls_order_tab));
 	    if (order < 0) {
-		compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Data style “%s” unknown*/65, s_str(&token));
+		compile_diagnostic(DIAG_ERR|DIAG_QTOKEN, /*Data style “%s” unknown*/65, s_str(&token));
 		break;
 	    }
 	    bool rect = (order & (1 << 24));
@@ -2412,7 +2457,7 @@ walls_parse_options(void)
 		filepos fp;
 		get_pos(&fp);
 		set_pos(&fp_option);
-		compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*Unknown command “%s”*/12, s_str(&token));
+		compile_diagnostic(DIAG_WARN|DIAG_QTOKEN, /*Unknown command “%s”*/12, s_str(&token));
 		set_pos(&fp);
 	    }
 	    break;
@@ -2424,7 +2469,7 @@ walls_parse_options(void)
 	    break;
 	  case WALLS_UNITS_OPT_GRID:
 	    // FIXME: GRID= not useful with geo-referenced data?
-	    compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*Unknown command “%s”*/12, s_str(&token));
+	    compile_diagnostic(DIAG_WARN|DIAG_QTOKEN, /*Unknown command “%s”*/12, s_str(&token));
 	    (void)read_walls_angle(M_PI / 180.0);
 	    break;
 	  case WALLS_UNITS_OPT_RECT:
@@ -2442,7 +2487,7 @@ walls_parse_options(void)
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_CASE:
-	    get_token();
+	    walls_get_option_token();
 	    // Walls documents `CASE = Upper / Lower / Mixed` which hints that
 	    // it only actually tests the first character.  It also seems that
 	    // any other character is treated as `Mixed` too.
@@ -2457,7 +2502,7 @@ walls_parse_options(void)
 		pcs->Case = OFF;
 		break;
 	      default:
-		compile_diagnostic(DIAG_WARN|DIAG_TOKEN,
+		compile_diagnostic(DIAG_WARN|DIAG_QTOKEN,
 				   /*Expecting “%s”, “%s”, or “%s”*/188,
 				   "L", "U", "M");
 		pcs->Case = OFF;
@@ -2495,11 +2540,11 @@ walls_parse_options(void)
 	    break;
 	  }
 	  case WALLS_UNITS_OPT_TAPE: {
-	    get_token();
+	    walls_get_option_token();
 	    int tape_method = match_tok(walls_tape_tab,
 					TABSIZE(walls_tape_tab));
 	    if (tape_method < 0) {
-		compile_diagnostic(DIAG_ERR|DIAG_TOKEN,
+		compile_diagnostic(DIAG_ERR|DIAG_QTOKEN,
 				   /*Expecting “%s”, “%s”, “%s”, or “%s”*/189,
 				   "IS", "IT", "SS", "ST");
 		break;
@@ -2509,7 +2554,7 @@ walls_parse_options(void)
 	    break;
 	  }
 	  case WALLS_UNITS_OPT_TYPEAB:
-	    get_token();
+	    walls_get_option_token();
 	    if (s_str(&uctoken)[0] == 'N') {
 		pcs->z[Q_BACKBEARING] = 0.0;
 	    } else if (s_str(&uctoken)[0] == 'C') {
@@ -2541,7 +2586,7 @@ walls_parse_options(void)
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_TYPEVB:
-	    get_token();
+	    walls_get_option_token();
 	    if (s_str(&uctoken)[0] == 'N') {
 		pcs->sc[Q_BACKGRADIENT] = 1.0;
 	    } else if (s_str(&uctoken)[0] == 'C') {
@@ -2602,7 +2647,7 @@ walls_parse_options(void)
 	    // FIXME: Should this be processed before other arguments?
 	    if (!p_walls_options->explicit) {
 		/* TRANSLATORS: %s is replaced with e.g. BEGIN or .BOOK or #[ */
-		compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*No matching %s*/192, "SAVE");
+		compile_diagnostic(DIAG_ERR|DIAG_QTOKEN, /*No matching %s*/192, "SAVE");
 		break;
 	    }
 	    pop_walls_options();
@@ -2615,47 +2660,24 @@ walls_parse_options(void)
 	    break;
 	  }
 	  case WALLS_UNITS_OPT_NULL:
-	    if (s_str(&uctoken)[0] == '\0' && ch == '$') {
+	    if (s_str(&token)[0] == '$' && s_len(&token) > 1) {
 		// Macro definition.
-		filepos fp;
-		get_pos(&fp);
-		nextch();
-		string name = S_INIT;
-		while (!isBlank(ch) && !isComm(ch) && !isEol(ch) && ch != '=') {
-		    s_appendch(&name, ch);
+		skipblanks();
+		if (ch != '=') {
+		    // Set an empty value.
+		    walls_set_macro(&walls_macros, &token, NULL);
+		} else {
 		    nextch();
+		    string val = S_INIT;
+		    read_string(&val);
+		    walls_set_macro(&walls_macros, &token, s_steal(&val));
 		}
-		if (!s_empty(&name)) {
-		    skipblanks();
-		    if (ch != '=') {
-			// Set an empty value.
-			walls_set_macro(&walls_macros, &name, NULL);
-		    } else {
-			nextch();
-			string val = S_INIT;
-			read_string(&val);
-			walls_set_macro(&walls_macros, &name, s_steal(&val));
-		    }
-		    break;
-		}
-		s_free(&name);
-		set_pos(&fp);
-		s_clear(&token);
+		break;
 	    }
-	    if (s_len(&token) == 0) {
-		// If there wasn't a valid token, read a word for a better
-		// error and so the parser actually advances.  This case lead
-		// to reporting the same error over and over for an unexpected
-		// number in `#units` in Survex < 1.4.23.
-		while (!isBlank(ch) && !isComm(ch) && !isEol(ch) && ch != '=') {
-		    s_appendch(&token, ch);
-		    nextch();
-		}
-	    }
-	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Unknown command “%s”*/12, s_str(&token));
+	    compile_diagnostic(DIAG_ERR|DIAG_QTOKEN, /*Unknown command “%s”*/12, s_str(&token));
 	    if (ch == '=') {
 		// Skip over `=` and the rest of the argument so we handle a
-		// typo-ed option name nicely.
+		// missing or typo-ed option name nicely.
 		do {
 		    nextch();
 		} while (!isBlank(ch) && !isComm(ch) && !isEol(ch));

@@ -328,6 +328,14 @@ features are likely to be handled while more obscure features may not be.
 - Explicit ``degree:minute:second`` angle readings are supported since Survex
   1.4.20.
 
+- Walls allows quoting of tokens in ``#UNITS``, for example
+
+  ::
+
+    #units "typevb" = "n"
+
+  This feature does not seem to be documented.  Supported since Survex 1.4.23.
+
 - Walls doesn't issue an error for some directive lines which seem like they
   are invalid (at least there's no documented meaning), for example all of
   these are quietly accepted:
