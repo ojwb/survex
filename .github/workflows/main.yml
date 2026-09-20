@@ -82,13 +82,10 @@ jobs:
         retention-days: 1
         if-no-files-found: error
 
-  # Job with asan+ubsan enabled.  Uses GCC - the clang versions of the
-  # sanitisers support some extra things, but I failed to get the build to work
-  # with clang+sanitisers.  In case we want to try again in the future, I think
-  # it needs -stdlib=libstdc++ because we used a packaged wxwidgets, which is a
-  # C++ library and built with GCC (and so libstdc++).
+  # Job with asan+ubsan enabled.  The clang versions of the sanitisers support
+  # some extra checks so we use them in preference here.
   sanitisers:
-    runs-on: 'ubuntu-24.04'
+    runs-on: 'ubuntu-26.04'
     needs: makedist
     steps:
     - name: Install CCache
@@ -104,6 +101,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install \
+            clang-20 \
             gdal-bin \
             libwxgtk3.2-dev \
             libavcodec-dev \
@@ -112,7 +110,7 @@ jobs:
             libproj-dev \
             libswscale-dev
     - name: configure
-      run: ./configure CC='ccache gcc' CXX='ccache g++' CFLAGS='-g -O2 -Werror -fsanitize=address,undefined,float-divide-by-zero -fsanitize-address-use-after-scope -fsanitize-recover=all -fno-omit-frame-pointer' CXXFLAGS='-g -O2 -Werror -fsanitize=address,undefined,float-divide-by-zero -fsanitize-address-use-after-scope -fsanitize-recover=all -fno-omit-frame-pointer' LIBS=-lm
+      run: ./configure CC='ccache clang-20' CXX='ccache clang++-20' CFLAGS='-g -O2 -Werror -fsanitize=address,undefined,float-divide-by-zero -fsanitize-address-use-after-scope -fsanitize-recover=all -fno-omit-frame-pointer' CXXFLAGS='-g -O2 -Werror -fsanitize=address,undefined,float-divide-by-zero -fsanitize-address-use-after-scope -fsanitize-recover=all -fno-omit-frame-pointer' LIBS=-lm
     - name: make
       run: make -j2
     - name: Run tests
