@@ -1,6 +1,6 @@
 /* netartic.c
  * Split up network at articulation points
- * Copyright (C) 1993-2003,2005,2012,2014,2015,2024 Olly Betts
+ * Copyright (C) 1993-2003,2005,2012,2014,2015,2024,2026 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@
 #include "netartic.h"
 #include "netbits.h"
 #include "netskel.h"
+#include "network.h"
 #include "matrix.h"
 #include "osalloc.h"
 #include "out.h"
@@ -326,62 +327,93 @@ articulate(void)
 #endif
 
     if (stnlist) {
-	/* Any stations still in stnlist are unreachable from fixed points
-	 * which means we have one or more hanging surveys.  Since Survex
-	 * 1.4.10 we warn about these and then ignore them.
-	 */
-	bool fNotAttached = false;
 	/* TRANSLATORS: At the end of processing (or if a *SOLVE command is used)
 	 * cavern will issue this warning if there are any sections of the survey
 	 * network which are hanging. */
 	warning(/*Survey not all connected to fixed stations*/45);
-	for (node *stn = stnlist; stn; stn = stn->next) {
-	    // If this is an anonymous station, find the neighbouring station
-	    // in the unreduced network and report that instead as a named
-	    // station will mean more to the user trying to understand where
-	    // the problem is.
-	    //
-	    // There should always be such a station, but if there isn't or we
-	    // fail to find it, we'll report the file and line number which is
-	    // still useful, e.g.
-	    //
-	    // foo.svx:16: info: anonymous station
-	    prefix *name = find_non_anon_stn(stn)->name;
-	    if (TSTBIT(name->sflags, SFLAGS_HANGING)) {
-		/* Already reported this name as hanging. */
-		continue;
-	    }
-	    name->sflags |= BIT(SFLAGS_HANGING);
+	bool fNotAttached = false;
 
-	    if (!name->filename) {
-		// Invented station (e.g. from delta-star transform) - there's
-		// no name and no location so these aren't useful to report.
-		// FIXME: Will there always be another station in the reduced
-		// network or should we try to find a named neighbour?
-		continue;
-	    }
-
-	    if (!fNotAttached) {
-		fNotAttached = true;
-		/* TRANSLATORS: Here "station" is a survey station, not a
-		 * train station. */
-		puts(msg(/*The following survey stations are not attached to a fixed point:*/71));
-	    }
-	    printf("%s:%d: %s: ", name->filename, name->line, msg(/*info*/485));
-	    print_prefix(name);
-	    putnl();
-	}
-
-	// We need to include hanging surveys in the count of connected
-	// components so that the loop count is correct.
+	// Any stations still in stnlist are unreachable from fixed points
+	// which means we have one or more hanging surveys.  Since Survex
+	// 1.4.10 we warn about these and then ignore them.
 	//
-	// To do this we walk the hanging survey network from the first entry
-	// in stnlist, visiting unvisited stations and removing them from
-	// stnlist.  Each time we need to start a new walk is a new component.
+	// We need to include hanging surveys in the count of connected
+	// components so that the loop count is correct, and we want to
+	// only report one representative station per hanging component.
+	// To do this we report a station from stnlist and then walk the
+	// hanging survey network from that station, visiting unvisited
+	// stations and removing them from stnlist.  Each time we need to start
+	// a new walk is a new component.
 	while (stnlist) {
 	    ++cComponents;
 
 	    node *stn = stnlist;
+	    prefix *name_to_report = NULL;
+	    // We want to report a real station, so skip over anonymous
+	    // stations and invented stations (e.g. from delta-star
+	    // transforms).
+	    while (TSTBIT(stn->name->sflags, SFLAGS_ANON) ||
+		   !stn->name->filename) {
+		stn = stn->next;
+		if (!stn) {
+		    // There aren't any named stations in the reduced network,
+		    // so we rescan to try to find an anonymous station.
+		    stn = stnlist;
+		    while (stn && !stn->name->filename) {
+			stn = stn->next;
+		    }
+		    if (stn) {
+			// This is an anonymous station so find the
+			// neighbouring station in the unreduced network and
+			// report that instead as a named station will mean
+			// more to the user trying to understand where the
+			// problem is.
+			//
+			// There should always be such a station, but if there
+			// isn't or we fail to find it, we'll report the file
+			// and line number which is still useful, e.g.
+			//
+			// foo.svx:16: info: anonymous station
+			name_to_report = find_non_anon_stn(stn)->name;
+		    }
+		    break;
+		}
+	    }
+	    if (!stn) {
+		// The reduced network in stnlist only contains invented
+		// stations (e.g. from delta-star transforms) - these have
+		// no name and no location so these aren't useful to report.
+		// Skip reporting a station and start walking from the head
+		// of stnlist.
+		//
+		// In this situation we try to find a named station from
+		// looking at the stacked delta-star reductions.
+		// network or should we try to find a named neighbour?
+		stn = stnlist;
+		name_to_report = find_non_invented_stn(stn)->name;
+	    }
+
+	    if (!name_to_report) name_to_report = stn->name;
+
+	    // If we somehow still only have an invented station, don't try
+	    // to report it as it isn't useful.
+	    if (name_to_report->filename) {
+		SVX_ASSERT(!TSTBIT(name_to_report->sflags, SFLAGS_HANGING));
+		name_to_report->sflags |= BIT(SFLAGS_HANGING);
+		if (!fNotAttached) {
+		    fNotAttached = true;
+		    /* TRANSLATORS: Here "station" is a survey station, not a
+		     * train station. */
+		    puts(msg(/*The following survey stations are not attached to a fixed point:*/71));
+		}
+		printf("%s:%d: %s: ",
+		       name_to_report->filename,
+		       name_to_report->line,
+		       msg(/*info*/485));
+		print_prefix(name_to_report);
+		putnl();
+	    }
+
 	    int back = -1; // Dummy value that won't match a real direction.
 	    unsigned long tos = 0;
 

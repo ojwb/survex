@@ -1,6 +1,6 @@
 /* network.h
  * SURVEX Network reduction routines
- * Copyright (C) 1994,2001 Olly Betts
+ * Copyright (C) 1994,2001,2026 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,3 +19,11 @@
 
 void remove_subnets(void);
 void replace_subnets(void);
+
+/* Try to find a non-invented station in the same component as stn.
+ *
+ * This hunts through the stacked delta-star transforms to find the
+ * one which created stn.  If it finds one it returns a real station
+ * from amongst the 3 that were removed (assuming there is one).
+ */
+node *find_non_invented_stn(node *stn);

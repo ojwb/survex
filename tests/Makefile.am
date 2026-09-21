@@ -143,6 +143,8 @@ badopts.srv badopts.out\
 badreadings.srv badreadings.out\
 unknowndirective.srv unknowndirective.out\
 dot17.svx dot17.pos 3dcorner.svx 3dcorner.pos\
+complexhanging.svx complexhanging.out\
+inventedhanging.svx inventedhanging.out\
 nosurveyhanging.svx nosurveyhanging.out\
 nosurveyhanging2.svx nosurveyhanging2.dump nosurveyhanging2.out\
 cmd_solve_hanging.svx passage.svx hanging_lrud.svx\

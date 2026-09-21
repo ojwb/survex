@@ -743,3 +743,44 @@ skip:;
       free(ptrOld);
    }
 }
+
+node *
+find_non_invented_stn(node *stn)
+{
+    if (stn->name->filename) {
+	// stn is not an invented station!
+	return stn;
+    }
+
+down_the_rabbit_hole:
+    for (reduction* p = reduction_stack; p; p = p->next) {
+	if (p->type != TYPE_DELTASTAR) continue;
+
+	/* work out ends as we don't bother stacking them */
+	linkfor *leg = reverse_leg(p->join[0]);
+	node* stn0 = leg->l.to;
+	node* stnZ = stn0->leg[reverse_leg_dirn(leg)]->l.to;
+
+	if (stnZ != stn) continue;
+
+	// We've found the delta-star transform which created stn, so
+	// now check the removed stations for a non-invented one.
+	if (stn0->name->filename) return stn0;
+
+	node* stn1 = stnZ->leg[1]->l.to;
+	if (stn1->name->filename) return stn1;
+
+	node* stn2 = stnZ->leg[2]->l.to;
+	if (stn2->name->filename) return stn2;
+
+	// Argh, all 3 removed stations are also invented!  Look for a
+	// real station via one of them.  We're peeling back a layer
+	// each time so this process should terminate and find a non-invented
+	// station.
+	stn = stn0;
+	goto down_the_rabbit_hole;
+    }
+
+    // It seems stn was not created by a delta-star transform?!
+    return stn;
+}

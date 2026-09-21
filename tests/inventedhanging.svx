@@ -1,0 +1,29 @@
+; pos=no warn=1
+*case preserve
+
+A B 1 0 0
+A C 1 0 0
+B C 1 0 0
+B D 1 0 0
+C E 1 0 0
+D F 1 0 0
+D G 1 0 0
+E F 1 0 0
+E G 1 0 0
+F G 1 0 0
+
+
+a b 1 0 0
+a c 1 0 0
+b c 1 0 0
+b d 1 0 0
+c e 1 0 0
+d f 1 0 0
+d g 1 0 0
+e f 1 0 0
+e g 1 0 0
+f g 1 0 0
+
+A a 1 0 0
+
+*fix Z reference 0 0 0

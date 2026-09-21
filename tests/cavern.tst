@@ -99,6 +99,7 @@ TESTS_=
  notentranceorexport inferunknown inferexports bad_units_factor\
  bad_units_qlist\
  percent_gradient dotinsurvey leandroclino lowsd revdir gettokennullderef\
+ complexhanging inventedhanging\
  nosurveyhanging nosurveyhanging2\
  cmd_solve_nothing cmd_solve_nothing_implicit\
  cmd_cartesian cmd_cartesian_bad\
