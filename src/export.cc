@@ -754,7 +754,7 @@ class PLT : public ExportFilter {
     void footer() override;
 };
 
-PLT::PLT(const char * input_datum) 
+PLT::PLT(const char * input_datum)
 {
     if (!input_datum || input_datum[0] == '\0') return;
 

@@ -68,5 +68,5 @@ main(int argc, char **argv)
 		      NULL, NULL, &startup_info, &process_info) == 0) {
        return 1;
    }
-   return 0; 
+   return 0;
 }
