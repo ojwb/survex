@@ -34,7 +34,7 @@
 #include <time.h>
 
 #ifdef _WIN32
-# include <io.h> // For _commit().
+# include <io.h> /* For _commit(). */
 #endif
 
 #include "img.h"
@@ -42,7 +42,7 @@
 #if defined HAVE_STDINT_H || \
     (defined __STDC_VERSION__ && __STDC_VERSION__ >= 199901L) || \
     (defined __cplusplus && __cplusplus >= 201103L)
-// stdint.h was added in C99 and C++11.
+/* stdint.h was added in C99 and C++11. */
 # include <stdint.h>
 # define INT32_T int32_t
 # define UINT32_T uint32_t
@@ -83,7 +83,7 @@ static int my_snprintf(char *s, size_t size, const char *format, ...) {
 }
 #endif
 
-// strdup() is POSIX but not in any C/C++ standard (yet at least).
+/* strdup() is POSIX but not in any C/C++ standard (yet at least). */
 #ifdef HAVE_STRDUP
 # define STRDUP(STR) strdup(STR)
 #else
@@ -323,9 +323,10 @@ mktime_with_tz(struct tm * tm, const char * tz)
 	r = mktime(tm);
 	tm->tm_year = y;
 	if (r != (time_t)-1) {
-	    // The two magic numbers are the average number of seconds in a
-	    // year for a 400 year cycle and for a 4 year cycle (one which
-	    // includes a leap year).
+	    /* The two magic numbers are the average number of seconds in a
+	     * year for a 400 year cycle and for a 4 year cycle (one which
+	     * includes a leap year).
+	     */
 	    r -= y_offset * (time_t)(sizeof(time_t) > 4 ? 31556952 : 31557600);
 	}
     }
@@ -690,8 +691,9 @@ initialise_survey_filter(img *pimg, const char* survey)
 static int
 compass_plt_open(img *pimg, const char *survey)
 {
-    // Format documentation:
-    // https://www.fountainware.com/compass/HTML_Help/Compass_Viewer/plotfileformat.htm
+    /* Format documentation:
+     * https://www.fountainware.com/compass/HTML_Help/Compass_Viewer/plotfileformat.htm
+     */
     int utm_zone = 0;
     int datum = img_DATUM_UNKNOWN;
     long fpos;
@@ -1144,7 +1146,7 @@ cmap_xyz_open(img *pimg, const char *survey)
 	}
     }
 bad_cmap_date:
-    // The first line either has a survey name or some stock text.
+    /* The first line either has a survey name or some stock text. */
     if (strncmp(line, "  Cave Survey Data Processed by CMAP ",
 		LITLEN("  Cave Survey Data Processed by CMAP ")) != 0) {
 	if (len > 45) {
@@ -2929,22 +2931,23 @@ bad_plt_date:
 		   }
 		   q += bytes_used;
 
-		   // No cross-sections for surface data.
+		   /* No cross-sections for surface data. */
 		   if ((pimg->flags & img_SFLAG_UNDERGROUND)) {
 		       int have_xsect = 0;
 		       int i;
 		       for (i = 0; i < 4; ++i) {
-			   // The PLT format specification says 'Values less
-			   // than zero are considered to be missing or
-			   // “Passage.”' but Compass has an (apparently
-			   // undocumented) extra check here for compatibility
-			   // with data that was originally entered in Karst
-			   // which uses 999 instead.
-			   //
-			   // Larry Fish says the check Compass actually uses
-			   // when processing PLT files is:
-			   //
-			   // if (Left<0) or (Left>900)
+			   /* The PLT format specification says 'Values less
+			    * than zero are considered to be missing or
+			    * “Passage.”' but Compass has an (apparently
+			    * undocumented) extra check here for compatibility
+			    * with data that was originally entered in Karst
+			    * which uses 999 instead.
+			    *
+			    * Larry Fish says the check Compass actually uses
+			    * when processing PLT files is:
+			    *
+			    * if (Left<0) or (Left>900)
+			    */
 			   if (dim[i] < 0.0 || dim[i] > 900.0) {
 			       dim[i] = -1.0;
 			   } else {
@@ -3099,7 +3102,7 @@ out_of_memory_error:
 	 if (r < 0)
 	     goto out_of_memory_error;
 	 if (r > 0) {
-	     // We've already emitted img_LABEL for this station.
+	     /* We've already emitted img_LABEL for this station. */
 	     goto cmap_xyz_next_line;
 	 }
 	 read_xyz_station_coords(p, line);
@@ -3135,7 +3138,7 @@ out_of_memory_error:
 	    if (r < 0)
 		goto out_of_memory_error;
 	    if (r > 0) {
-		// We've already emitted img_LABEL for this station.
+		/* We've already emitted img_LABEL for this station. */
 		free(line);
 		pimg->label[0] = '\0';
 		pimg->flags = 0;
@@ -3153,7 +3156,7 @@ out_of_memory_error:
 	    if (r < 0)
 		goto out_of_memory_error;
 	    if (r > 0) {
-		// We've already emitted img_LABEL for this station.
+		/* We've already emitted img_LABEL for this station. */
 		free(line);
 		pimg->label = pimg->label_buf + strlen(pimg->label_buf);
 		pimg->flags = 0;
@@ -3171,7 +3174,7 @@ out_of_memory_error:
 	     goto out_of_memory_error;
 	 memcpy(pimg->label + 16, line, 70);
 	 if (r > 0) {
-	     // We've already emitted img_LABEL for this station.
+	     /* We've already emitted img_LABEL for this station. */
 	     free(line);
 	     pimg->label = pimg->label_buf + strlen(pimg->label_buf);
 	     pimg->flags = 0;
@@ -3703,7 +3706,7 @@ img_close(img *pimg)
 	 if (FERROR(pimg->fh)) result = 0;
 	 if (pimg->close_func) {
 #ifdef _WIN32
-	     // Untested attempt to address https://trac.survex.com/ticket/147
+	     /* Untested attempt to address https://trac.survex.com/ticket/147 */
 	     if (result && !pimg->fRead) _commit(fileno(pimg->fh));
 #endif
 	     if (pimg->close_func(pimg->fh))
