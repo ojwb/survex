@@ -136,6 +136,7 @@ walls.srv walls.out walls.dump\
 wallsbaddatum.out wallsbaddatum.wpj\
 wallsdecl.wpj wallsdecl.srv wallsdecl.out wallsdecl.dump\
 wallsdiving.srv wallsdiving.dump wallsdiving.out\
+wallshtie.wpj wallshtie.dump wallshtie.out wallshtie.srv\
 baddate.srv baddate.out\
 badomit.srv badomit.out\
 badopts.srv badopts.out\

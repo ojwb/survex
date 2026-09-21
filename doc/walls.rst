@@ -152,7 +152,7 @@ features are likely to be handled while more obscure features may not be.
   + An SD of 0 is currently treated as 1mm (approximately 0.04 inches).
   + Floating a leg both horizontally and vertically (with ``?``) replaces it
     with a "nosurvey" leg, which is effectively the same provided both ends
-    of the leg are attached to fixed points.
+    of the leg are attached to fixed points.  Supported since Survex 1.4.23.
   + Floating a leg either horizontally or vertically (with ``?``) uses an SD of
     1000m in that direction instead of actually decoupling the connection.
   + Floating the traverse containing a leg (with ``*``) currently just floats

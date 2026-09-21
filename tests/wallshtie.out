@@ -1,0 +1,24 @@
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Approximate full range of grid convergence: 0.9dg at C1598:US6 to 0.9dg at C1598:WSS14
+Survey contains 10 survey stations, joined by 9 legs.
+There are 0 loops.
+Total length of survey legs =  100.16m ( 100.16m adjusted)
+Total plan length of survey legs =   99.38m
+Total vertical length of survey legs =    5.91m
+Vertical range = 2.35m (from C1598:WSS16 at 2.14m to C1598:US6 at -0.21m)
+North-South range = 62.21m (from C1598:WSS21 at 4157814.17m to C1598:WSS14 at 4157751.96m)
+East-West range = 61.79m (from C1598:WSS14 at 632084.57m to C1598:US6 at 632022.78m)

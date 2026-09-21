@@ -4682,7 +4682,7 @@ read_walls_extras(unsigned long* p_compass_dat_flags)
 	skipblanks();
 	switch (ch) {
 	  case '(': {
-	    real var_xy = HUGE_REAL, var_z = HUGE_REAL;
+	    real var_xy = 0.0, var_z = 0.0;
 	    read_walls_variance_overrides(&var_xy, &var_z);
 	    // For now don't allow 0 variance, make it 1mm instead.  FIXME We
 	    // really should check connectivity before allowing 0.

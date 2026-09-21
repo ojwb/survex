@@ -1,0 +1,49 @@
+; "?" for vertical variances causes station to be excluded from network
+; Joe Walko 2026-09-18 Survex test data
+
+
+#[  Relevant survex warnings:
+Simplifying network...
+cavern: warning: Survey not all connected to control points
+The following survey stations are not attached to a control point:
+..\walls_test_data\TEST3.srv:42: info: C1598:XYZZY
+
+#]
+
+;#######################
+#DATE 2026-09-18
+
+; Project-wide compile option in real data; but single test SRV here, hence here in SRV as #UNITS for visibility
+
+#Units Order=NE
+
+#FIX LS1DIVE	N37.55736	W85.50463		/Sump 1
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; FSB 1598	LOG: Upstream Sumps
+;
+#Date 2019-09-15
+#Prefix C1598
+#Units feet order=dav case=u
+#units decl=0.0 inca=-4.45 incab=-4.45 incv=0 incvb=0  LRUD=F  ;
+
+
+
+; Beacon tie-ins
+WSS17	xyzzy	0	0	0	(0,?)
+
+#UNITS feet ORDER=DAV
+WSS14	WSS16	11.7	319.9	17.4					;==> WSS16 = "Dive Line 3"
+WSS16	WSS17	14.5	295.8	-29.0	*5	8	1	7*	;==> WSS17 = LS1DIVE Radio location
+WSS17	WSS18	74.9	342.2	-0.1	*8	8	5	0*
+WSS18	WSS19	52	307.7	1.5	*15	0	1	5*
+WSS19	WSS20	76.9	319.4	-1.1	*12	2	0	6*
+WSS20	WSS21	43.5	339.6	3.6	*0	12	2	5*
+WSS21	US6	55.1	229	-3.3	*10	6	0	6*
+
+;	==>	Tie to :LS1DIVE Radio location, which is approximately above the upstream end of Sump 1
+;		See GPSLOC file for Lat/Long
+WSS17	:LS1DIVE	0	0	0
