@@ -398,8 +398,6 @@ articulate(void)
 	    // If we somehow still only have an invented station, don't try
 	    // to report it as it isn't useful.
 	    if (name_to_report->filename) {
-		SVX_ASSERT(!TSTBIT(name_to_report->sflags, SFLAGS_HANGING));
-		name_to_report->sflags |= BIT(SFLAGS_HANGING);
 		if (!fNotAttached) {
 		    fNotAttached = true;
 		    /* TRANSLATORS: Here "station" is a survey station, not a

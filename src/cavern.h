@@ -148,7 +148,6 @@ typedef enum {
    SFLAGS_SURFACE = 0, SFLAGS_UNDERGROUND, SFLAGS_ENTRANCE, SFLAGS_EXPORTED,
    SFLAGS_FIXED, SFLAGS_ANON, SFLAGS_WALL,
    /* These values don't need to match img.h, but mustn't clash. */
-   SFLAGS_HANGING = 9,
    SFLAGS_USED = 10, // Warn unused fixed point if unset but SFLAGS_FIXED set.
    SFLAGS_SOLVED = 11,
    SFLAGS_SUSPECTTYPO = 12,
