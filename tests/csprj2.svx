@@ -1,4 +1,4 @@
-; pos=yes warn=0
+; pos=dump warn=0
 ; Test that *cs file FILENAME assumes a .prj extension if the name as given
 ; doesn't exist, that the filename can be quoted, and that a description
 ; written on a single line (as ESRI .prj files are) works.

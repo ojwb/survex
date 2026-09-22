@@ -1,4 +1,4 @@
-; pos=yes warn=0
+; pos=dump warn=0
 ; Test *cs file FILENAME, which reads the coordinate system from a separate
 ; file.  Here that's a low distortion projection for a cave, written as WKT
 ; over several lines - a PROJ string can't express the datum it's based on.
