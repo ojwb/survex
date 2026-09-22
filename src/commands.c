@@ -2533,32 +2533,30 @@ read_cs_from_file(const char *fnm, const filepos *fp)
    /* s_clear() gives cs a buffer, which s_steal() needs even for an empty
     * file. */
    s_clear(&cs);
-   string blanks = S_INIT;
-   bool line_break = false;
+   int last_nonblank = 0;
+   bool start_of_line = true;
    for (int c = GETC(fh); c != EOF; c = GETC(fh)) {
-      if (c == '\n' || c == '\r') {
-	 line_break = true;
-	 s_clear(&blanks);
-	 continue;
-      }
       if (c == ' ' || c == '\t') {
-	 /* Only keep blanks which turn out to be between two non-blanks on
-	  * the same line. */
-	 if (cs.len) s_appendch(&blanks, c);
+	 // Drop blanks which follow a newline.
+	 if (!start_of_line) s_appendch(&cs, c);
 	 continue;
       }
-      if (cs.len) {
-	 if (line_break) {
-	    s_appendch(&cs, ' ');
-	 } else {
-	    s_appends(&cs, &blanks);
+      if (c == '\n' || c == '\r') {
+	 if (!start_of_line) {
+	     // Discard blanks back to the last non-blank and replace
+	     // the newline with a space unless we're still at the start of
+	     // the string.
+	     s_truncate(&cs, last_nonblank);
+	     if (s_len(&cs)) s_appendch(&cs, ' ');
+	     start_of_line = true;
 	 }
+	 continue;
       }
-      s_clear(&blanks);
-      line_break = false;
+      start_of_line = false;
       s_appendch(&cs, c);
+      last_nonblank = s_len(&cs);
    }
-   s_free(&blanks);
+   s_truncate(&cs, last_nonblank);
 
    if (FERROR(fh))
       fatalerror_in_file(fnm_used, 0, /*Error reading file*/18);
