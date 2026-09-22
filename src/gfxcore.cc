@@ -1418,6 +1418,8 @@ void GfxCore::DrawScaleBar()
 
 bool GfxCore::CheckHitTestGrid(const wxPoint& point, bool centre)
 {
+    if (!m_HaveData) return false;
+
     if (Animating()) return false;
 
     if (point.x < 0 || point.x >= GetXSize() ||
