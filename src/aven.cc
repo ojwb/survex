@@ -45,6 +45,7 @@
 // the header seems to be missing).
 #include <wx/display.h>
 #endif
+#include <wx/uilocale.h>
 
 #ifdef __WXMSW__
 #include <windows.h>
@@ -239,19 +240,18 @@ int main(int argc, char **argv)
 
 bool Aven::OnInit()
 {
+    wxUILocale::UseDefault();
+
     wxLog::SetActiveTarget(new MyLogWindow());
 
     {
-	// Suppress message box warnings about messages not found.
-	wxLogNull logNo;
-	wxLocale *loc = new wxLocale();
-	loc->AddCatalogLookupPathPrefix(wmsg_cfgpth());
-	wxString msg_lang_str(msg_lang, wxConvUTF8);
-	const char *lang = msg_lang2 ? msg_lang2 : msg_lang;
-	wxString lang_str(lang, wxConvUTF8);
-	loc->Init(msg_lang_str, lang_str, msg_lang_str);
-	// The existence of the wxLocale object is enough - no need to keep a
-	// pointer to it!
+#ifndef __WXGTK__
+	wxFileTranslationsLoader::AddCatalogLookupPathPrefix(wmsg_cfgpth());
+#endif
+	wxTranslations* t = new wxTranslations();
+	t->AddStdCatalog();
+	t->SetLanguage(wxString(msg_lang, wxConvUTF8));
+	wxTranslations::Set(t);
     }
 
     const char* opt_survey = NULL;
