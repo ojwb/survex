@@ -1,8 +1,10 @@
-; pos=fail warn=0 error=4
+; pos=fail warn=0 error=5
 ; Test errors from *cs file FILENAME.
 *cs out FILE nosuchfile.prj
 ; PROJ rejects a description which starts with a UTF-8 "BOM".
 *cs out FILE csprjbom.prj
+; Test error when the projection isn't suitable for output.
+*cs out file csprj6318.json
 ; Junk after the filename is reported as such, not as an unknown coordinate
 ; system.
 *cs FILE "csprj.prj"x

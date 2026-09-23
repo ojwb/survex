@@ -4,10 +4,13 @@
 ./csprjbad.svx:5:14: error: Invalid coordinate system: Invalid PROJ string syntax
  *cs out FILE csprjbom.prj
               ^~~~~~~~~~~~
-./csprjbad.svx:8:21: error: End of line not blank
+./csprjbad.svx:7:14: error: Coordinate system unsuitable for output
+ *cs out file csprj6318.json
+              ^~~~~~~~~~~~~~
+./csprjbad.svx:10:21: error: End of line not blank
  *cs FILE "csprj.prj"x
                      ^
-./csprjbad.svx:11: error: The input projection is set but the output projection isn't
+./csprjbad.svx:13: error: The input projection is set but the output projection isn't
  *fix entrance -86.0905 37.1966 200
 
 Removing trailing traverses...
@@ -33,4 +36,4 @@ Vertical range = 2.61m (from entrance at 200.00m to a at 197.39m)
 North-South range = 0.00m (from a at 37.20m to a at 37.20m)
 East-West range = 29.89m (from a at -56.20m to entrance at -86.09m)
 
-There were 0 warning(s) and 4 error(s) - no output files produced.
+There were 0 warning(s) and 5 error(s) - no output files produced.
