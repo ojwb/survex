@@ -49,4 +49,10 @@
 ./badopts.srv:5:29: error: Expecting "IS", "IT", "SS", or "ST"
  #units tape=SI tape=TS tape=
                              ^
+./badopts.srv:7:8: error: Expecting string field
+ #note 1
+        ^
+./badopts.srv:8:9: error: Expecting string field
+ #note 2 ; Should error for this too
+         ^
 cavern: error: No survey data

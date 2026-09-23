@@ -3159,12 +3159,19 @@ read_flagged_stations:
 	    break;
 	  }
 	  case WALLS_CMD_NOTE: {
-	    // A text note attached to a station - ignore for now except we
-	    // read the station name and count this as a use so suppress
-	    // "unused fixed point" warnings.
+	    // A text note attached to a station - we check the directive
+	    // is valid and mark the station as used (so `#note` will suppress
+	    // "unused fixed point" warnings) but we don't currently store the
+	    // note.
 	    prefix *name = read_walls_station(p_walls_options->prefix,
 					      false, NULL);
 	    name->sflags |= BIT(SFLAGS_USED);
+	    skipblanks();
+	    if (isComm(ch) || isEol(ch)) {
+		// Walls gives an error for an empty note.
+		compile_diagnostic(DIAG_ERR|DIAG_COL,
+				   /*Expecting string field*/121);
+	    }
 	    skipline();
 	    break;
 	  }

@@ -109,7 +109,7 @@ U22 U23 5 90/270.5 -5 -0i4 <3,0,8,6>
 U23 *8 5 15 3.58
 U23 *8 2 3 4 ; Should not warn because `*8` is a known station now.
 U23 <8 5 15 3.58
-#note *1 ; Suppress Survex warning
+#note *1 - ; Suppress Survex warning
 U23 *1 2 3 4 ; Should not warn because `*1` is a known station.
 ; Test examples from Walls_Help_HTML/suffixes.htm
 U23 suf1a 10.5f 100.5g 45d <-.5m,10.5f,10i6.5,i6>
