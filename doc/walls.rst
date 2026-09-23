@@ -97,7 +97,7 @@ features are likely to be handled while more obscure features may not be.
   which will usually succeed without errors or warnings.  A real-world example
   is::
 
-    P25     *8 5 16 3.58
+    P25     *8 5 15 3.58
 
   Survex parses this like Walls does, but issues a warning::
 
@@ -111,7 +111,7 @@ features are likely to be handled while more obscure features may not be.
   dummy ``#NOTE`` directive before the line of data like so::
 
     #note *8 ; Suppress Survex warning that this looks like broken LRUD
-    P25     *8 5 16 3.58
+    P25     *8 5 15 3.58
 
 - In Europe a comma is customarily used for the decimal point.  Walls ``.svy``
   format treats comma (``,``) like a space and allows optional instrument and
