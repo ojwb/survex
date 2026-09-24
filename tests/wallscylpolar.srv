@@ -1,0 +1,30 @@
+; pos=dump warn=0 dummycrprotection=
+#units m
+#units save
+#UNITS ORDER=DA
+4	5	4.00	225	0m	<0.5,0.5,3,1.5>
+5	6	3.00	270	-1.5m	<0.7,0.8,4,3>
+6	7	4.00	315	-4m	<1.5,0,4,1.5>
+7	8	5.00	000	-4m	<0.2,0.3,10,1.5>
+#units restore
+#units save
+#units order=ad
+4	5a	225	4.00	0m	<0.5,0.5,3,1.5>
+5a	6a	270	3.00	-1.5m	<0.7,0.8,4,3>
+6a	7a	315	4.00	-4m	<1.5,0,4,1.5>
+7a	8a	000	5.00	-4m	<0.2,0.3,10,1.5>
+#units restore
+#units tape=ST
+#units save
+#units order=da tape=IT
+4	5b	4.00	225	0m	<0.5,0.5,3,1.5>
+5b	6b	3.00	270	-1.5m	<0.7,0.8,4,3>
+6b	7b	4.00	315	-4m	<1.5,0,4,1.5>
+7b	8b	5.00	000	-4m	<0.2,0.3,10,1.5>
+#units restore
+#units save
+#units tape=IT order=AD
+4	5c	225	4.00	0m	<0.5,0.5,3,1.5>
+5c	6c	270	3.00	-1.5m	<0.7,0.8,4,3>
+6c	7c	315	4.00	-4m	<1.5,0,4,1.5>
+7c	8c	000	5.00	-4m	<0.2,0.3,10,1.5>

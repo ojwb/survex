@@ -237,13 +237,19 @@ features are likely to be handled while more obscure features may not be.
 
 - Since Survex 1.4.21, the ``TAPE=`` option is checked for validity, and
   the combination of ``TAPE=SS`` with ``ORDER=DA`` or ``ORDER=AD`` is mapped to
-  diving data, since the Walls manual says "In the SRV data format, underwater
-  vectors are defined by compass and tape (CT) data lines in which the taping
-  method is station-to-station (#UNITS Order=DA Tape=SS) and the
-  instrument/target "heights" are actually station depths (expressed as
-  positive values) below the water's surface.  In effect, both instrument and
-  target are treated as if they were at the surface, where the inclination can
-  be assumed zero.".  Other combinations of ``TAPE=`` and ``ORDER=`` are
+  diving data, since the Walls manual says:
+
+    In the SRV data format, underwater vectors are defined by compass and tape
+    (CT) data lines in which the taping method is station-to-station (#UNITS
+    Order=DA Tape=SS) and the instrument/target "heights" are actually station
+    depths (expressed as positive values) below the water's surface.  In
+    effect, both instrument and target are treated as if they were at the
+    surface, where the inclination can be assumed zero.
+
+  Since Survex 1.4.23, the combination of ``TAPE=IT`` with ``ORDER=DA`` or
+  ``ORDER=AD`` is mapped to Survex's "cylpolar" data style.
+
+  Other combinations of ``TAPE=`` and ``ORDER=`` are
   currently not implemented and instrument heights are parsed but ignored;
   instrument and target are assumed to be on their respective stations (or
   offset from them by the same amount).

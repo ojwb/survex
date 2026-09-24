@@ -1771,6 +1771,13 @@ walls_update_data_order(void)
 	    style = STYLE_DIVING;
 	    *p++ = WallsSRVFrDepth;
 	    *p++ = WallsSRVToDepth;
+	} else if (p_walls_options->tape_method == WALLS_TAPE_IT &&
+		   (p - p_walls_options->data_order) == 4) {
+	    // `TAPE=IT ORDER=DA` or `TAPE=IT ORDER=AD` is equivalent to
+	    // Survex's cylpolar style.
+	    style = STYLE_CYLPOLAR;
+	    *p++ = WallsSRVFrDepth;
+	    *p++ = WallsSRVToDepth;
 	} else {
 	    *p++ = WallsSRVHeights;
 	}

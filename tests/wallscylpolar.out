@@ -1,0 +1,24 @@
+./wallscylpolar.srv:5:1: info: Survey has no fixed points. Therefore I've fixed 4 at (0,0,0)
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 17 survey stations, joined by 16 legs.
+There are 0 loops.
+Total length of survey legs =   77.66m (  77.66m adjusted)
+Total plan length of survey legs =   64.00m
+Total vertical length of survey legs =   38.00m
+Vertical range = 9.50m (from 5c at 0.00m to 8c at -9.50m)
+North-South range = 7.83m (from 8c at 5.00m to 6c at -2.83m)
+East-West range = 8.66m (from 4 at 0.00m to 8c at -8.66m)

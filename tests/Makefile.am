@@ -134,6 +134,7 @@ folder.mak subdir/cave1a.dat subdir/cave1b.dat subdir/subsubdir/cave2.dat\
 utm.mak utm.out utm.dump\
 walls.srv walls.out walls.dump\
 wallsbaddatum.out wallsbaddatum.wpj\
+wallscylpolar.srv wallscylpolar.dump wallscylpolar.out\
 wallsdecl.wpj wallsdecl.srv wallsdecl.out wallsdecl.dump\
 wallsdiving.srv wallsdiving.dump wallsdiving.out\
 wallshtie.wpj wallshtie.dump wallshtie.out wallshtie.srv\
