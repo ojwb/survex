@@ -2187,6 +2187,7 @@ convert_compass_dat_flags(unsigned long compass_dat_flags)
 static void
 walls_get_option_token(void)
 {
+    skipblanks();
     s_clear(&token);
     s_clear(&uctoken);
     if (ch == '"') {
@@ -2219,10 +2220,9 @@ walls_parse_options(void)
     // doing so until after we've parsed a set of options to avoid some
     // redundant calls.
     bool update_data_order = false;
-    skipblanks();
-    while (!isEol(ch)) {
+    while (true) {
 	walls_get_option_token();
-	if (s_empty(&token) && isComm(ch)) {
+	if (s_empty(&token) && (isComm(ch) || isEol(ch))) {
 	    break;
 	}
 	filepos fp_option;
@@ -2687,8 +2687,6 @@ walls_parse_options(void)
 //		pcs->z[Q_BACKBEARING] = pcs->z[Q_BEARING] = -rad(read_numeric(false));
 //		pcs->z[Q_BACKGRADIENT] = pcs->z[Q_GRADIENT] = -rad(read_numeric(false));
 //		pcs->z[Q_LENGTH] = -METRES_PER_FOOT * read_numeric(false);
-
-	skipblanks();
     }
 
     if (update_data_order) walls_update_data_order();
