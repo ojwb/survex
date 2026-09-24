@@ -55,4 +55,32 @@
 ./badopts.srv:8:9: error: Expecting string field
  #note 2 ; Should error for this too
          ^
-cavern: error: No survey data
+./badopts.srv:10:20: error: Expecting ">"
+ 1 2 3 64 5 <1,2,3,4;>
+                    ^
+./badopts.srv:7:6: info: Survey has no fixed points. Therefore I've fixed 1 at (0,0,0)
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 2 survey stations, joined by 1 leg.
+There are 0 loops.
+Total length of survey legs =    3.00m (   3.00m adjusted)
+Total plan length of survey legs =    2.99m
+Total vertical length of survey legs =    0.26m
+Vertical range = 0.26m (from 2 at 0.26m to 1 at 0.00m)
+North-South range = 1.31m (from 2 at 1.31m to 1 at 0.00m)
+East-West range = 2.69m (from 2 at 2.69m to 1 at 0.00m)
+
+There were 0 warning(s) and 20 error(s) - no output files produced.

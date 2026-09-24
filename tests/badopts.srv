@@ -1,4 +1,4 @@
-; pos=fail err=8 warn=0 dummycrprotection=
+; pos=fail err=9 warn=0 dummycrprotection=
 #units save restore restore restore ; `restore` without corresponding `save`
 #units D=bad a=bad a=bad ab=bad v=bad vb=bad s=bad
 #units odrer=dav ract order=bad typeab=bad typevb=bad
@@ -6,3 +6,7 @@
 ; Walls gives an error for an empty `#note`.
 #note 1
 #note 2 ; Should error for this too
+; This should error, but Survex < 1.4.23 failed to check for a comment here:
+1 2 3 64 5 <1,2,3,4;>
+; FIXME: Walls gives error "Bad angle or azimuth qty" on the second `<`.
+; 1 <8 3 64 5 <1,2,3,4>

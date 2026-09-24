@@ -113,6 +113,18 @@ features are likely to be handled while more obscure features may not be.
     #note *8 - ; Suppress Survex warning that this looks like broken LRUD
     P25     *8 5 15 3.58
 
+  An alternative way to suppress this warning which works in Survex 1.4.23 and
+  later is to put LRUD with all readings omitted on the leg)::
+
+    P25     *8 5 15 3.58   <--,--,--,-->
+
+  Walls parsing of cases where the LRUD has the same delimiter type as appears
+  in the station name is quirky, so we recommend using the other delimiter
+  (which also seems clearer), so for ``<`` at the start of the to station name
+  use::
+
+    P25     <8 5 15 3.58   *--,--,--,--*
+
 - In Europe a comma is customarily used for the decimal point.  Walls ``.svy``
   format treats comma (``,``) like a space and allows optional instrument and
   target heights on each survey leg which can result in the data meaning

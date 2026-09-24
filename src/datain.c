@@ -4662,7 +4662,7 @@ static void
 read_walls_lrud(void)
 {
     int end = (ch == '*' ? ch : '>');
-    while (nextch() != end && !isEol(ch)) {
+    while (nextch() != end && !isComm(ch) && !isEol(ch)) {
 	// FIXME: Process LRUD.
     }
     if (ch == end) {
@@ -4738,14 +4738,59 @@ read_walls_srv_to(prefix **p_to, unsigned long* p_compass_dat_flags)
     get_pos(&fp);
     bool might_be_lrud = (ch == '*' || ch == '<');
     if (might_be_lrud) {
-	// Isolated LRUD if there's a closing delimiter.  If not then
-	// Walls parses the `*` or `<` as the first character of the `To`
-	// station name.
-	int end = (ch == '*' ? ch : '>');
-	do {
-	    nextch();
-	} while (ch != end && !isComm(ch) && !isEol(ch));
-	bool parse_as_lrud = (ch == end);
+	// Isolated LRUD if there's a closing delimiter, e.g.:
+	// P25      *8 5 15 3.58*
+	// P25      <8 5 15 3.58>
+	//
+	// Just a station if there's actual LRUD, e.g.:
+	// P25      *8 5 15 3.58 <--,--,--,-->
+	// P25      *8 5 15 3.58 *--,--,--,--*
+	// P25      <8 5 15 3.58 *--,--,--,--*
+	//
+	// Otherwise Walls parses the `*` or `<` as the first character of the
+	// `To` station name, including for:
+	// P25      <8 5 15 3.58 <--,--,--,-->
+	bool parse_as_lrud = false;
+	if (ch == '*') {
+	    do {
+		nextch();
+		if (ch == '<' || ch == '*') {
+		    int delimiter1 = ch;
+		    int check_for = (ch == '*' ? ch : '>');
+		    do {
+			nextch();
+			if (ch == check_for) {
+			    // There's actual LRUD after the readings.
+			    might_be_lrud = false;
+			    goto parse_as_station;
+			}
+		    } while (!isComm(ch) && !isEol(ch));
+		    parse_as_lrud = (delimiter1 == '*');
+		    break;
+		}
+	    } while (!isComm(ch) && !isEol(ch));
+	} else {
+	    SVX_ASSERT(ch == '<');
+	    do {
+		nextch();
+		if (ch == '>') {
+		    parse_as_lrud = true;
+		    break;
+		}
+		if (ch == '*') {
+		    do {
+			nextch();
+			if (ch == '*') {
+			    // There's actual LRUD after the readings.
+			    might_be_lrud = false;
+			    goto parse_as_station;
+			}
+		    } while (!isComm(ch) && !isEol(ch));
+		}
+	    } while (!isComm(ch) && !isEol(ch));
+	}
+
+parse_as_station:
 	set_pos(&fp);
 	if (parse_as_lrud) {
 handle_isolated_lrud:
