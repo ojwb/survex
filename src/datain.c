@@ -110,14 +110,14 @@ jmp_buf jbSkipLine;
 
 bool f_export_ok;
 
-static real value[Fr - 1];
-#define VAL(N) value[(N)-1]
-static real variance[Fr - 1];
-#define VAR(N) variance[(N)-1]
-static long location[Fr - 1];
-#define LOC(N) location[(N)-1]
-static int location_width[Fr - 1];
-#define WID(N) location_width[(N)-1]
+static real reading_value[Fr - 1];
+#define VAL(N) reading_value[(N)-1]
+static real reading_variance[Fr - 1];
+#define VAR(N) reading_variance[(N)-1]
+static long reading_location[Fr - 1];
+#define LOC(N) reading_location[(N)-1]
+static int reading_location_width[Fr - 1];
+#define WID(N) reading_location_width[(N)-1]
 
 /* style functions */
 static void data_normal(void);
@@ -1749,6 +1749,28 @@ walls_initialise_settings(void)
     // Walls cartesian data is aligned to True North.
     pcs->cartesian_north = TRUE_NORTH;
     pcs->cartesian_rotation = 0.0;
+
+    // Set compass and clino variances so backsights warn above 5°, and scale
+    // the other default Survex variances by the same amount to give the same
+    // closure result.
+    real angle_variance = sqrd((5.0 + 1e-6) * (M_PI / 180.0) / 3.0) * 0.5;
+    real distance_variance = sqrd(0.05) * angle_variance / sqrd(rad(0.5));
+    pcs->Var[Q_BEARING] = angle_variance;
+    pcs->Var[Q_BACKBEARING] = angle_variance;
+    pcs->Var[Q_GRADIENT] = angle_variance;
+    pcs->Var[Q_BACKGRADIENT] = angle_variance;
+    pcs->Var[Q_POS] = distance_variance;
+    pcs->Var[Q_LENGTH] = distance_variance;
+    pcs->Var[Q_BACKLENGTH] = distance_variance;
+    pcs->Var[Q_COUNT] = distance_variance;
+    pcs->Var[Q_DX] = pcs->Var[Q_DY] = pcs->Var[Q_DZ] = distance_variance;
+    pcs->Var[Q_BEARING] = angle_variance;
+    pcs->Var[Q_GRADIENT] = angle_variance;
+    pcs->Var[Q_BACKBEARING] = angle_variance;
+    pcs->Var[Q_BACKGRADIENT] = angle_variance;
+    pcs->Var[Q_PLUMB] = angle_variance * 0.5;
+    pcs->Var[Q_LEVEL] = angle_variance * 0.5;
+    pcs->Var[Q_DEPTH] = distance_variance;
 }
 
 static void
@@ -2585,8 +2607,11 @@ walls_parse_options(void)
 	    }
 	    if (ch == ',') {
 		nextch();
-		// FIXME: Use threshold value.
-		(void)read_numeric(false);
+		// Set compass variance based on threshold.
+		real tolerance = read_numeric(false) + 1e-6;
+		real variance = sqrd(tolerance * (M_PI / 180.0) / 3.0) * 0.5;
+		pcs->Var[Q_BEARING] = variance;
+		pcs->Var[Q_BACKBEARING] = variance;
 		if (!isBlank(ch) && !isComm(ch) && !isEol(ch)) {
 		    // Walls quietly ignores junk after a valid number here.
 		    get_word();
@@ -2617,8 +2642,11 @@ walls_parse_options(void)
 	    }
 	    if (ch == ',') {
 		nextch();
-		// FIXME: Use threshold value.
-		(void)read_numeric(false);
+		// Set clino variance based on threshold.
+		real tolerance = read_numeric(false) + 1e-6;
+		real variance = sqrd(tolerance * (M_PI / 180.0) / 3.0) * 0.5;
+		pcs->Var[Q_GRADIENT] = variance;
+		pcs->Var[Q_BACKGRADIENT] = variance;
 		if (!isBlank(ch) && !isComm(ch) && !isEol(ch)) {
 		    // Walls quietly ignores junk after a valid number here.
 		    get_word();

@@ -1,0 +1,20 @@
+; pos=dump warn=8 dummycrprotection=
+#fix S1 0 0 0
+; Check default tolerance is 5° - these should warn:
+S1	  A1        20        359/184.1              2/-7.1
+A1	  A2        20        359/173.9              2/3.1
+; and these should not:
+A2	  A3        20        359/184                2/-7
+A3	  A4        20        359/174                2/3
+#units typeab=N,6
+; Should warn:
+S1        S2        30        100/286.1              /-16  ;no forward inclination
+S2        S3        15.5      355/181.1              6/0
+; Should not warn:
+S1        S2        30        100/286                /-16  ;no forward inclination
+S2        S3        15.5      355/181                6/-1
+#units typevb=N,6
+; Should warn:
+S1        Z1        10	      100/286                -12/18.1
+; Should not warn:
+Z1        Z2        10	      100/286		     -12/18

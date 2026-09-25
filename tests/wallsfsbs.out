@@ -1,0 +1,49 @@
+./wallsfsbs.srv:4:30: warning: COMPASS reading and BACKCOMPASS reading disagree by 5.1dg
+ S1   A1        20        359/184.1              2/-7.1
+                              ^~~~~
+./wallsfsbs.srv:4:51: warning: CLINO reading and BACKCLINO reading disagree by 5.1dg
+ S1   A1        20        359/184.1              2/-7.1
+                                                   ^~~~
+./wallsfsbs.srv:5:30: warning: COMPASS reading and BACKCOMPASS reading disagree by 5.1dg
+ A1   A2        20        359/173.9              2/3.1
+                              ^~~~~
+./wallsfsbs.srv:5:51: warning: CLINO reading and BACKCLINO reading disagree by 5.1dg
+ A1   A2        20        359/173.9              2/3.1
+                                                   ^~~
+./wallsfsbs.srv:11:35: warning: COMPASS reading and BACKCOMPASS reading disagree by 6.1dg
+ S1        S2        30        100/286.1              /-16  ;no forward inclination
+                                   ^~~~~
+./wallsfsbs.srv:12:35: warning: COMPASS reading and BACKCOMPASS reading disagree by 6.1dg
+ S2        S3        15.5      355/181.1              6/0
+                                   ^~~~~
+./wallsfsbs.srv:12:56: warning: CLINO reading and BACKCLINO reading disagree by 6dg
+ S2        S3        15.5      355/181.1              6/0
+                                                        ^
+./wallsfsbs.srv:18:57: warning: CLINO reading and BACKCLINO reading disagree by 6.1dg
+ S1        Z1        10       100/286                -12/18.1
+                                                         ^~~~
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 9 survey stations, joined by 10 legs.
+There are 2 loops.
+Total length of survey legs =  191.00m ( 191.00m adjusted)
+Total plan length of survey legs =  187.82m
+Total vertical length of survey legs =   27.00m
+Vertical range = 14.33m (from S3 at 9.15m to Z2 at -5.18m)
+North-South range = 86.28m (from A4 at 79.78m to S2 at -6.50m)
+East-West range = 29.49m (from S2 at 28.10m to A4 at -1.40m)
+
+There were 8 warning(s).

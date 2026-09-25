@@ -261,10 +261,12 @@ features are likely to be handled while more obscure features may not be.
   Survex < 1.4.21 just skipped over ``TAPE=`` entirely (so invalid values
   were also quietly ignored).
 
-- In ``TYPEAB=`` and ``TYPEVB=``, the threshold is ignored, as is the ``X``
-  meaning to only use foresights (but still check backsights).
-  Survex uses a threshold based on the specified instrument SDs, and
-  averages foresights and backsights.
+- ``TYPEAB=`` and ``TYPEVB=``: Since Survex 1.4.23, the backsight tolerances
+  are mapped to compass and clino SDs such that only mismatches above the
+  tolerance are warned about, with the default SDs set to match the default
+  Walls tolerance of 5°.  The ``X`` flag (which means only use foresights but
+  still check backsights) is currently ignored so foresights and backsights
+  always averaged.
 
 - ``UV=``, ``UVH=`` and ``UVV=`` are all quietly skipped.
 

@@ -120,6 +120,7 @@ TESTS_=
  wallscylpolar.srv\
  wallsdecl.wpj\
  wallsdiving.srv\
+ wallsfsbs.srv\
  wallshtie.wpj\
  wallsihth.wpj\
  passage hanging_lrud equatenosuchstn surveytypo\
