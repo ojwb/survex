@@ -1735,6 +1735,15 @@ walls_initialise_settings(void)
     // Spec says "maximum of eight characters" - we currently allow arbitrarily
     // many.
     pcs->Truncate = INT_MAX;
+    // Treat a tape measurement of zero as an equate since Walls manual says:
+    //
+    //   "Also, corrections are not applied to zero heights or distances, both
+    //   of which are allowed.  (Zero-length vectors can be defined.)"
+    //
+    // Treat a clino measurement of ±90° as a plumb since Walls manual says:
+    //
+    //   "Note that only the distance correction, INCD, will be applied to pure
+    //   vertical shots, where the inclination is +90 or -90 degrees."
     pcs->infer = BIT(INFER_EQUATES) |
 		 BIT(INFER_PLUMBS);
     // Walls cartesian data is aligned to True North.
