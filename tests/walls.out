@@ -121,11 +121,10 @@ Calculating statistics...
 Survey contains 66 survey stations, joined by 64 legs.
 There are 0 loops.
 Survey has 2 connected components.
-Total length of survey legs =  251.64m ( 251.64m adjusted)
+Total length of survey legs =  417.18m ( 417.18m adjusted)
 Total plan length of survey legs =  214.77m
-Total vertical length of survey legs =   83.82m
-Vertical range = 56.04m (from U12b at 51.00m to anonymous station at -5.04m)
-Vertical range = 55.37m (from U12b at 51.00m to 12#4 at -4.37m)
+Total vertical length of survey legs =  282.69m
+Vertical range = 57.44m (from U12b at 51.00m to suf2a at -6.44m)
 North-South range = 53.08m (from U12b at 40.00m to 12#4 at -13.08m)
 East-West range = 31.49m (from U12a at 30.00m to U1 at -1.49m)
 

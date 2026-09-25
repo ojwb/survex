@@ -1,0 +1,30 @@
+;wallsihth.srv
+
+; Joe Walko - basic IH/TH test for flat-tape (not dive) surveys
+; Note this uses standard/default TAPE=IT taping method
+
+#DATE 2026-09-19
+#Units feet order=dav order=neu case=u feet
+#units decl=0.0 inca=0 incab=0 incv=0 incvb=0 LRUD=F TAPE=IT  ; tape=it is Walls default
+#prefix flat
+
+#FIX	point	4112200m	586700m	300m
+point	x	0	0	0
+
+; shot data reflects right triangle with side-lengths of 3,4,5 and angles of 36.87, 51.13 and 90.
+;from	to	d	a	clino	ih	th
+x	a2	5	45	36.87	--	--	; PASS ; a2 should be 3-feet higher than x; xy distance should be 4-feet
+x	a3	4	45	--	3	--	; FAIL ; a3 should be 3-feet higher than x; xy distance should be 4-feet
+x	a4	4	45	--	--	-3	; FAIL ; a4 should be 3-feet higher than x; xy distance should be 4-feet
+
+;Traditional two-shot method to achieve the same end result
+x	xx	4	45	0			; PASS ;xx should have same z as x
+xx	b1	3	0	90			; PASS ;b1 should be 3-feet higher than x
+
+; Hybrid c&t shot using both clino and ih/th data
+; Shot with x (flat) distance of 4 same as above. Clino data has target 1.5ft up, which gets combined with 1.5ft ih/th data
+; to-station c1 and c2 xyz coordinates should be same as above a and b shots
+x	c1	4.27	45	20.56	1.5	--	; FAIL ; c1 should be 3-feet higher than x; xy distance should be 4-feet
+x	c2	4.27	45	20.56	1.5	--	; FAIL ; c2 should be 3-feet higher than x; xy distance should be 4-feet
+
+;

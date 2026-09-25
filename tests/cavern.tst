@@ -121,6 +121,7 @@ TESTS_=
  wallsdecl.wpj\
  wallsdiving.srv\
  wallshtie.wpj\
+ wallsihth.wpj\
  passage hanging_lrud equatenosuchstn surveytypo\
  skipafterbadomit passagebad badreadingdotplus badcalibrate calibrate_clino\
  badunits badbegin anonstn anonstnbad anonstnrev doubleinc reenterlots\

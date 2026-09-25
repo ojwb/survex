@@ -138,6 +138,7 @@ wallscylpolar.srv wallscylpolar.dump wallscylpolar.out\
 wallsdecl.wpj wallsdecl.srv wallsdecl.out wallsdecl.dump\
 wallsdiving.srv wallsdiving.dump wallsdiving.out\
 wallshtie.wpj wallshtie.dump wallshtie.out wallshtie.srv\
+wallsihth.wpj wallsihth.dump wallsihth.out wallsihth.srv\
 baddate.srv baddate.out\
 badomit.srv badomit.out\
 badopts.srv badopts.out\

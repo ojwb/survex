@@ -4497,6 +4497,9 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
 #endif
    }
 
+   // For Walls instrument and target heights.
+   dz += VAL(ToDepth);
+
 #if DEBUG_DATAIN_1
    printf("Just before addleg, vx = %f\n", vx);
 #endif
@@ -5694,26 +5697,36 @@ data_normal(void)
 		  }
 	      }
 	  }
-	  if (instrument_height != HUGE_REAL) {
-	      real target_height = read_walls_distance(true,
-						       pcs->units[Q_LENGTH]);
-	      if (target_height == HUGE_REAL) {
-		  target_height = 0.0;
-		  if (ch == '-') {
-		      // Walls expects 2 or more - for an omitted value.
-		      if (nextch() != '-') {
-			  compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
-		      } else {
-			  while (nextch() == '-') { }
-		      }
+	  if (instrument_height == HUGE_REAL) break;
+
+	  real target_height = read_walls_distance(true, pcs->units[Q_LENGTH]);
+	  if (target_height == HUGE_REAL) {
+	      target_height = 0.0;
+	      if (ch == '-') {
+		  // Walls expects 2 or more - for an omitted value.
+		  if (nextch() != '-') {
+		      compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
+		  } else {
+		      while (nextch() == '-') { }
 		  }
 	      }
-	      // FIXME: Ideally we'd make use of these, or at least warn if
-	      // they aren't equal...
-	      // FIXME: Tape tape_method into account too...
-	      (void)instrument_height;
-	      (void)target_height;
 	  }
+
+	  if (p_walls_options->tape_method == WALLS_TAPE_IT) {
+	      // "If the taping method is instrument-to-target (the default
+	      // assumption), the effect of these heights is equivalent to
+	      // adding their difference (IH minus TH) to the computed
+	      // elevation of the TO station with respect to the FROM
+	      // station"
+	      VAL(ToDepth) = instrument_height - target_height;
+	      break;
+	  }
+
+	  // FIXME: Ideally we'd make use of these, or at least warn if
+	  // they aren't equal...
+	  // FIXME: Tape tape_method into account too...
+	  (void)instrument_height;
+	  (void)target_height;
 	  break;
        }
        case WallsSRVExtras:

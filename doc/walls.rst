@@ -246,13 +246,15 @@ features are likely to be handled while more obscure features may not be.
     effect, both instrument and target are treated as if they were at the
     surface, where the inclination can be assumed zero.
 
-  Since Survex 1.4.23, the combination of ``TAPE=IT`` with ``ORDER=DA`` or
-  ``ORDER=AD`` is mapped to Survex's "cylpolar" data style.
+  Since Survex 1.4.23, ``TAPE=IT`` (Walls default setting) with instrument
+  and/or target heights specified is corrected handled.  The particular
+  combination of ``TAPE=IT`` with ``ORDER=DA`` or ``ORDER=AD`` is mapped to
+  Survex's "cylpolar" data style.
 
-  Other combinations of ``TAPE=`` and ``ORDER=`` are
-  currently not implemented and instrument heights are parsed but ignored;
-  instrument and target are assumed to be on their respective stations (or
-  offset from them by the same amount).
+  ``TAPE=IS`` and ``TAPE=ST`` are not currently implemented, nor is ``TAPE=SS``
+  with an order other than ``DA`` or ``AD``.  Instrument heights are parsed but
+  their values are ignored; instrument and target are assumed to be on their
+  respective stations (or offset from them by the same amount).
 
   Survex < 1.4.21 just skipped over ``TAPE=`` entirely (so invalid values
   were also quietly ignored).
