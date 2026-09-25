@@ -5684,6 +5684,8 @@ data_normal(void)
 	  break;
        }
        case WallsSRVHeights: {
+	  filepos fp;
+	  get_pos(&fp);
 	  real instrument_height = read_walls_distance(true,
 						       pcs->units[Q_LENGTH]);
 	  if (instrument_height == HUGE_REAL) {
@@ -5712,6 +5714,10 @@ data_normal(void)
 	      }
 	  }
 
+	  if (instrument_height == 0.0 && target_height == 0.0) {
+	      break;
+	  }
+
 	  if (p_walls_options->tape_method == WALLS_TAPE_IT) {
 	      // "If the taping method is instrument-to-target (the default
 	      // assumption), the effect of these heights is equivalent to
@@ -5719,14 +5725,32 @@ data_normal(void)
 	      // elevation of the TO station with respect to the FROM
 	      // station"
 	      VAL(ToDepth) = instrument_height - target_height;
+	      LOC(ToDepth) = fp.offset;
+	      WID(ToDepth) = ftell(file.fh) - fp.offset;
 	      break;
 	  }
 
-	  // FIXME: Ideally we'd make use of these, or at least warn if
-	  // they aren't equal...
-	  // FIXME: Tape tape_method into account too...
-	  (void)instrument_height;
-	  (void)target_height;
+	  const char* order = "?";
+	  for (const sztok* p = walls_order_tab; p->sz; ++p) {
+	      if (p_walls_options->order_ct == p->tok) {
+		  order = p->sz;
+		  break;
+	      }
+	  }
+
+	  const char* tape_method = "?";
+	  for (const sztok* p = walls_tape_tab; p->sz; ++p) {
+	      if (p_walls_options->tape_method == p->tok) {
+		  tape_method = p->sz;
+		  break;
+	      }
+	  }
+
+	  // TRANSLATORS: "Walls" is David McKenzie's cave surveying package,
+	  // so should not be translated.
+	  compile_diagnostic(DIAG_WARN|DIAG_FROM(fp),
+			     /*Instrument and target heights currently ignored with Walls option combination TAPE=%s ORDER=%s*/581,
+			     tape_method, order);
 	  break;
        }
        case WallsSRVExtras:

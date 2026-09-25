@@ -252,9 +252,11 @@ features are likely to be handled while more obscure features may not be.
   Survex's "cylpolar" data style.
 
   ``TAPE=IS`` and ``TAPE=ST`` are not currently implemented, nor is ``TAPE=SS``
-  with an order other than ``DA`` or ``AD``.  Instrument heights are parsed but
-  their values are ignored; instrument and target are assumed to be on their
-  respective stations (or offset from them by the same amount).
+  with an order other than ``DA`` or ``AD``.  Since 1.4.23, Survex warns when
+  it encounters any such unsupported combinations which are active on a leg
+  which has a non-zero instrument or target height.  For such legs, the
+  heights are ignored so the instrument and target are effectively assumed to
+  be on their respective stations.
 
   Survex < 1.4.21 just skipped over ``TAPE=`` entirely (so invalid values
   were also quietly ignored).

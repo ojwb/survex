@@ -3796,6 +3796,14 @@ msgstr ""
 msgid "Interpreting “,” as separating readings but may be intended as a decimal point"
 msgstr ""
 
+#. TRANSLATORS: "Walls" is David McKenzie's cave surveying package,
+#. so should not be translated.
+#: ../src/datain.c:5748
+#: n:581
+#, c-format
+msgid "Instrument and target heights currently ignored with Walls option combination TAPE=%s ORDER=%s"
+msgstr ""
+
 #: ../src/gdalexport.cc:47
 #: ../src/gdalexport.cc:53
 #: n:527

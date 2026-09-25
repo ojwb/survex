@@ -1,4 +1,4 @@
-; pos=fail err=9 warn=0 dummycrprotection=
+; pos=fail err=9 warn=9 dummycrprotection=
 #units save restore restore restore ; `restore` without corresponding `save`
 #units D=bad a=bad a=bad ab=bad v=bad vb=bad s=bad
 #units odrer=dav ract order=bad typeab=bad typevb=bad
@@ -10,3 +10,25 @@
 1 2 3 64 5 <1,2,3,4;>
 ; FIXME: Walls gives error "Bad angle or azimuth qty" on the second `<`.
 ; 1 <8 3 64 5 <1,2,3,4>
+#units tape=SS
+; These should be OK:
+1 3a 3.00 004 05
+1 4a 3.00 004 05 -- --
+; These should warn because Survex doesn't currently support them.
+1 5a 3.00 004 05 1.0
+1 6a 3.00 004 05 -- 1.0
+1 7a 3.00 004 05 1 2
+#units tape=is
+1 3b 3.00 004 05
+1 4b 3.00 004 05 -- --
+; These should warn because Survex doesn't currently support them.
+1 5b 3.00 004 05 1.0
+1 6b 3.00 004 05 -- 1.0
+1 7b 3.00 004 05 1 2
+#units tape=st
+1 3b 3.00 004 05
+1 4b 3.00 004 05 -- --
+; These should warn because Survex doesn't currently support them.
+1 5b 3.00 004 05 1.0
+1 6b 3.00 004 05 -- 1.0
+1 7b 3.00 004 05 1 2

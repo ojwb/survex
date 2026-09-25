@@ -58,6 +58,33 @@
 ./badopts.srv:10:20: error: Expecting ">"
  1 2 3 64 5 <1,2,3,4;>
                     ^
+./badopts.srv:18:18: warning: Instrument and target heights currently ignored with Walls option combination TAPE=SS ORDER=DAV
+ 1 5a 3.00 004 05 1.0
+                  ^~~
+./badopts.srv:19:18: warning: Instrument and target heights currently ignored with Walls option combination TAPE=SS ORDER=DAV
+ 1 6a 3.00 004 05 -- 1.0
+                  ^~~~~~
+./badopts.srv:20:18: warning: Instrument and target heights currently ignored with Walls option combination TAPE=SS ORDER=DAV
+ 1 7a 3.00 004 05 1 2
+                  ^~~
+./badopts.srv:25:18: warning: Instrument and target heights currently ignored with Walls option combination TAPE=IS ORDER=DAV
+ 1 5b 3.00 004 05 1.0
+                  ^~~
+./badopts.srv:26:18: warning: Instrument and target heights currently ignored with Walls option combination TAPE=IS ORDER=DAV
+ 1 6b 3.00 004 05 -- 1.0
+                  ^~~~~~
+./badopts.srv:27:18: warning: Instrument and target heights currently ignored with Walls option combination TAPE=IS ORDER=DAV
+ 1 7b 3.00 004 05 1 2
+                  ^~~
+./badopts.srv:32:18: warning: Instrument and target heights currently ignored with Walls option combination TAPE=ST ORDER=DAV
+ 1 5b 3.00 004 05 1.0
+                  ^~~
+./badopts.srv:33:18: warning: Instrument and target heights currently ignored with Walls option combination TAPE=ST ORDER=DAV
+ 1 6b 3.00 004 05 -- 1.0
+                  ^~~~~~
+./badopts.srv:34:18: warning: Instrument and target heights currently ignored with Walls option combination TAPE=ST ORDER=DAV
+ 1 7b 3.00 004 05 1 2
+                  ^~~
 ./badopts.srv:7:6: info: Survey has no fixed points. Therefore I've fixed 1 at (0,0,0)
 
 Removing trailing traverses...
@@ -74,13 +101,13 @@ Calculating trailing traverses...
 
 Calculating statistics...
 
-Survey contains 2 survey stations, joined by 1 leg.
-There are 0 loops.
-Total length of survey legs =    3.00m (   3.00m adjusted)
-Total plan length of survey legs =    2.99m
-Total vertical length of survey legs =    0.26m
-Vertical range = 0.26m (from 2 at 0.26m to 1 at 0.00m)
-North-South range = 1.31m (from 2 at 1.31m to 1 at 0.00m)
+Survey contains 12 survey stations, joined by 16 legs.
+There are 5 loops.
+Total length of survey legs =   48.00m (  48.00m adjusted)
+Total plan length of survey legs =   47.82m
+Total vertical length of survey legs =    4.18m
+Vertical range = 0.26m (from 7a at 0.26m to 1 at 0.00m)
+North-South range = 2.98m (from 7a at 2.98m to 1 at 0.00m)
 East-West range = 2.69m (from 2 at 2.69m to 1 at 0.00m)
 
-There were 0 warning(s) and 20 error(s) - no output files produced.
+There were 9 warning(s) and 20 error(s) - no output files produced.
