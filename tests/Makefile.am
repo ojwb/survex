@@ -185,7 +185,7 @@ csbadsdfix.altout csbadsdfix.out csbadsdfix.svx\
 csfeet.out csfeet.pos csfeet.svx\
 cslonglat.out cslonglat.svx\
 csprj.out csprj.dump csprj.prj csprj.svx\
-csprj2.out csprj2.dump csprj2.prj csprj2.svx\
+csprj2.out csprj2.dump csprj2.prj csprj2.svx csprj6318.json\
 csprjbad.out csprjbad.svx csprjbom.prj\
 omitfixaroundsolve.out omitfixaroundsolve.svx\
 repeatreading.svx repeatreading.out repeatreading.pos\
