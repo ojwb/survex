@@ -3975,9 +3975,37 @@ warn_readings_differ(int msgno, real diff, int units,
       }
    }
    strcpy(p, get_units_string(units));
-   // FIXME: Highlight r_fore too.
-   (void)r_fore;
+
+   // We can only currently highlight one region of the line so check if the
+   // foresight and backsight are adjacent readings and if so extend the
+   // highlight to cover both.  If the reading are not adjacent then only
+   // the backsight is highlighted.
+   //
+   // FIXME: Provide a way to highlight two regions?
+   long save_loc = LOC(r_back);
+   int save_wid = WID(r_back);
+   for (int i = 0;
+	pcs->ordering[i] != End && pcs->ordering[i] != IgnoreAll;
+	++i) {
+       reading r = pcs->ordering[i];
+       if (r == r_fore) {
+	   if (pcs->ordering[i + 1] == r_back) {
+	       WID(r_back) += LOC(r_back) - LOC(r_fore);
+	       LOC(r_back) = LOC(r_fore);
+	   } else if (i > 0 && pcs->ordering[i - 1] == r_back) {
+	       WID(r_back) += LOC(r_fore) - LOC(r_back);
+	   }
+	   break;
+       }
+       if (r == WallsSRVComp || r == WallsSRVClino) {
+	   WID(r_back) += LOC(r_back) - LOC(r_fore);
+	   LOC(r_back) = LOC(r_fore);
+	   break;
+       }
+   }
    compile_diagnostic_reading(DIAG_WARN, r_back, msgno, buf);
+   LOC(r_back) = save_loc;
+   WID(r_back) = save_wid;
 }
 
 // If one (or both) compass readings are given, return Comp or BackComp

@@ -76,9 +76,9 @@
 ./walls.srv:99:38: warning: Ignoring "6*"
  U17 U18 1.4 043/224 +5/-3.5 *0 9 4.5*6*
                                       ^~
-./walls.srv:99:24: warning: CLINO reading and BACKCLINO reading disagree by 1.5dg
+./walls.srv:99:21: warning: CLINO reading and BACKCLINO reading disagree by 1.5dg
  U17 U18 1.4 043/224 +5/-3.5 *0 9 4.5*6*
-                        ^~~~
+                     ^~~~~~~
 ./walls.srv:100:40: warning: Ignoring "+"
  U18 U19 1.6 200/19 -34/+33 *0 20 100 5*+ #seg /X
                                         ^

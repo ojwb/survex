@@ -1,27 +1,27 @@
-./wallsfsbs.srv:4:30: warning: COMPASS reading and BACKCOMPASS reading disagree by 5.1dg
+./wallsfsbs.srv:4:26: warning: COMPASS reading and BACKCOMPASS reading disagree by 5.1dg
  S1   A1        20        359/184.1              2/-7.1
-                              ^~~~~
-./wallsfsbs.srv:4:51: warning: CLINO reading and BACKCLINO reading disagree by 5.1dg
+                          ^~~~~~~~~
+./wallsfsbs.srv:4:49: warning: CLINO reading and BACKCLINO reading disagree by 5.1dg
  S1   A1        20        359/184.1              2/-7.1
-                                                   ^~~~
-./wallsfsbs.srv:5:30: warning: COMPASS reading and BACKCOMPASS reading disagree by 5.1dg
+                                                 ^~~~~~
+./wallsfsbs.srv:5:26: warning: COMPASS reading and BACKCOMPASS reading disagree by 5.1dg
  A1   A2        20        359/173.9              2/3.1
-                              ^~~~~
-./wallsfsbs.srv:5:51: warning: CLINO reading and BACKCLINO reading disagree by 5.1dg
+                          ^~~~~~~~~
+./wallsfsbs.srv:5:49: warning: CLINO reading and BACKCLINO reading disagree by 5.1dg
  A1   A2        20        359/173.9              2/3.1
-                                                   ^~~
-./wallsfsbs.srv:11:35: warning: COMPASS reading and BACKCOMPASS reading disagree by 6.1dg
+                                                 ^~~~~
+./wallsfsbs.srv:11:31: warning: COMPASS reading and BACKCOMPASS reading disagree by 6.1dg
  S1        S2        30        100/286.1              /-16  ;no forward inclination
-                                   ^~~~~
-./wallsfsbs.srv:12:35: warning: COMPASS reading and BACKCOMPASS reading disagree by 6.1dg
+                               ^~~~~~~~~
+./wallsfsbs.srv:12:31: warning: COMPASS reading and BACKCOMPASS reading disagree by 6.1dg
  S2        S3        15.5      355/181.1              6/0
-                                   ^~~~~
-./wallsfsbs.srv:12:56: warning: CLINO reading and BACKCLINO reading disagree by 6dg
+                               ^~~~~~~~~
+./wallsfsbs.srv:12:54: warning: CLINO reading and BACKCLINO reading disagree by 6dg
  S2        S3        15.5      355/181.1              6/0
-                                                        ^
-./wallsfsbs.srv:18:57: warning: CLINO reading and BACKCLINO reading disagree by 6.1dg
+                                                      ^~~
+./wallsfsbs.srv:18:53: warning: CLINO reading and BACKCLINO reading disagree by 6.1dg
  S1        Z1        10       100/286                -12/18.1
-                                                         ^~~~
+                                                     ^~~~~~~~
 
 Removing trailing traverses...
 
