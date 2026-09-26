@@ -13,12 +13,12 @@ Calculating trailing traverses...
 
 Calculating statistics...
 
-Approximate full range of grid convergence: 0.6dg at flat:X to 0.6dg at flat:XX
-Survey contains 9 survey stations, joined by 8 legs.
+Approximate full range of grid convergence: 0.6dg at flat:X to 0.6dg at flat:EASTMOST
+Survey contains 10 survey stations, joined by 9 legs.
 There are 0 loops.
-Total length of survey legs =    9.75m (   9.75m adjusted)
-Total plan length of survey legs =    7.31m
+Total length of survey legs =   12.80m (  12.80m adjusted)
+Total plan length of survey legs =   10.36m
 Total vertical length of survey legs =    5.49m
 Vertical range = 0.91m (from flat:A2 at 300.91m to flat:XX at 300.00m)
-North-South range = 0.86m (from flat:B1 at 4112200.86m to flat:X at 4112200.00m)
-East-West range = 0.86m (from flat:B1 at 586700.86m to flat:X at 586700.00m)
+North-South range = 0.86m (from flat:B1 at 4112200.86m to flat:EASTMOST at 4112200.00m)
+East-West range = 3.05m (from flat:EASTMOST at 586703.05m to flat:X at 586700.00m)

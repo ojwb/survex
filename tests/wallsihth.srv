@@ -11,6 +11,10 @@
 #FIX	point	4112200m	586700m	300m
 point	x	0	0	0
 
+; Avoid test failing because the grid convergence eastern most point was being
+; reported as either XX or A2.
+x	eastmost 10     90      0
+
 ; shot data reflects right triangle with side-lengths of 3,4,5 and angles of 36.87, 51.13 and 90.
 ;from	to	d	a	clino	ih	th
 x	a2	5	45	36.87	--	--	; PASS ; a2 should be 3-feet higher than x; xy distance should be 4-feet
