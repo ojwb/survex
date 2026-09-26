@@ -2495,7 +2495,9 @@ walls_parse_options(void)
 		filepos fp;
 		get_pos(&fp);
 		set_pos(&fp_option);
-		compile_diagnostic(DIAG_WARN|DIAG_QTOKEN, /*Unknown command “%s”*/12, s_str(&token));
+		// TRANSLATORS: "Walls" is David McKenzie's cave surveying package,
+		// so should not be translated.
+		compile_diagnostic(DIAG_WARN|DIAG_QTOKEN, /*Ignoring unsupported Walls option “%s”*/582, s_str(&token));
 		set_pos(&fp);
 	    }
 	    break;
@@ -2505,11 +2507,18 @@ walls_parse_options(void)
 	  case WALLS_UNITS_OPT_INCVB:
 	    pcs->z[Q_BACKGRADIENT] = -read_walls_angle(pcs->units[Q_BACKGRADIENT]);
 	    break;
-	  case WALLS_UNITS_OPT_GRID:
+	  case WALLS_UNITS_OPT_GRID: {
 	    // FIXME: GRID= not useful with geo-referenced data?
-	    compile_diagnostic(DIAG_WARN|DIAG_QTOKEN, /*Unknown command “%s”*/12, s_str(&token));
+	    filepos fp;
+	    get_pos(&fp);
+	    set_pos(&fp_option);
+	    // TRANSLATORS: "Walls" is David McKenzie's cave surveying package,
+	    // so should not be translated.
+	    compile_diagnostic(DIAG_WARN|DIAG_QTOKEN, /*Ignoring unsupported Walls option “%s”*/582, s_str(&token));
+	    set_pos(&fp);
 	    (void)read_walls_angle(M_PI / 180.0);
 	    break;
+	  }
 	  case WALLS_UNITS_OPT_RECT:
 	    // There are two different RECT options, one with a
 	    // parameter and one without!

@@ -1,4 +1,4 @@
-; pos=dump warn=39 dummycrprotection=
+; pos=dump warn=41 dummycrprotection=
 #u o=EUN v=g
 #Fix U0 0 1 0
 #seg FOO
@@ -134,6 +134,11 @@ U23        U25a       5.00    0.0,0    30
 U23        U25b       5.00    0,0.0    30
 U23        U26a       5.00    0       30.0,5
 U23        U26b       5.00    0       30,5.0
+; Test "unsupported" warning for GRID=
+#units save
+#units grid=1.5
+#units grid = 0
+#units restore
 
 ; FIXME: These should all work now - make sure they are tested.
 ; :50 = 50 minutes (0.8333333333333d)

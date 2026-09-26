@@ -34,37 +34,37 @@
 ./walls.srv:58:14: warning: End of line not blank
  #prefix test walls appears to ignore anything here
               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-./walls.srv:66:8: warning: Unknown command "inch"
+./walls.srv:66:8: warning: Ignoring unsupported Walls option "inch"
  #units inch=1 ; regression test
         ^~~~
 ./walls.srv:70:12: warning: Ignoring "gradeb)"
  #units uv=4gradeb) inch=1
             ^~~~~~~
-./walls.srv:70:20: warning: Unknown command "inch"
+./walls.srv:70:20: warning: Ignoring unsupported Walls option "inch"
  #units uv=4gradeb) inch=1
                     ^~~~
 ./walls.srv:71:13: warning: Ignoring "gradeb"
  #units uvv=4gradeb inch=1
              ^~~~~~
-./walls.srv:71:20: warning: Unknown command "inch"
+./walls.srv:71:20: warning: Ignoring unsupported Walls option "inch"
  #units uvv=4gradeb inch=1
                     ^~~~
 ./walls.srv:72:13: warning: Ignoring "gradeb"
  #units uvh=4gradeb inch=1
              ^~~~~~
-./walls.srv:72:20: warning: Unknown command "inch"
+./walls.srv:72:20: warning: Ignoring unsupported Walls option "inch"
  #units uvh=4gradeb inch=1
                     ^~~~
 ./walls.srv:73:18: warning: Ignoring "Q)"
  #units typeab=n,4Q),X inch=1
                   ^~
-./walls.srv:73:23: warning: Unknown command "inch"
+./walls.srv:73:23: warning: Ignoring unsupported Walls option "inch"
  #units typeab=n,4Q),X inch=1
                        ^~~~
 ./walls.srv:74:20: warning: Ignoring "Q"
  #units typevb=c,1.2Q inch=1
                     ^
-./walls.srv:74:22: warning: Unknown command "inch"
+./walls.srv:74:22: warning: Ignoring unsupported Walls option "inch"
  #units typevb=c,1.2Q inch=1
                       ^~~~
 ./walls.srv:85:11: warning: Expecting station name
@@ -115,6 +115,12 @@
 ./walls.srv:129:41: warning: Interpreting "," as separating readings but may be intended as a decimal point
  U23        U26        5.00    0       30,5
                                          ^
+./walls.srv:139:8: warning: Ignoring unsupported Walls option "grid"
+ #units grid=1.5
+        ^~~~
+./walls.srv:140:8: warning: Ignoring unsupported Walls option "grid"
+ #units grid = 0
+        ^~~~
 
 Removing trailing traverses...
 
@@ -140,4 +146,4 @@ Vertical range = 57.44m (from U12b at 51.00m to suf2a at -6.44m)
 North-South range = 53.08m (from U12b at 40.00m to 12#4 at -13.08m)
 East-West range = 31.49m (from U12a at 30.00m to U1 at -1.49m)
 
-There were 39 warning(s).
+There were 41 warning(s).
