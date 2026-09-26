@@ -1,0 +1,24 @@
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+./wallsfix.srv:3: warning: Unused fixed point "unused"
+
+Calculating statistics...
+
+Survey contains 10 survey stations, joined by 0 legs.
+There are 0 loops.
+Survey has 10 connected components.
+Total length of survey legs =    0.00m (   0.00m adjusted)
+Total plan length of survey legs =    0.00m
+Total vertical length of survey legs =    0.00m
+
+There were 1 warning(s).

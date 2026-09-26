@@ -4818,7 +4818,7 @@ read_walls_extras(unsigned long* p_compass_dat_flags)
 }
 
 static bool
-read_walls_srv_to(prefix **p_to, unsigned long* p_compass_dat_flags)
+read_walls_srv_to(prefix *fr, prefix **p_to, unsigned long* p_compass_dat_flags)
 {
     skipblanks();
     filepos fp;
@@ -4881,6 +4881,7 @@ parse_as_station:
 	set_pos(&fp);
 	if (parse_as_lrud) {
 handle_isolated_lrud:
+	    fr->sflags |= BIT(SFLAGS_USED);
 	    read_walls_extras(p_compass_dat_flags);
 	    skipblanks();
 	    if (!isEol(ch) && !isComm(ch)) {
@@ -4914,6 +4915,7 @@ handle_isolated_lrud:
     skipblanks();
     if (ch == '*' || ch == '<') {
 	// Odd apparently undocumented variant of isolated LRUD.
+	(*p_to)->sflags |= BIT(SFLAGS_USED);
 	goto handle_isolated_lrud;
     }
     return true;
@@ -4962,7 +4964,7 @@ data_cartesian(void)
 	  fr = read_walls_station(p_walls_options->prefix, true, NULL);
 	  break;
        case WallsSRVTo:
-	  if (!read_walls_srv_to(&to, &compass_dat_flags)) {
+	  if (!read_walls_srv_to(fr, &to, &compass_dat_flags)) {
 	      // Isolated LRUD so don't try to parse line as a survey leg.
 	      return;
 	  }
@@ -5367,7 +5369,7 @@ data_normal(void)
 	  fr = read_walls_station(p_walls_options->prefix, true, NULL);
 	  break;
        case WallsSRVTo:
-	  if (!read_walls_srv_to(&to, &compass_dat_flags)) {
+	  if (!read_walls_srv_to(fr, &to, &compass_dat_flags)) {
 	      // Isolated LRUD so don't try to parse line as a survey leg.
 	      return;
 	  }

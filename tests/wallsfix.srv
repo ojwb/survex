@@ -1,0 +1,30 @@
+; pos=dump warn=1 dummycrprotection=
+; Test unused fix point warnings and suppressions
+#fix unused 410000 580000 1000
+
+#note quiet1 /unused
+#fix quiet1 410001 580001 1001
+
+#flag quiet2
+#fix quiet2 410002 580002 1002
+
+#flag quiet3 /Q
+#fix quiet3 410003 580003 1003
+
+#fix quiet4 410004 580004 1004
+#note quiet4 /unused
+
+#fix quiet5 410005 580005 1005
+#flag quiet5
+
+#fix quiet6 410006 580006 1006
+#flag quiet6 /Q
+
+#fix quiet7 410007 580007 1007
+quiet7 <--,--,--,--,0>
+
+#fix quiet8 410008 580008 1008
+quiet8 dummy8 <--,--,--,--,0>
+
+#fix quiet9 410009 580009 1009
+dummy9 quiet9 <--,--,--,--,0>

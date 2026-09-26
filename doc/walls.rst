@@ -41,12 +41,65 @@ features are likely to be handled while more obscure features may not be.
   probably ought to be an error except Walls quietly accepts them so we
   don't want to fail processing because of them.
 
-  If you want a way to suppress the "unused fixed point" warning, using the
-  station in a ``#NOTE`` or ``#FLAG`` directive counts as a "use" so you
-  can suppress these with e.g. ``#NOTE ABC123 /unused`` for each such
-  fixed point.  (This works fully since Survex 1.4.21 - before this it only
-  worked if the ``#FIX`` came first, and didn't work for ``#FLAG`` without
-  any flags.)
+  In some cases a warning can trigger when there's not a problem.  It's
+  good practice to keep a dataset free from warnings so that a new warning
+  doesn't get overlooked.  Here are suggestions for suppressing particular
+  warnings (which also work in Walls):
+
+  + Survex warns about ``#FIX`` directives where the station is not ever
+    used anywhere, for example::
+
+      unusedfix.srv:3: warning: Unused fixed point “unused”
+
+    This is intended to help spot typos in the station name, which would
+    otherwise go unnoticed if the survey station which was meant to be fixed is
+    connected to another fixed station.
+
+    However it's also reasonable to record fixes for stations which don't
+    have survey connected to them.  For example, they may be permanent
+    survey benchmarks, or entrances to caves that haven't been surveyed yet.
+
+    Assuming the station name is not mistyped, you can suppress the warning
+    by adding a dummy "use" - ``#NOTE``, ``#FLAG`` or isolated LRUD all
+    count as a "use":
+
+    ::
+
+      #NOTE ABC123 /unused
+      #FIX ABC123 123456 987654 1234
+
+    Or you could use ``#FLAG`` instead, which has the bonus of allowing
+    highlighting of such stations in Walls.  If it's an unsurveyed entrance
+    we suggest adding a flag containing the word `entrance` (which will also
+    result in Survex's "entrance" flag being set for the station), for
+    example:
+
+    ::
+
+      #FLAG ABC123 /unexplored entrance
+      #FIX ABC123 123456 987654 1234
+
+    Otherwise you could just flag it as "unused":
+
+    ::
+
+      #FLAG ABC123 /unused fix
+      #FIX ABC123 123456 987654 1234
+
+    However, using ``#FLAG`` might be undesirable if you have a default flag
+    which you expect to be applied to these stations.
+
+    Isolated LRUD is another way (a dummy facing direction is needed to
+    prevent Walls from warning):
+
+    ::
+
+      #FIX ABC123 123456 987654 1234
+      ABC123 <--,--,--,--,0> ; Suppress Survex unused fix warning
+
+    All these approaches work since Survex 1.4.23.  ``#NOTE`` and ``#FIX``
+    fully count since Survex 1.4.21 - before this they only worked if the
+    ``#FIX`` came first, and didn't work for ``#FLAG`` without any flags.)
 
 - Walls only runs on Microsoft Windows, where filenames are case-insensitive
   and you may find the case of filenames in the ``.PRJ`` file doesn't match
