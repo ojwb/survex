@@ -2524,29 +2524,43 @@ walls_parse_options(void)
 		update_data_order = true;
 	    }
 	    break;
-	  case WALLS_UNITS_OPT_CASE:
+	  case WALLS_UNITS_OPT_CASE: {
+	    static const sztok case_tab[] = {
+	         {"L", LOWER},
+	         {"LOWER", LOWER},
+	         {"M", OFF},
+	         {"MIXED", OFF},
+	         {"U", UPPER},
+	         {"UPPER", UPPER},
+	         {NULL, -1}
+	    };
 	    walls_get_option_token();
-	    // Walls documents `CASE = Upper / Lower / Mixed` which hints that
-	    // it only actually tests the first character.  It also seems that
-	    // any other character is treated as `Mixed` too.
-	    switch (s_str(&uctoken)[0]) {
-	      case 'L':
-		pcs->Case = LOWER;
-		break;
-	      case 'U':
-		pcs->Case = UPPER;
-		break;
-	      case 'M':
-		pcs->Case = OFF;
-		break;
-	      default:
+	    int case_setting = match_tok(case_tab, TABSIZE(case_tab));
+	    if (case_setting < 0) {
+		// Walls documents `CASE = Upper / Lower / Mixed` which means
+		// that the value can be abbreviated to just the first
+		// character.  However it actually only tests the first
+		// character, and it seems that any other initial character is
+		// treated as `Mixed` too.  We support these too but issue a
+		// warning.
 		compile_diagnostic(DIAG_WARN|DIAG_QTOKEN,
 				   /*Expecting “%s”, “%s”, or “%s”*/188,
-				   "L", "U", "M");
-		pcs->Case = OFF;
-		break;
+				   "LOWER", "UPPER", "MIXED");
+		switch (s_str(&uctoken)[0]) {
+		  case 'L':
+		    case_setting = LOWER;
+		    break;
+		  case 'U':
+		    case_setting = UPPER;
+		    break;
+		  default:
+		    case_setting = OFF;
+		    break;
+		}
 	    }
+	    pcs->Case = case_setting;
 	    break;
+	  }
 	  case WALLS_UNITS_OPT_CT:
 	    p_walls_options->rect = false;
 	    update_data_order = true;

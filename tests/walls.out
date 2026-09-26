@@ -1,6 +1,18 @@
 ./walls.srv:5:18: warning: End of line not blank
  #date 2024-03-09 walls appears to ignore anything here
                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./walls.srv:10:24: warning: Expecting "LOWER", "UPPER", or "MIXED"
+ #UNITS CASE=LOWER CASE=LA CASE=MIZED CASE=US CASE=Q CASE=L CASE=M CASE=U
+                        ^~
+./walls.srv:10:32: warning: Expecting "LOWER", "UPPER", or "MIXED"
+ #UNITS CASE=LOWER CASE=LA CASE=MIZED CASE=US CASE=Q CASE=L CASE=M CASE=U
+                                ^~~~~
+./walls.srv:10:43: warning: Expecting "LOWER", "UPPER", or "MIXED"
+ #UNITS CASE=LOWER CASE=LA CASE=MIZED CASE=US CASE=Q CASE=L CASE=M CASE=U
+                                           ^~
+./walls.srv:10:51: warning: Expecting "LOWER", "UPPER", or "MIXED"
+ #UNITS CASE=LOWER CASE=LA CASE=MIZED CASE=US CASE=Q CASE=L CASE=M CASE=U
+                                                   ^
 ./walls.srv:18:22: warning: Expecting numeric field, found ""
  u0 u1dms2 10.0 12:30: 0:0:
                       ^
@@ -16,7 +28,7 @@
 ./walls.srv:22:19: warning: Expecting numeric field, found ""
  u0 u1dms6 10.0 12: 0d
                    ^
-./walls.srv:23:26: warning: Expecting "L", "U", or "M"
+./walls.srv:23:26: warning: Expecting "LOWER", "UPPER", or "MIXED"
  #units v=d vb=d a=d case=none ; undocumented but unknown "case=" values -> "mixed"
                           ^~~~
 ./walls.srv:58:14: warning: End of line not blank
@@ -128,4 +140,4 @@ Vertical range = 57.44m (from U12b at 51.00m to suf2a at -6.44m)
 North-South range = 53.08m (from U12b at 40.00m to 12#4 at -13.08m)
 East-West range = 31.49m (from U12a at 30.00m to U1 at -1.49m)
 
-There were 35 warning(s).
+There were 39 warning(s).
