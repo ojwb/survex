@@ -5821,7 +5821,7 @@ data_normal(void)
 	  // TRANSLATORS: "Walls" is David McKenzie's cave surveying package,
 	  // so should not be translated.
 	  compile_diagnostic(DIAG_WARN|DIAG_FROM(fp),
-			     /*Instrument and target heights currently ignored with Walls option combination TAPE=%s ORDER=%s*/581,
+			     /*Instrument and target heights currently ignored with Walls option combination “TAPE=%s” and “ORDER=%s”*/581,
 			     tape_method, order);
 	  break;
        }

@@ -3796,7 +3796,7 @@ msgstr ""
 #: ../src/datain.c:5748
 #: n:581
 #, c-format
-msgid "Instrument and target heights currently ignored with Walls option combination TAPE=%s ORDER=%s"
+msgid "Instrument and target heights currently ignored with Walls option combination “TAPE=%s” and “ORDER=%s”"
 msgstr ""
 
 #: ../src/gdalexport.cc:47
