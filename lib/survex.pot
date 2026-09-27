@@ -3807,6 +3807,14 @@ msgstr ""
 msgid "Ignoring unsupported Walls option “%s”"
 msgstr ""
 
+#. TRANSLATORS: "Walls" is David McKenzie's cave surveying package,
+#. so should not be translated.
+#: ../src/datain.c:2694
+#: n:583
+#, c-format
+msgid "Value can not be negative"
+msgstr ""
+
 #: ../src/gdalexport.cc:47
 #: ../src/gdalexport.cc:53
 #: n:527

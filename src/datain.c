@@ -2685,16 +2685,25 @@ walls_parse_options(void)
 	  case WALLS_UNITS_OPT_UV:
 	  case WALLS_UNITS_OPT_UVH:
 	  case WALLS_UNITS_OPT_UVV: {
-	    filepos fp;
-	    get_pos(&fp);
-	    set_pos(&fp_option);
-	    // TRANSLATORS: "Walls" is David McKenzie's cave surveying package,
-	    // so should not be translated.
-	    compile_diagnostic(DIAG_WARN|DIAG_QTOKEN, /*Ignoring unsupported Walls option “%s”*/582, s_str(&token));
-	    set_pos(&fp);
 	    // Scale factors for variances (with horizontal-only and
 	    // vertical-only variants).  FIXME: Actually apply these!
-	    (void)read_numeric(false);
+	    filepos fp_arg;
+	    get_pos(&fp_arg);
+	    real scale_factor = read_numeric(false);
+	    if (scale_factor < 0) {
+		set_pos(&fp_arg);
+		// TRANSLATORS: "Walls" is David McKenzie's cave surveying package,
+		// so should not be translated.
+		compile_diagnostic(DIAG_ERR|DIAG_NUM, /*Value can not be negative*/583);
+	    } else if (scale_factor != 1.0) {
+		filepos fp;
+		get_pos(&fp);
+		set_pos(&fp_option);
+		// TRANSLATORS: "Walls" is David McKenzie's cave surveying package,
+		// so should not be translated.
+		compile_diagnostic(DIAG_WARN|DIAG_QTOKEN, /*Ignoring unsupported Walls option “%s”*/582, s_str(&token));
+		set_pos(&fp);
+	    }
 	    if (!isBlank(ch) && !isComm(ch) && !isEol(ch)) {
 		// Walls quietly ignores junk after a valid number here.
 		get_word();

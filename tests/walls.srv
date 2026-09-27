@@ -1,4 +1,4 @@
-; pos=dump warn=43 dummycrprotection=
+; pos=dump warn=45 dummycrprotection=
 #u o=EUN v=g
 #Fix U0 0 1 0
 #seg FOO
@@ -64,9 +64,9 @@ U3   --      7.8     098.7
 #units typevb=c,6,x
 #units typevb=c,1
 
-
 ; Walls seems to fail to check for junk after parsing a number in these cases:
 ; (follow with something which should warn to test we continue parsing suitably)
+#units uv = 1.) uvv =1.0 uvh= 1.0 case=xx
 #units uv=4gradeb) case=x
 #units uvv=4gradeb case=x
 #units uvh=4gradeb case=x

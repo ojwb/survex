@@ -322,8 +322,10 @@ features are likely to be handled while more obscure features may not be.
   are always averaged.
 
 - ``UV=``, ``UVH=`` and ``UVV=`` all give an "Ignoring unsupported Walls
-  option" warning, and are skipped.  (Since Survex 1.4.23; before that they
-  were quietly ignored.)
+  option" warning, and are skipped.  The warning is not given if the factor is
+  ``1``, since that's the default.  A negative factor is an error, like in
+  Walls.  (All since Survex 1.4.23; before that these options were quietly
+  ignored.)
 
 - The ``GRID=`` option currently gives an "Ignoring unsupported Walls option"
   warning, and is skipped.  If your Walls data specifies a UTM zone then Survex
