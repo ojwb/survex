@@ -288,7 +288,6 @@ typedef struct {
 #define FLAG_REPLACEMENTLEG 0x40
 #define FLAG_ARTICULATION 0x20
 #define FLAG_FAKE 0x10 /* an equate or leg inside an sdfix */
-#define MASK_REVERSEDIRN 0x03
 
 /* forward leg - deltas & vars stored here */
 typedef struct Link {
