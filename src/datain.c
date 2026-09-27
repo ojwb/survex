@@ -3039,8 +3039,29 @@ next_line:
 	    }
 	    skipblanks();
 	    if (ch == '/') {
-		// Station note - ignore for now.  Note: Must be '/'.
+		// Station note.  Note: Must be introduced by '/' not `\`.
+		//
+		// Walls handling of `#` is subtle here - e.g. `#15` is
+		// part of the note; `#s`/`#seg`/`#segment` ends the
+		// note and set the segment; `#` followed by another
+		// letter (note: blanks are allowed in between) gives the
+		// weirdly confused error "Use only #SEG on vector lines".
+		//
+		// We just ignore the note and don't check for `#segment`.
+		// We currently ignore segments too, so this just means we
+		// won't error for some cases where Walls would.
 		skipline();
+	    } else if (ch == '#') {
+		nextch();
+		get_token();
+		walls_cmd seg_directive = match_tok(walls_cmd_tab,
+						    TABSIZE(walls_cmd_tab));
+		if (seg_directive == WALLS_CMD_SEGMENT) {
+		    skipline();
+		} else {
+		    compile_diagnostic(DIAG_WARN|DIAG_TOKEN|DIAG_SKIP,
+				       /*Unknown command “%s”*/12, s_str(&token));
+		}
 	    }
 
 	    if (format == LATLONG) {

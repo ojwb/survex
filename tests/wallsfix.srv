@@ -1,4 +1,4 @@
-; pos=dump warn=1 dummycrprotection=
+; pos=dump warn=10 dummycrprotection=
 ; Test unused fix point warnings and suppressions
 #fix unused 410000 580000 1000
 
@@ -28,3 +28,15 @@ quiet8 dummy8 <--,--,--,--,0>
 
 #fix quiet9 410009 580009 1009
 dummy9 quiet9 <--,--,--,--,0>
+
+; Test `#segment` is allowed after `#fix`.
+#fix seg1   420001 590001 1101 #s blah
+#fix seg2   420002 590002 1102 #seg blah blah
+#fix seg3   420003 590003 1103 #segment blah blah blah
+#fix seg4   420004 590004 1104 # s blah
+#fix seg5   420005 590005 1105 # seg blah blah
+#fix seg6   420006 590006 1106 # segment blah blah blah
+; Test in combination with station notes.
+#fix seg7   420007 590007 1107 /see #q # s blah
+#fix seg8   420008 590008 1108 /#x # seg blah blah
+#fix seg9   420009 590009 1109 /## segment blah blah blah

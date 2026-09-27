@@ -10,15 +10,24 @@ Calculating network...
 Calculating traverses...
 
 Calculating trailing traverses...
+./wallsfix.srv:33: warning: Unused fixed point "seg1"
+./wallsfix.srv:34: warning: Unused fixed point "seg2"
+./wallsfix.srv:35: warning: Unused fixed point "seg3"
+./wallsfix.srv:36: warning: Unused fixed point "seg4"
+./wallsfix.srv:37: warning: Unused fixed point "seg5"
+./wallsfix.srv:38: warning: Unused fixed point "seg6"
+./wallsfix.srv:40: warning: Unused fixed point "seg7"
+./wallsfix.srv:41: warning: Unused fixed point "seg8"
+./wallsfix.srv:42: warning: Unused fixed point "seg9"
 ./wallsfix.srv:3: warning: Unused fixed point "unused"
 
 Calculating statistics...
 
-Survey contains 10 survey stations, joined by 0 legs.
+Survey contains 19 survey stations, joined by 0 legs.
 There are 0 loops.
-Survey has 10 connected components.
+Survey has 19 connected components.
 Total length of survey legs =    0.00m (   0.00m adjusted)
 Total plan length of survey legs =    0.00m
 Total vertical length of survey legs =    0.00m
 
-There were 1 warning(s).
+There were 10 warning(s).

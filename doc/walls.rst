@@ -244,6 +244,9 @@ features are likely to be handled while more obscure features may not be.
 
   Other values of ``#SEGMENT`` are ignored.
 
+  ``#SEGMENT`` on a ``#FIX`` directive line is also ignored (since Survex
+  1.4.23), since mapped Compass flags apply to legs and not to a fixed point.
+
 - Walls ``FLAG`` values seem to be arbitrary text strings.  We try to
   infer appropriate Survex station flags by checking for certain key
   words in that text and otherwise ignore ``FLAG`` values.
