@@ -2684,7 +2684,14 @@ walls_parse_options(void)
 	    break;
 	  case WALLS_UNITS_OPT_UV:
 	  case WALLS_UNITS_OPT_UVH:
-	  case WALLS_UNITS_OPT_UVV:
+	  case WALLS_UNITS_OPT_UVV: {
+	    filepos fp;
+	    get_pos(&fp);
+	    set_pos(&fp_option);
+	    // TRANSLATORS: "Walls" is David McKenzie's cave surveying package,
+	    // so should not be translated.
+	    compile_diagnostic(DIAG_WARN|DIAG_QTOKEN, /*Ignoring unsupported Walls option “%s”*/582, s_str(&token));
+	    set_pos(&fp);
 	    // Scale factors for variances (with horizontal-only and
 	    // vertical-only variants).  FIXME: Actually apply these!
 	    (void)read_numeric(false);
@@ -2694,6 +2701,7 @@ walls_parse_options(void)
 		compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*Ignoring “%s”*/506, s_str(&token));
 	    }
 	    break;
+	  }
 	  case WALLS_UNITS_OPT_FLAG:
 	    // Default flag to apply to stations in #FIX.
 	    skipblanks();

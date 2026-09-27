@@ -34,18 +34,27 @@
 ./walls.srv:58:14: warning: End of line not blank
  #prefix test walls appears to ignore anything here
               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./walls.srv:70:8: warning: Ignoring unsupported Walls option "uv"
+ #units uv=4gradeb) case=x
+        ^~
 ./walls.srv:70:12: warning: Ignoring "gradeb)"
  #units uv=4gradeb) case=x
             ^~~~~~~
 ./walls.srv:70:25: warning: Expecting "LOWER", "UPPER", or "MIXED"
  #units uv=4gradeb) case=x
                          ^
+./walls.srv:71:8: warning: Ignoring unsupported Walls option "uvv"
+ #units uvv=4gradeb case=x
+        ^~~
 ./walls.srv:71:13: warning: Ignoring "gradeb"
  #units uvv=4gradeb case=x
              ^~~~~~
 ./walls.srv:71:25: warning: Expecting "LOWER", "UPPER", or "MIXED"
  #units uvv=4gradeb case=x
                          ^
+./walls.srv:72:8: warning: Ignoring unsupported Walls option "uvh"
+ #units uvh=4gradeb case=x
+        ^~~
 ./walls.srv:72:13: warning: Ignoring "gradeb"
  #units uvh=4gradeb case=x
              ^~~~~~
@@ -143,4 +152,4 @@ Vertical range = 57.44m (from U12b at 51.00m to suf2a at -6.44m)
 North-South range = 53.08m (from U12b at 40.00m to 12#4 at -13.08m)
 East-West range = 31.49m (from U12a at 30.00m to U1 at -1.49m)
 
-There were 40 warning(s).
+There were 43 warning(s).

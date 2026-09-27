@@ -321,7 +321,9 @@ features are likely to be handled while more obscure features may not be.
   still check backsights) is currently ignored so foresights and backsights
   always averaged.
 
-- ``UV=``, ``UVH=`` and ``UVV=`` are all quietly skipped.
+- ``UV=``, ``UVH=`` and ``UVV=`` all give an "Ignoring unsupported Walls
+  option" warning, and are skipped.  (Since Survex 1.4.23; before that they
+  were quietly ignored.)
 
 - The ``GRID=`` option currently gives an "Ignoring unsupported Walls option"
   warning, and is skipped.  If your Walls data specifies a UTM zone then Survex
