@@ -268,13 +268,14 @@ typedef struct Meta_data {
 /* stuff stored for both forward & reverse legs */
 typedef struct {
    struct Node *to;
-   // Reverse leg number (0, 1 or 2)
+   // Reverse leg number (0, 1 or 2) - this is the index of the corresponding
+   // reverse leg back from `to`.
    unsigned char reverse;
-   // These are "internal" flag bits:
-   // bit 4: FLAG_FAKE (an equate or leg inside an sdfix
-   // bit 5: FLAG_ARTICULATION (i.e. carries no error)
-   // bit 6: FLAG_REPLACEMENTLEG (by reduction rules)
-   // bit 7: FLAG_DATAHERE (i.e. this is a forward leg)
+   // These are "internal" flag bits (details where defined below):
+   // bit 4: FLAG_FAKE
+   // bit 5: FLAG_ARTICULATION
+   // bit 6: FLAG_REPLACEMENTLEG
+   // bit 7: FLAG_DATAHERE
    unsigned char bits;
    /* flags - e.g. FLAGS_SURFACE, FLAGS_DUPLICATE.
     * only used if (FLAG_DATAHERE & !(FLAG_REPLACEMENTLEG|FLAG_FAKE))
@@ -284,9 +285,16 @@ typedef struct {
    unsigned char flags;
 } linkcommon;
 
+// Set for the forward direction of the leg (which has the leg data).
 #define FLAG_DATAHERE 0x80
+// Set if this leg was created by a network reduction replacement.
+// Set for both forward and reverse legs.
 #define FLAG_REPLACEMENTLEG 0x40
+// Set if this leg is an articulating leg (i.e. carries no error).
+// Set for both forward and reverse legs.
 #define FLAG_ARTICULATION 0x20
+// Set if this leg is an equate or the leg used to implement a `*fix`
+// with SDs.  Only set for the forward leg currently.
 #define FLAG_FAKE 0x10 /* an equate or leg inside an sdfix */
 
 /* forward leg - deltas & vars stored here */
