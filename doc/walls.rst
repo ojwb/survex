@@ -179,9 +179,9 @@ features are likely to be handled while more obscure features may not be.
     P25     <8 5 15 3.58   *--,--,--,--*
 
 - In Europe a comma is customarily used for the decimal point.  Walls ``.svy``
-  format treats comma (``,``) like a space and allows optional instrument and
-  target heights on each survey leg which can result in the data meaning
-  something different to what the user intended.
+  format treats a comma (``,``) as separating fields and allows optional
+  instrument and target heights on each survey leg which can result in the data
+  being interpreted in a different way to what the user intended.
 
   A real world example::
 
@@ -191,8 +191,8 @@ features are likely to be handled while more obscure features may not be.
 
     GB1        GB2        5 00    0       30
 
-  This means Walls quietly parses this as length ``5``, compass ``00``, clino
-  ``0`` and (optional field) instrument height ``30``.
+  So Walls quietly parses this as a leg with length ``5``, compass ``00``,
+  clino ``0`` and (optional field) instrument height ``30``.
 
   Survex 1.4.23 and later issue a warning about such cases, which is suppressed
   if there's a decimal point in the component on either side of the comma.  If
