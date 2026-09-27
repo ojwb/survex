@@ -4445,12 +4445,23 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
        backctype == CTYPE_PLUMB || backctype == CTYPE_INFERPLUMB) {
       /* plumbed */
       if (comp_given != End) {
+	 // Always warn if there's an explicit plumb (`UP`/`DOWN`/etc) with
+	 // a compass reading
+	 //
+	 // Also warn for inferred plumbs (`+90`/`-90`/etc) unless the compass
+	 // reading is 0° or 180° (since those are commonly seen dummy values
+	 // in Compass and Walls datasets) or HUGE_REAL (which means it was
+	 // omitted).
 	 if (ctype == CTYPE_PLUMB ||
-	     (ctype == CTYPE_INFERPLUMB && VAL(Comp) != 0.0) ||
 	     backctype == CTYPE_PLUMB ||
+	     (ctype == CTYPE_INFERPLUMB &&
+	      VAL(Comp) != 0.0 &&
+	      VAL(Comp) != HUGE_REAL &&
+	      fabs(VAL(Comp) - M_PI) > EPSILON) ||
 	     (backctype == CTYPE_INFERPLUMB &&
-	      (VAL(BackComp) != 0.0 &&
-	       fabs(VAL(BackComp) - M_PI) > EPSILON))) {
+	      VAL(BackComp) != 0.0 &&
+	      VAL(BackComp) != HUGE_REAL &&
+	      fabs(VAL(BackComp) - M_PI) > EPSILON)) {
 	    /* TRANSLATORS: A "plumbed leg" is one measured using a plumbline
 	     * (a weight on a string).  So the problem here is that the leg is
 	     * vertical, so a compass reading has no meaning! */

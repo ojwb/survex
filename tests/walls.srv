@@ -140,6 +140,12 @@ U23        U26b       5.00    0       30,5.0
 #units grid = 0
 #units restore
 
+; Test we don't warn for compass/backcompass of 0 or 180 on a plumbed leg.
+U23 Z2 24.1 0 -90/90 *5 4 4 8*
+Z2 Z11 2.1 180/0 -90/90 <8,12,4,0.5>
+Z11 Z21 1.5 180 90/-90
+Z11 Z22 2.5 0/180 90/-90
+
 ; FIXME: These should all work now - make sure they are tested.
 ; :50 = 50 minutes (0.8333333333333d)
 ; N50.5W = North 50.5 degrees West (=309.5d)
