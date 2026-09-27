@@ -375,7 +375,7 @@ features are likely to be handled while more obscure features may not be.
   with Survex and/or Compass data, then it's possible ``:`` is used in a Survex
   or Compass station name - if so a different separator will be chosen.  Before
   Survex 1.4.21, ``.`` would be used as the ``.3d`` file separator for a pure
-  Walls dataset, even though if it was used in station names.
+  Walls dataset, even if it was used in station names.
 
 - Walls ignores junk after the numeric argument in ``TYPEAB=``, ``TYPEVB=``,
   ``UV=``, ``UVH=``, and ``UVV=``.  Survex warns and skips the junk.  Since
