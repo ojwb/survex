@@ -1589,6 +1589,9 @@ typedef struct walls_options {
     // Current ORDER= setting for RECT data.
     int order_rect;
 
+    // Current INCH= setting (extra DZ for each leg, not inch the length unit).
+    real inch;
+
     // Current path including trailing directory separator if one is needed.
     string path;
 
@@ -1627,6 +1630,9 @@ static const walls_options walls_options_default = {
 
     // order_rect
     WALLS_ORDER_CT(Dx, Dy, Dz) & ((1 << 24) - 1),
+
+    // inch
+    0.0,
 
     // path
     S_INIT,
@@ -2490,16 +2496,8 @@ walls_parse_options(void)
 	    pcs->z[Q_LENGTH] = -read_walls_distance(false, pcs->units[Q_LENGTH]);
 	    break;
 	  case WALLS_UNITS_OPT_INCH:
-	    // INCH=0 is what we do anyway, so only warn about non-zero values.
-	    if (read_walls_distance(false, pcs->units[Q_LENGTH]) != 0.0) {
-		filepos fp;
-		get_pos(&fp);
-		set_pos(&fp_option);
-		// TRANSLATORS: "Walls" is David McKenzie's cave surveying package,
-		// so should not be translated.
-		compile_diagnostic(DIAG_WARN|DIAG_QTOKEN, /*Ignoring unsupported Walls option “%s”*/582, s_str(&token));
-		set_pos(&fp);
-	    }
+	    p_walls_options->inch =
+		read_walls_distance(false, pcs->units[Q_LENGTH]);
 	    break;
 	  case WALLS_UNITS_OPT_INCV:
 	    pcs->z[Q_GRADIENT] = -read_walls_angle(pcs->units[Q_GRADIENT]);
@@ -4576,7 +4574,7 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
 #endif
    }
 
-   // For Walls instrument and target heights.
+   // For Walls INCH= and also instrument and target heights.
    dz += VAL(ToDepth);
 
 #if DEBUG_DATAIN_1
@@ -5152,6 +5150,9 @@ data_normal(void)
    VAL(Comp) = VAL(BackComp) = HUGE_REAL;
    VAL(FrCount) = VAL(ToCount) = 0;
    VAL(FrDepth) = VAL(ToDepth) = 0;
+   if (p_walls_options) {
+       VAL(ToDepth) = p_walls_options->inch;
+   }
    VAL(Left) = VAL(Right) = VAL(Up) = VAL(Down) = HUGE_REAL;
 
    // Initialise variance slots where we store variance overrides.
@@ -5805,7 +5806,7 @@ data_normal(void)
 	      // adding their difference (IH minus TH) to the computed
 	      // elevation of the TO station with respect to the FROM
 	      // station"
-	      VAL(ToDepth) = instrument_height - target_height;
+	      VAL(ToDepth) += instrument_height - target_height;
 	      LOC(ToDepth) = fp.offset;
 	      WID(ToDepth) = ftell(file.fh) - fp.offset;
 	      break;

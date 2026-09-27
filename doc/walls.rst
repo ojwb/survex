@@ -327,8 +327,7 @@ features are likely to be handled while more obscure features may not be.
   warning, and is skipped.  If your Walls data specifies a UTM zone then Survex
   will automatically correct for grid convergence.
 
-- The ``INCH=`` option currently gives an "Ignoring unsupported Walls option"
-  warning (unless the argument is zero, since Survex 1.4.10), and is skipped.
+- The ``INCH=`` option is supported since Survex 1.4.23.
 
 - Walls seems to allow ``\\`` in place of ``/`` in some places (e.g.
   ``#FLAG``).  We aim to support this too, but it doesn't seem to be documented

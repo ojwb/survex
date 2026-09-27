@@ -34,39 +34,36 @@
 ./walls.srv:58:14: warning: End of line not blank
  #prefix test walls appears to ignore anything here
               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-./walls.srv:66:8: warning: Ignoring unsupported Walls option "inch"
- #units inch=1 ; regression test
-        ^~~~
 ./walls.srv:70:12: warning: Ignoring "gradeb)"
- #units uv=4gradeb) inch=1
+ #units uv=4gradeb) case=x
             ^~~~~~~
-./walls.srv:70:20: warning: Ignoring unsupported Walls option "inch"
- #units uv=4gradeb) inch=1
-                    ^~~~
+./walls.srv:70:25: warning: Expecting "LOWER", "UPPER", or "MIXED"
+ #units uv=4gradeb) case=x
+                         ^
 ./walls.srv:71:13: warning: Ignoring "gradeb"
- #units uvv=4gradeb inch=1
+ #units uvv=4gradeb case=x
              ^~~~~~
-./walls.srv:71:20: warning: Ignoring unsupported Walls option "inch"
- #units uvv=4gradeb inch=1
-                    ^~~~
+./walls.srv:71:25: warning: Expecting "LOWER", "UPPER", or "MIXED"
+ #units uvv=4gradeb case=x
+                         ^
 ./walls.srv:72:13: warning: Ignoring "gradeb"
- #units uvh=4gradeb inch=1
+ #units uvh=4gradeb case=x
              ^~~~~~
-./walls.srv:72:20: warning: Ignoring unsupported Walls option "inch"
- #units uvh=4gradeb inch=1
-                    ^~~~
+./walls.srv:72:25: warning: Expecting "LOWER", "UPPER", or "MIXED"
+ #units uvh=4gradeb case=x
+                         ^
 ./walls.srv:73:18: warning: Ignoring "Q)"
- #units typeab=n,4Q),X inch=1
+ #units typeab=n,4Q),X case=x
                   ^~
-./walls.srv:73:23: warning: Ignoring unsupported Walls option "inch"
- #units typeab=n,4Q),X inch=1
-                       ^~~~
+./walls.srv:73:28: warning: Expecting "LOWER", "UPPER", or "MIXED"
+ #units typeab=n,4Q),X case=x
+                            ^
 ./walls.srv:74:20: warning: Ignoring "Q"
- #units typevb=c,1.2Q inch=1
+ #units typevb=c,1.2Q case=x
                     ^
-./walls.srv:74:22: warning: Ignoring unsupported Walls option "inch"
- #units typevb=c,1.2Q inch=1
-                      ^~~~
+./walls.srv:74:27: warning: Expecting "LOWER", "UPPER", or "MIXED"
+ #units typevb=c,1.2Q case=x
+                           ^
 ./walls.srv:85:11: warning: Expecting station name
  U11 EMPTY: 1.00 -- 90
            ^
@@ -146,4 +143,4 @@ Vertical range = 57.44m (from U12b at 51.00m to suf2a at -6.44m)
 North-South range = 53.08m (from U12b at 40.00m to 12#4 at -13.08m)
 East-West range = 31.49m (from U12a at 30.00m to U1 at -1.49m)
 
-There were 41 warning(s).
+There were 40 warning(s).

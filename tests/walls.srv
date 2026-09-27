@@ -1,4 +1,4 @@
-; pos=dump warn=41 dummycrprotection=
+; pos=dump warn=40 dummycrprotection=
 #u o=EUN v=g
 #Fix U0 0 1 0
 #seg FOO
@@ -63,15 +63,15 @@ U3   --      7.8     098.7
 #units typevb=c,6,X
 #units typevb=c,6,x
 #units typevb=c,1
-#units inch=1 ; regression test
-; Test no warning for values of unsupported options which are the default.
-#units inch=0
+
+
 ; Walls seems to fail to check for junk after parsing a number in these cases:
-#units uv=4gradeb) inch=1
-#units uvv=4gradeb inch=1
-#units uvh=4gradeb inch=1
-#units typeab=n,4Q),X inch=1
-#units typevb=c,1.2Q inch=1
+; (follow with something which should warn to test we continue parsing suitably)
+#units uv=4gradeb) case=x
+#units uvv=4gradeb case=x
+#units uvh=4gradeb case=x
+#units typeab=n,4Q),X case=x
+#units typevb=c,1.2Q case=x
 ; Test omission of clino on splays
 #units order=adv
 U5  -  123 1.00
