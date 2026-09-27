@@ -223,6 +223,8 @@ solve_matrix(node *list)
 		  /* forward leg, unfixed -> unfixed */
 		  int t = to->colour;
 		  SVX_ASSERT(t >= 0);
+		  // Ignore lollipops.
+		  if (t == f) continue;
 #if DEBUG_MATRIX
 # ifdef NO_COVARIANCES
 		  printf("Leg %d to %d, var %f, delta %f\n", f, t, e,
@@ -233,10 +235,10 @@ solve_matrix(node *list)
 			 leg->d[dim]);
 # endif
 #endif
-		  /* Ignore equated nodes & lollipops */
+		  /* Ignore equated nodes */
 #ifdef NO_COVARIANCES
 		  e = leg->v[dim];
-		  if (t != f && e != (real)0.0) {
+		  if (e != (real)0.0) {
 		     e = ((real)1.0) / e;
 		     M(f,f) += e;
 		     M(t,t) += e;
@@ -246,7 +248,7 @@ solve_matrix(node *list)
 		     B[t] += a;
 		  }
 #else
-		  if (t != f && invert_svar(&e, &leg->v)) {
+		  if (invert_svar(&e, &leg->v)) {
 		     mulsd(&a, &e, &leg->d);
 		     for (int i = 0; i < 3; i++) {
 			M(f * FACTOR + i, f * FACTOR + i) += e[i];
