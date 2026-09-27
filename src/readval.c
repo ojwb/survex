@@ -627,10 +627,8 @@ read_number_or_int(bool f_optional, bool f_unsigned, bool* pf_decimal_point)
    bool fPositive = true, fDigits = false;
    real n = (real)0.0;
    filepos fp;
-   int ch_old;
 
    get_pos(&fp);
-   ch_old = ch;
    if (!f_unsigned) {
       fPositive = !isMinus(ch);
       if (isSign(ch)) nextch();
@@ -663,7 +661,7 @@ read_number_or_int(bool f_optional, bool f_unsigned, bool* pf_decimal_point)
       return HUGE_REAL;
    }
 
-   if (isOmit(ch_old)) {
+   if (isOmit(ch)) {
       compile_diagnostic(DIAG_ERR|DIAG_COL, /*Field may not be omitted*/114);
    } else {
       compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
