@@ -1,4 +1,67 @@
-up to: 9bdcce8cedf50173f56f9f7ee1192a9e78733dc8
+up to: f68680d2c3a3ab5f9f15decf68bc01183fffc15f
+
+
+
+    Improve parsing of Walls LRUD
+    Handle "to" starting "<" or "*" in the same way Walls does when there
+    is LRUD later in the line.
+    We currently skip over the LRUD readings, but now we check for a
+    comment character as we skip, so this now errors in both Walls and
+    Survex:
+      1 2 3 64 5 <1,2,3,4;>
+
+manual:    Fix Walls example to match warning message shown
+
+Author: Philip Schuchardt <vpicaver@gmail.com>
+    cavern: Allow reading coordinate system from file
+
+    `*cs file FILENAME` reads the coordinate system description from a
+    separate file, so it can be a PROJ string, WKT or PROJJSON.  WKT and
+    PROJJSON are made up of double quoted strings written over several
+    lines, which is awkward to write in a .svx file, and they can express
+    datums a PROJ string can't, such as NAD83(2011), ETRS89 and GDA2020.
+    It also means a .prj file such as those which accompany ESRI
+    shapefiles can be used directly, so a survey can be georeferenced to
+    match GIS data you already have.
+
+    The filename is resolved relative to the directory of the file the
+    *cs is in, a .prj extension is tried if the name as given isn't found,
+    and the lines of the file are joined with a space since the coordinate
+    system is stored in the .3d file as a single line.
+
+    There's no UTF-8 BOM skipping - PROJ rejects a BOM and so does GDAL's
+    .prj reader.
+
+    Fixes #150
+
+
+
+
+
+
+
+
+    cavern: Handle quoted values in Walls options
+    Reported by Andy Edwards.
+
+
+    cavern: Fix parse loop on invalid Walls .srv
+
+    If we found an empty token in Walls options, we reported an error
+    but didn't advance the parse position so we'd report the same error
+    again and again until we hit the limit on the number of errors.
+
+    The handling of some of these invalid cases doesn't currently match
+    Walls, but at least we no longer repeat the same error.
+
+    Problem found by an example from Andy Edwards of strange syntax
+    which Walls quietly accepts.
+
+
+
+
+
+
 
 Changes in 1.4.23 (UNRELEASED):
 
@@ -6,9 +69,89 @@ Changes in 1.4.23 (UNRELEASED):
 
   + Allow escaping " in quoted strings in .svx files by doubling it.
 
-  + Allow optional licensing info in *copyright.  Suggested by Andrew Atkinson.
+  + Add optional licensing information field to *copyright.  Suggested by
+    Andrew Atkinson.
+
+  + We now should report exactly one station per dangling component.
+    Previously we would sometimes report multiple stations, and in rare cases
+    we sometimes didn't report a station for a dangling component.
 
   + Improve reported context for `*cs custom` errors.
+
+  + Improve reported context for foresight/backsight mismatch.  Cavern is only
+    currently able to highlight one region of a line, but often the foresight
+    and backsight are adjacent readings so we now check for this and if so
+    extend the highlighted region to cover both.
+
+  + Fix reported location for SD value <=0 in *sd.  The reported line was
+    correct, but the location shown within the line was the first character of
+    the token after the SD value.
+
+  + Walls `TYPEAB=` and `TYPEVB=` tolerances are now mapped to compass and
+    clino SDs such that backsight mismatches are warned about for the same
+    cases which Walls warns about.  Fixes #158, reported by Joe Walko.
+
+  + Walls `INCH=` option is now supported.
+
+  + Support Walls instrument and/or target heights with `TAPE=IT`.  Fixes the
+    most important cases of #160, reported by Joe Walko.
+
+  + Warn about unsupported values of Walls `TAPE=` option with non-zero
+    heights.  Addresses the remaining cases of #160, reported by Joe Walko.
+
+  + We now warn "Ignoring unsupported Walls option" instead of "Unknown
+    command" for Walls `GRID=` option.
+
+  + Warn about suspicious use of `,` in Walls data.  In Europe a comma is
+    customarily used for the decimal point.  Walls ``.svy`` format treats a
+    comma as separating fields and allows optional instrument and target
+    heights on each survey leg which can result in the data being interpreted
+    in a different way to what the user intended.
+
+    A real world example::
+
+      GB1        GB2        5,00    0       30
+
+    Walls treats this as equivalent to::
+
+      GB1        GB2        5 00    0       30
+
+    So Walls quietly parses this as a leg with length `5`, compass `00`,
+    clino `0` and (optional field) instrument height `30`.
+
+    We now issue a warning about such cases, which is suppressed if there's
+    a decimal point in the component on either side of the comma.  If you have
+    data where this warning fires but the comma is meant to be separate
+    readings, you can workaround by changing the comma to a space, or adding a
+    ``.0`` to one of the readings adjacent to the comma.   Please also report
+    such cases and we'll try to adjust the warning conditions to avoid them.
+
+    Issue highlighted by a dataset from Darek Lubomski.
+
+  + Emit an error instead of a warning for invalid dates which Walls also emits
+    an error for.  Use of an invalid day of the month <= 31 (September 31st,
+    February 30th, etc) is still a warning, since Walls quietly accepts these.
+
+  + Walls is very permissive when parsing `CASE=` option values and treats
+    anything starting with `L` as `LOWER`, anything starting with `U` as
+    `UPPER` and anything else as `MIXED`.  Survex now warns if the value is
+    not one of `L`, `U`, `M`, `LOWER`, `UPPER`, or `MIXED`.
+
+  + Walls isolated LRUD now marks the station(s) as "used" (which suppresses
+    the "unused fixed point" warning).
+
+  + Fix a bug in handling a leg floated either horizontally or vertically in
+    Walls data.  Reported by Joe Walko in #157.
+
+  + Walls emits an error for a `#NOTE` where the note is empty, so we now do
+    as well.
+
+* aven:
+
+  + Work around macOS 27 bug when the user's locale uses `,` as the decimal
+    point.
+
+  + Fix failing `m_Scale != 0.0` assertion seem on macOS 27.
 
 * aven/survexport:
 
@@ -16,22 +159,42 @@ Changes in 1.4.23 (UNRELEASED):
     export or printout of a tilted view (i.e. one which isn't plan or
     elevation), but a typo meant this wasn't working correctly.
 
-  + Include Z coordinates in exported shapefiles.  Patch from echarlie.
+  + Include Z coordinates in exported shapefiles.  Patch from Eric C. Landgraf.
     Fixes #151.
+
+* extend: If we fail to open the .3d output file we now exit with an error.
+  Previously `extend` would appear to succeed and exit with status zero,
+  despite failing to create an output file.  If the output file already existed
+  but wasn't writable this meant `File->Extend Elevation...` in aven would
+  appear to work but actually open that existing output file.
 
 * INSTALL: Document that GDAL is now used to export geodata too.
 
+* Manual: Note Tatra Cave Registry in Walls docs
+
 * img library:
+
+  + Failing to open a file for writing now gives error code `IMG_CANTOPENOUT`
+    instead of `IMG_FILENOTFOUND`.  Bug introduced in Survex 1.2.35 - before
+    that we also used error code `IMG_CANTOPENOUT` in this case.  Reported by
+    Eric C. Landgraf in #153.
 
   + Initialise `label` member when writing.  Its value isn't actually used
     when writing, but it gets updated relative to `label_buf` when the
     latter grows, which is undefined behaviour (though unlikely to
     be a problem in practice).
 
-* Avoid calling `memcpy(ptr, NULL, 0)` which is undefined behaviour (though
-  unlikely to be a problem in practice).
+  + Fix possible out-of-bounds read when handling the coordinate system in v8
+    .3d files.  Patch from Philip Schuchardt.  Fixes #154.
 
-* Fix "discarded-qualifiers" compiler warning from GCC15 and newer.
+  + Eliminate `//` comments for C90 compatibility.
+
+* Portability:
+
+  + Avoid calling `memcpy(ptr, NULL, 0)` which is undefined behaviour (though
+    unlikely to be a problem in practice).
+
+  + Fix "discarded-qualifiers" compiler warning from GCC15 and newer.
 
 Changes in 1.4.22 (2026-06-23):
 
