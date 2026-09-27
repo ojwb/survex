@@ -276,7 +276,7 @@ features are likely to be handled while more obscure features may not be.
   days as it quietly accepts invalid dates such as ``2025-09-31``,
   ``2024-02-30`` and ``2025-02-29``.  Survex warns about these cases.
   Since 1.4.23, Survex issues an error for invalid dates which Walls
-  issues an error for, such as month < 1 or > 13, or day < 1 or > 31
+  issues an error for, such as month < 1 or > 12, or day < 1 or > 31
   (previously Survex only warned about these too).
 
 - The documentation specifies that the ``SAVE`` and ``RESTORE`` options
@@ -319,7 +319,7 @@ features are likely to be handled while more obscure features may not be.
   tolerance are warned about, with the default SDs set to match the default
   Walls tolerance of 5°.  The ``X`` flag (which means only use foresights but
   still check backsights) is currently ignored so foresights and backsights
-  always averaged.
+  are always averaged.
 
 - ``UV=``, ``UVH=`` and ``UVV=`` all give an "Ignoring unsupported Walls
   option" warning, and are skipped.  (Since Survex 1.4.23; before that they
@@ -396,7 +396,7 @@ features are likely to be handled while more obscure features may not be.
   unlikely to be intentionally used and Survex doesn't allow an empty station
   name, so we issue a warning and use the name ``empty name`` (which has a
   space in, so can't collide with a real Walls station name which can't contain
-  a space) - so ``PEP:`` in Walls becomes ``PEP.empty name`` in Survex.
+  a space) - so ``PEP:`` in Walls becomes ``PEP:empty name`` in Survex.
   Since Survex 1.4.10.
 
 - Explicit units on clino readings are supported since Survex 1.4.10.  Survex
