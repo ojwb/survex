@@ -3005,6 +3005,18 @@ msgstr ""
 msgid "″"
 msgstr ""
 
+#. TRANSLATORS: This is describing the number of Standard Deviations,
+#. e.g. 3σ for 3 standard deviations.  It's used in aven for the key
+#. when colouring by error.
+#.
+#. If there should be a space between the number and this, include
+#. one in the translation.
+#: ../src/gfxcore.cc:1177
+#: n:584
+#, c-format
+msgid "σ"
+msgstr ""
+
 #. TRANSLATORS: Menu item which turns off the "north arrow" in aven.
 #: ../src/gfxcore.cc:4402
 #: n:387

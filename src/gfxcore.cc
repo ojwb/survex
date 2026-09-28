@@ -1168,10 +1168,22 @@ void GfxCore::DrawErrorKey()
     if (HasErrorInformation()) {
 	// Use fixed colours for each error factor so it's directly visually
 	// comparable between surveys.
+	// TRANSLATORS: This is describing the number of Standard Deviations,
+	// e.g. 3σ for 3 standard deviations.  It's used in aven for the key
+	// when colouring by error.
+	//
+	// If there should be a space between the number and this, include
+	// one in the translation.
+	wxString units = wmsg(/*σ*/584);
 	num_bands = GetNumColourBands();
 	for (int band = 0; band < num_bands; ++band) {
-	    double E = MAX_ERROR * band / (num_bands - 1);
-	    key_legends[band].Printf(wxT("%.2f"), E);
+	    if (MAX_ERROR == num_bands - 1) {
+		int E = MAX_ERROR * band / (num_bands - 1);
+		key_legends[band].Printf(wxT("%d%s"), E, units);
+	    } else {
+		double E = MAX_ERROR * band / (num_bands - 1);
+		key_legends[band].Printf(wxT("%.2f%s"), E, units);
+	    }
 	}
     } else {
 	num_bands = 0;
