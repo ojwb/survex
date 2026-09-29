@@ -1574,6 +1574,9 @@ typedef struct walls_options {
     // RECT in effect?
     bool rect;
 
+    // TYPEAB=C,... in effect?
+    bool typeab_c;
+
     // Flags to apply to stations in #FIX.
     int fix_station_flags;
 
@@ -1591,6 +1594,9 @@ typedef struct walls_options {
 
     // Current INCH= setting (extra DZ for each leg, not inch the length unit).
     real inch;
+
+    // Current INCAB= setting.
+    real incab;
 
     // Current path including trailing directory separator if one is needed.
     string path;
@@ -1616,6 +1622,9 @@ static const walls_options walls_options_default = {
     // rect
     false,
 
+    // typeab_c
+    false,
+
     // fix_station_flags
     0,
 
@@ -1632,6 +1641,9 @@ static const walls_options walls_options_default = {
     WALLS_ORDER_CT(Dx, Dy, Dz) & ((1 << 24) - 1),
 
     // inch
+    0.0,
+
+    // incab
     0.0,
 
     // path
@@ -1828,6 +1840,16 @@ walls_update_data_order(void)
 }
 
 static void
+walls_update_backcomp_calibration(void)
+{
+    real calibration = -(p_walls_options->incab);
+    if (p_walls_options->typeab_c) {
+	calibration += M_PI;
+    }
+    pcs->z[Q_BACKBEARING] = calibration;
+}
+
+static void
 walls_reset(void)
 {
     // "[S]et all parameters (including the current name prefix) to their
@@ -1844,6 +1866,7 @@ walls_reset(void)
     *p_walls_options = walls_options_default;
 
     walls_update_data_order();
+    walls_update_backcomp_calibration();
 }
 
 static void
@@ -2264,6 +2287,8 @@ walls_parse_options(void)
     // doing so until after we've parsed a set of options to avoid some
     // redundant calls.
     bool update_data_order = false;
+    // Track if we need to call walls_update_backcomp_calibration().
+    bool update_backcomp_calibration = false;
     while (true) {
 	walls_get_option_token();
 	if (s_empty(&token) && (isComm(ch) || isEol(ch))) {
@@ -2490,7 +2515,9 @@ walls_parse_options(void)
 	    pcs->z[Q_BEARING] = -read_walls_angle(pcs->units[Q_BEARING]);
 	    break;
 	  case WALLS_UNITS_OPT_INCAB:
-	    pcs->z[Q_BACKBEARING] = -read_walls_angle(pcs->units[Q_BACKBEARING]);
+	    p_walls_options->incab =
+		read_walls_angle(pcs->units[Q_BACKBEARING]);
+	    update_backcomp_calibration = true;
 	    break;
 	  case WALLS_UNITS_OPT_INCD:
 	    pcs->z[Q_LENGTH] = -read_walls_distance(false, pcs->units[Q_LENGTH]);
@@ -2615,9 +2642,15 @@ walls_parse_options(void)
 	  case WALLS_UNITS_OPT_TYPEAB:
 	    walls_get_option_token();
 	    if (s_str(&uctoken)[0] == 'N') {
-		pcs->z[Q_BACKBEARING] = 0.0;
+		if (p_walls_options->typeab_c) {
+		    p_walls_options->typeab_c = false;
+		    update_backcomp_calibration = true;
+		}
 	    } else if (s_str(&uctoken)[0] == 'C') {
-		pcs->z[Q_BACKBEARING] = M_PI;
+		if (!p_walls_options->typeab_c) {
+		    p_walls_options->typeab_c = true;
+		    update_backcomp_calibration = true;
+		}
 	    } else {
 		filepos fp;
 		get_pos(&fp);
@@ -2626,6 +2659,7 @@ walls_parse_options(void)
 		compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “%s” or “%s”*/103, "C", "N");
 		set_pos(&fp);
 	    }
+	    update_backcomp_calibration = true;
 	    if (ch == ',') {
 		nextch();
 		// Set compass variance based on threshold.
@@ -2766,12 +2800,10 @@ walls_parse_options(void)
 	    }
 	    break;
 	}
-//		pcs->z[Q_BACKBEARING] = pcs->z[Q_BEARING] = -rad(read_numeric(false));
-//		pcs->z[Q_BACKGRADIENT] = pcs->z[Q_GRADIENT] = -rad(read_numeric(false));
-//		pcs->z[Q_LENGTH] = -METRES_PER_FOOT * read_numeric(false);
     }
 
     if (update_data_order) walls_update_data_order();
+    if (update_backcomp_calibration) walls_update_backcomp_calibration();
 }
 
 static void
@@ -2791,6 +2823,7 @@ data_file_walls_srv(void)
     int fix_station_flags = p_walls_options->fix_station_flags;
 
     walls_update_data_order();
+    walls_update_backcomp_calibration();
 
     /* errors in nested functions can longjmp here */
     if (setjmp(jbSkipLine)) {

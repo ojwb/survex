@@ -1,20 +1,90 @@
-; pos=dump warn=8 dummycrprotection=
-#fix S1 0 0 0
+#DATE 2026-09-19
+#FIX	:S1	4000000m	600000m	500m
+#PREFIX AA
 ; Check default tolerance is 5° - these should warn:
-S1	  A1        20        359/184.1              2/-7.1
+:S1	  A1        20        359/184.1              2/-7.1
 A1	  A2        20        359/173.9              2/3.1
 ; and these should not:
 A2	  A3        20        359/184                2/-7
 A3	  A4        20        359/174                2/3
 #units typeab=N,6
 ; Should warn:
-S1        S2        30        100/286.1              /-16  ;no forward inclination
+:S1       S2        30        100/286.1              /-16  ;no forward inclination
 S2        S3        15.5      355/181.1              6/0
 ; Should not warn:
-S1        S2        30        100/286                /-16  ;no forward inclination
+:S1       S2        30        100/286                /-16  ;no forward inclination
 S2        S3        15.5      355/181                6/-1
 #units typevb=N,6
 ; Should warn:
-S1        Z1        10	      100/286                -12/18.1
+:S1       Z1        10	      100/286                -12/18.1
 ; Should not warn:
 Z1        Z2        10	      100/286		     -12/18
+
+; Test that TYPEAB= and INCAB= work properly together.
+; Regression test for bug fixed in 1.4.23.
+#UNITS order=NEU order=DAV
+#FIX	:a1	4112200m	586700m	300m
+#UNITS order=dav  LRUD=F A=D V=D D=F S=F
+
+#PREFIX AN	; Normal compass, normal clino
+#UNITS TYPEAB=N,1 TYPEVB=N,1
+#UNITS DECL=0 INCA=0 INCAB=0   INCV=0  INCVB=0
+:a1	b2	10	90/270	0
+#UNITS DECL=0 INCA=-10 INCAB=0  INCV=0  INCVB=0
+:a1	b2a	10	90/270	0
+:a1	b2b	10	100/270	0
+#UNITS DECL=0 INCA=0 INCAB=-10  INCV=0  INCVB=0
+:a1	b3a	10	90/270	0
+:a1	b3b	10	90/280	0
+#UNITS DECL=0 INCA=-10 INCAB=-10  INCV=0  INCVB=0
+:a1	b4a	10	90/270	0
+:a1	b4b	10	90/280	0
+
+
+
+#PREFIX AC	; corrected compass, normal clino
+#UNITS TYPEAB=C,1 TYPEVB=N,1
+#UNITS TYPEAB=C
+#UNITS DECL=0 INCA=0 INCAB=0   INCV=0  INCVB=0
+:a1	c2	10	90/90	0
+
+#UNITS DECL=0 INCA=-10 INCAB=0  INCV=0  INCVB=0
+:a1	c2a	10	90/90	0
+:a1	c2b	10	100/90	0
+#UNITS DECL=0 INCA=0 INCAB=-10  INCV=0  INCVB=0
+:a1	c3a	10	90/90	0
+:a1	c3b	10	90/100	0
+#UNITS DECL=0 INCA=-10 INCAB=-10  INCV=0  INCVB=0
+:a1	c4a	10	90/90	0
+
+:a1	c4b	10	90/100	0
+
+
+
+#PREFIX VN	; normal compass, normal clino
+#UNITS TYPEAB=N,1 TYPEVB=N,1
+#UNITS DECL=0 INCA=0 INCAB=0   INCV=0  INCVB=0
+:a1	d2	10	90/270	-5/+5
+#UNITS DECL=0 INCA=0 INCAB=0  INCV=+5  INCVB=0
+:a1	d2a	10	90/270	-5/+5
+:a1	d2b	10	90/270	-10/+5
+#UNITS DECL=0 INCA=0 INCAB=0  INCV=0  INCVB=+5
+:a1	d3a	10	90/270	-5/+5
+:a1	d3b	10	90/270	-5/0
+#UNITS DECL=0 INCA=0 INCAB=0  INCV=+5  INCVB=-5
+:a1	d4a	10	90/270	-5/+5
+:a1	d4b	10	90/270	-10/+5
+
+#PREFIX VC	; normal compass, corrected clino
+#UNITS TYPEAB=N,1 TYPEVB=C,1
+#UNITS DECL=0 INCA=0 INCAB=0   INCV=0  INCVB=0
+:a1	e2	10	90/270	+5/+5
+#UNITS DECL=0 INCA=0 INCAB=0  INCV=+5  INCVB=0
+:a1	e2a	10	90/270	+5/+5
+:a1	e2b	10	90/270	0/+5
+#UNITS DECL=0 INCA=0 INCAB=0  INCV=0  INCVB=+5
+:a1	e3a	10	90/270	+5/+5
+:a1	e3b	10	90/270	+5/0
+#UNITS DECL=0 INCA=0 INCAB=0  INCV=+5  INCVB=-5
+:a1	e4a	10	90/270	-5/+5
+:a1	e4b	10	90/270	0/+5
