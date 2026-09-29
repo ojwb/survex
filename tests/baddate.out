@@ -1,28 +1,28 @@
-./baddate.srv:10:15: warning: Invalid day of the month
+baddate.srv:10:15: warning: Invalid day of the month
  #date 2003-09-31
                ^~
-./baddate.srv:12:15: warning: Invalid day of the month
+baddate.srv:12:15: warning: Invalid day of the month
  #date 2003-02-29
                ^~
-./baddate.srv:14:15: warning: Invalid day of the month
+baddate.srv:14:15: warning: Invalid day of the month
  #date 1900-02-29
                ^~
-./baddate.srv:16:7: warning: Invalid year (< 1900 or > 2078)
+baddate.srv:16:7: warning: Invalid year (< 1900 or > 2078)
  #date 2100-02-29
        ^~~~
-./baddate.srv:28:12: error: Invalid month
+baddate.srv:28:12: error: Invalid month
  #date 2004-00-29
             ^~
-./baddate.srv:30:12: error: Invalid month
+baddate.srv:30:12: error: Invalid month
  #date 2004-13-29
             ^~
-./baddate.srv:32:15: error: Invalid day of the month
+baddate.srv:32:15: error: Invalid day of the month
  #date 2004-11-32
                ^~
-./baddate.srv:34:12: error: Invalid month
+baddate.srv:34:12: error: Invalid month
  #date 2004-13-32
             ^~
-./baddate.srv:36:1: info: Survey has no fixed points. Therefore I've fixed A at (0,0,0)
+baddate.srv:36:1: info: Survey has no fixed points. Therefore I've fixed A at (0,0,0)
 
 Removing trailing traverses...
 

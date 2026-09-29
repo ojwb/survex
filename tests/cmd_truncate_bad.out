@@ -1,13 +1,13 @@
-./cmd_truncate_bad.svx:3:11: error: Expecting numeric field, found "on"
+cmd_truncate_bad.svx:3:11: error: Expecting numeric field, found "on"
  *Truncate on
            ^~
-./cmd_truncate_bad.svx:4:11: error: Expecting numeric field, found "off7"
+cmd_truncate_bad.svx:4:11: error: Expecting numeric field, found "off7"
  *truncate off7
            ^~~~
-./cmd_truncate_bad.svx:5:11: error: Expecting numeric field, found "o7"
+cmd_truncate_bad.svx:5:11: error: Expecting numeric field, found "o7"
  *truncate o7
            ^~
-./cmd_truncate_bad.svx:6:12: error: End of line not blank
+cmd_truncate_bad.svx:6:12: error: End of line not blank
  *truncate 3.14159
             ^~~~~~
 

@@ -1,9 +1,9 @@
-./cmd_declination_auto_bad.svx:4: error: The output projection is set but the input projection isn't
+cmd_declination_auto_bad.svx:4: error: The output projection is set but the input projection isn't
  *fix 1 0410600 5282000 1234
-./cmd_declination_auto_bad.svx:5:14: error: Input coordinate system must be specified for "*DECLINATION AUTO"
+cmd_declination_auto_bad.svx:5:14: error: Input coordinate system must be specified for "*DECLINATION AUTO"
  *declination auto 0410600 5282000 1234
               ^~~~
-./cmd_declination_auto_bad.svx:34:14: error: Input coordinate system must be specified for "*DECLINATION AUTO"
+cmd_declination_auto_bad.svx:34:14: error: Input coordinate system must be specified for "*DECLINATION AUTO"
  *declination auto 0490600 5282000 1234
               ^~~~
 

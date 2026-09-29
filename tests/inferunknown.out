@@ -1,22 +1,22 @@
-./inferunknown.svx:3:8: error: Found "qwerty", expecting "EQUATES", "EXPORTS", or "PLUMBS"
+inferunknown.svx:3:8: error: Found "qwerty", expecting "EQUATES", "EXPORTS", or "PLUMBS"
  *infer qwerty on
         ^~~~~~
-./inferunknown.svx:4:8: error: Found "exp0rts", expecting "EQUATES", "EXPORTS", or "PLUMBS"
+inferunknown.svx:4:8: error: Found "exp0rts", expecting "EQUATES", "EXPORTS", or "PLUMBS"
  *infer exp0rts on
         ^~~~~~~
-./inferunknown.svx:5:8: error: Found "exp0rts", expecting "EQUATES", "EXPORTS", or "PLUMBS"
+inferunknown.svx:5:8: error: Found "exp0rts", expecting "EQUATES", "EXPORTS", or "PLUMBS"
  *infer exp0rts 0n
         ^~~~~~~
-./inferunknown.svx:6:8: error: Found "", expecting "EQUATES", "EXPORTS", or "PLUMBS"
+inferunknown.svx:6:8: error: Found "", expecting "EQUATES", "EXPORTS", or "PLUMBS"
  *infer 99 off
         ^
-./inferunknown.svx:7:15: error: Found "", expecting "ON" or "OFF"
+inferunknown.svx:7:15: error: Found "", expecting "ON" or "OFF"
  *infer plumbs 0ff
                ^
-./inferunknown.svx:8:15: error: Found "", expecting "ON" or "OFF"
+inferunknown.svx:8:15: error: Found "", expecting "ON" or "OFF"
  *infer plumbs 66
                ^
-./inferunknown.svx:9:15: error: Found "f00", expecting "ON" or "OFF"
+inferunknown.svx:9:15: error: Found "f00", expecting "ON" or "OFF"
  *infer plumbs f00
                ^~~
 

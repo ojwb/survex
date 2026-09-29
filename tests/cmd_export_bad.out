@@ -1,7 +1,7 @@
-./cmd_export_bad.svx:6:9: error: Character "*" not allowed in station name (use *SET NAMES to set allowed characters)
+cmd_export_bad.svx:6:9: error: Character "*" not allowed in station name (use *SET NAMES to set allowed characters)
  *export *
          ^
-./cmd_export_bad.svx:7:11: error: Character "=" not allowed in station name (use *SET NAMES to set allowed characters)
+cmd_export_bad.svx:7:11: error: Character "=" not allowed in station name (use *SET NAMES to set allowed characters)
  *export 1 =
            ^
 
@@ -27,6 +27,6 @@ Total vertical length of survey legs =    0.03m
 Vertical range = 0.03m (from x.3 at 0.03m to x.1 at 0.00m)
 North-South range = 1.97m (from x.3 at 1.97m to x.1 at 0.00m)
 East-West range = 0.35m (from x.3 at 0.35m to x.1 at 0.00m)
-./cmd_export_bad.svx:10: warning: Station "x.4" referred to by *export but never used
+cmd_export_bad.svx:10: warning: Station "x.4" referred to by *export but never used
 
 There were 1 warning(s) and 2 error(s) - no output files produced.

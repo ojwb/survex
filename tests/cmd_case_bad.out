@@ -1,16 +1,16 @@
-./cmd_case_bad.svx:3:7: error: Found "mixed", expecting "PRESERVE", "TOUPPER", or "TOLOWER"
+cmd_case_bad.svx:3:7: error: Found "mixed", expecting "PRESERVE", "TOUPPER", or "TOLOWER"
  *Case mixed
        ^~~~~
-./cmd_case_bad.svx:4:7: error: Found "tol0wer", expecting "PRESERVE", "TOUPPER", or "TOLOWER"
+cmd_case_bad.svx:4:7: error: Found "tol0wer", expecting "PRESERVE", "TOUPPER", or "TOLOWER"
  *CASE tol0wer
        ^~~~~~~
-./cmd_case_bad.svx:5:7: error: Found "to", expecting "PRESERVE", "TOUPPER", or "TOLOWER"
+cmd_case_bad.svx:5:7: error: Found "to", expecting "PRESERVE", "TOUPPER", or "TOLOWER"
  *case to lower
        ^~
-./cmd_case_bad.svx:6:15: error: End of line not blank
+cmd_case_bad.svx:6:15: error: End of line not blank
  *case tolower toupper
                ^~~~~~~
-./cmd_case_bad.svx:7:7: error: Found "", expecting "PRESERVE", "TOUPPER", or "TOLOWER"
+cmd_case_bad.svx:7:7: error: Found "", expecting "PRESERVE", "TOUPPER", or "TOLOWER"
  *case 42
        ^
 

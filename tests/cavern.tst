@@ -259,10 +259,10 @@ for file in $TESTS ; do
   basefile=$srcdir/$file
   case $file in
   *.*)
-    input="./$file"
+    input=$file
     basefile=`echo "$basefile"|sed 's/\.[^.]*$//'` ;;
   *)
-    input="./$file.svx" ;;
+    input=$file.svx ;;
   esac
   outfile=$basefile.out
   outfile2=$basefile.altout

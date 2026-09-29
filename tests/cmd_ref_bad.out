@@ -1,19 +1,19 @@
-./cmd_ref_bad.svx:3:5: error: Expecting string field
+cmd_ref_bad.svx:3:5: error: Expecting string field
  *ref
      ^
-./cmd_ref_bad.svx:4:7: error: Missing "
+cmd_ref_bad.svx:4:7: error: Missing "
  *ref "
        ^
-./cmd_ref_bad.svx:5:9: error: End of line not blank
+cmd_ref_bad.svx:5:9: error: End of line not blank
  *ref No quotes
          ^~~~~~
-./cmd_ref_bad.svx:6:23: error: Missing "
+cmd_ref_bad.svx:6:23: error: Missing "
  *ref "No closing quote
                        ^
-./cmd_ref_bad.svx:7:23: error: Missing "
+cmd_ref_bad.svx:7:23: error: Missing "
  *ref "No_closing_quote
                        ^
-./cmd_ref_bad.svx:8:9: error: End of line not blank
+cmd_ref_bad.svx:8:9: error: End of line not blank
  *ref No opening quote"
          ^~~~~~~~~~~~~~
 

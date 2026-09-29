@@ -1,58 +1,58 @@
-./legacytokens.svx:4:5: warning: No blank after token
+legacytokens.svx:4:5: warning: No blank after token
  *fix2 reference0 0 0
      ^
-./legacytokens.svx:4:16: warning: No blank after token
+legacytokens.svx:4:16: warning: No blank after token
  *fix2 reference0 0 0
                 ^
-./legacytokens.svx:6:6: warning: No blank after token
+legacytokens.svx:6:6: warning: No blank after token
  0 1 F- DOWN1.00
       ^
-./legacytokens.svx:6:12: warning: No blank after token
+legacytokens.svx:6:12: warning: No blank after token
  0 1 F- DOWN1.00
             ^
-./legacytokens.svx:7:10: warning: No blank after token
+legacytokens.svx:7:10: warning: No blank after token
  1 2 F - D1.00
           ^
-./legacytokens.svx:8:11: warning: No blank after token
+legacytokens.svx:8:11: warning: No blank after token
  3 2 F - UP1.00
            ^
-./legacytokens.svx:9:10: warning: No blank after token
+legacytokens.svx:9:10: warning: No blank after token
  4 3 F - U1.00
           ^
-./legacytokens.svx:10:11: warning: No blank after token
+legacytokens.svx:10:11: warning: No blank after token
  5 4 F - +V1.00
            ^
-./legacytokens.svx:11:11: warning: No blank after token
+legacytokens.svx:11:11: warning: No blank after token
  5 6 F - -V1.00
            ^
-./legacytokens.svx:12:6: warning: No blank after token
+legacytokens.svx:12:6: warning: No blank after token
  6 7 F000 LEVEL1.00
       ^
-./legacytokens.svx:12:15: warning: No blank after token
+legacytokens.svx:12:15: warning: No blank after token
  6 7 F000 LEVEL1.00
                ^
-./legacytokens.svx:13:10: warning: No blank after token
+legacytokens.svx:13:10: warning: No blank after token
  7 8 F - D+1.00
           ^
-./legacytokens.svx:15:14: warning: No blank after token
+legacytokens.svx:15:14: warning: No blank after token
  8 9 1.00 DOWN-
               ^
-./legacytokens.svx:16:13: warning: No blank after token
+legacytokens.svx:16:13: warning: No blank after token
  10 9 1.00 UP-
              ^
-./legacytokens.svx:18:5: warning: No blank after token
+legacytokens.svx:18:5: warning: No blank after token
  DOWN11 F 10 1.00 -
      ^
-./legacytokens.svx:19:5: warning: No blank after token
+legacytokens.svx:19:5: warning: No blank after token
  DOWN_12 F 11 1.00 -
      ^
-./legacytokens.svx:21:2: error: Unknown command "corrections2"
+legacytokens.svx:21:2: error: Unknown command "corrections2"
  *corrections2 3.00 
   ^~~~~~~~~~~~
-./legacytokens.svx:22:18: warning: No blank after token
+legacytokens.svx:22:18: warning: No blank after token
  *declination auto0 0 0
                   ^
-./legacytokens.svx:22:14: error: Input coordinate system must be specified for "*DECLINATION AUTO"
+legacytokens.svx:22:14: error: Input coordinate system must be specified for "*DECLINATION AUTO"
  *declination auto0 0 0
               ^~~~
 

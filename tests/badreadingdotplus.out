@@ -1,13 +1,13 @@
-./badreadingdotplus.svx:3:5: error: Expecting numeric field, found ".hello."
+badreadingdotplus.svx:3:5: error: Expecting numeric field, found ".hello."
  1 2 .hello. 100 -90
      ^~~~~~~
-./badreadingdotplus.svx:4:5: error: Expecting numeric field, found "+hello+"
+badreadingdotplus.svx:4:5: error: Expecting numeric field, found "+hello+"
  2 3 +hello+ 100 -45
      ^~~~~~~
-./badreadingdotplus.svx:6:5: error: Expecting numeric field, found "-hello"
+badreadingdotplus.svx:6:5: error: Expecting numeric field, found "-hello"
  3 4 -hello  100 -22.5
      ^~~~~~
-./badreadingdotplus.svx:7:17: error: Expecting numeric field, found ""
+badreadingdotplus.svx:7:17: error: Expecting numeric field, found ""
  4 5 10.00   100 ;comment
                  ^
 

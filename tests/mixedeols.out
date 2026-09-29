@@ -10,10 +10,10 @@ Calculating network...
 Calculating traverses...
 
 Calculating trailing traverses...
-./mixedeols.svx:2: warning: Unused fixed point "1"
-./mixedeols.svx:7: warning: Unused fixed point "2"
-./mixedeols.svx:10: warning: Unused fixed point "3"
-./mixedeols.svx:13: warning: Unused fixed point "4"
+mixedeols.svx:2: warning: Unused fixed point "1"
+mixedeols.svx:7: warning: Unused fixed point "2"
+mixedeols.svx:10: warning: Unused fixed point "3"
+mixedeols.svx:13: warning: Unused fixed point "4"
 
 Calculating statistics...
 

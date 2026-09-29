@@ -1,4 +1,4 @@
-./tabinhighlight.svx:2:24: error: End of line not blank
+tabinhighlight.svx:2:24: error: End of line not blank
  *fix 1 reference 0 0 0 bad tab
                         ^~~~~~~
 

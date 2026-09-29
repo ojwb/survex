@@ -1,4 +1,4 @@
-./utf8bom.svx:1:7: warning: Invalid year (< 1900 or > 2078)
+utf8bom.svx:1:7: warning: Invalid year (< 1900 or > 2078)
  *date 9999.1.1 ; pos=no warn=1
        ^~~~
 

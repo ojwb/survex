@@ -1,10 +1,10 @@
-./wallsdiving.srv:8:9: warning: Tape reading is less than change in depth
+wallsdiving.srv:8:9: warning: Tape reading is less than change in depth
  2.0 3.0 1.5 135 11 8.5 ; a comment
          ^~~
-./wallsdiving.srv:15:9: warning: Tape reading is less than change in depth
+wallsdiving.srv:15:9: warning: Tape reading is less than change in depth
  2.1 3.1 1.5 135 11 8.5 ; a comment
          ^~~
-./wallsdiving.srv:6:1: info: Survey has no fixed points. Therefore I've fixed 3.0 at (0,0,0)
+wallsdiving.srv:6:1: info: Survey has no fixed points. Therefore I've fixed 3.0 at (0,0,0)
 
 Removing trailing traverses...
 

@@ -1,13 +1,13 @@
-./beginroot.svx:4:2: warning: *prefix is deprecated - use *begin and *end instead
+beginroot.svx:4:2: warning: *prefix is deprecated - use *begin and *end instead
  *prefix \
   ^~~~~~
-./beginroot.svx:4:9: warning: ROOT is deprecated
+beginroot.svx:4:9: warning: ROOT is deprecated
  *prefix \
          ^
-./beginroot.svx:5:8: warning: ROOT is deprecated
+beginroot.svx:5:8: warning: ROOT is deprecated
  *begin \
         ^
-./beginroot.svx:7:6: warning: ROOT is deprecated
+beginroot.svx:7:6: warning: ROOT is deprecated
  *end \
       ^
 
@@ -22,7 +22,7 @@ Calculating network...
 Calculating traverses...
 
 Calculating trailing traverses...
-./beginroot.svx:6: warning: Unused fixed point "1"
+beginroot.svx:6: warning: Unused fixed point "1"
 
 Calculating statistics...
 

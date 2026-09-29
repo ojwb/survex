@@ -1,24 +1,24 @@
-./reenterlots.svx:7:8: warning: Reentering an existing survey is deprecated
+reenterlots.svx:7:8: warning: Reentering an existing survey is deprecated
  *begin svy
         ^~~
-./reenterlots.svx:3:8: info: Originally entered here
-./reenterlots.svx:10:8: warning: Reentering an existing survey is deprecated
+reenterlots.svx:3:8: info: Originally entered here
+reenterlots.svx:10:8: warning: Reentering an existing survey is deprecated
  *begin svy
         ^~~
-./reenterlots.svx:3:8: info: Originally entered here
-./reenterlots.svx:13:8: warning: Reentering an existing survey is deprecated
+reenterlots.svx:3:8: info: Originally entered here
+reenterlots.svx:13:8: warning: Reentering an existing survey is deprecated
  *begin svy
         ^~~
-./reenterlots.svx:3:8: info: Originally entered here
-./reenterlots.svx:16:8: warning: Reentering an existing survey is deprecated
+reenterlots.svx:3:8: info: Originally entered here
+reenterlots.svx:16:8: warning: Reentering an existing survey is deprecated
  *begin svy
         ^~~
-./reenterlots.svx:3:8: info: Originally entered here
-./reenterlots.svx:19:8: warning: Reentering an existing survey is deprecated
+reenterlots.svx:3:8: info: Originally entered here
+reenterlots.svx:19:8: warning: Reentering an existing survey is deprecated
  *begin svy
         ^~~
-./reenterlots.svx:3:8: info: Originally entered here
-./reenterlots.svx:19: info: Further uses of this deprecated feature will not be reported
+reenterlots.svx:3:8: info: Originally entered here
+reenterlots.svx:19: info: Further uses of this deprecated feature will not be reported
  *begin svy
 
 Removing trailing traverses...

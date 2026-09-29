@@ -1,22 +1,22 @@
-./cmd_instruments_bad.svx:3:12: warning: Unknown instrument type ""
+cmd_instruments_bad.svx:3:12: warning: Unknown instrument type ""
  *instrument
             ^
-./cmd_instruments_bad.svx:4:17: warning: Expecting string field
+cmd_instruments_bad.svx:4:17: warning: Expecting string field
  *instrument tape
                  ^
-./cmd_instruments_bad.svx:5:26: warning: Expecting string field
+cmd_instruments_bad.svx:5:26: warning: Expecting string field
  *instrument compass clino
                           ^
-./cmd_instruments_bad.svx:6:13: warning: Unknown instrument type ""
+cmd_instruments_bad.svx:6:13: warning: Unknown instrument type ""
  *instrument "compass" "#2"
              ^
-./cmd_instruments_bad.svx:7:38: warning: Missing "
+cmd_instruments_bad.svx:7:38: warning: Missing "
  *instrument altitude "unclosed quotes
                                       ^
-./cmd_instruments_bad.svx:8:27: warning: Missing "
+cmd_instruments_bad.svx:8:27: warning: Missing "
  *instrument left "unclosed
                            ^
-./cmd_instruments_bad.svx:12:13: warning: Unknown instrument type "lefts"
+cmd_instruments_bad.svx:12:13: warning: Unknown instrument type "lefts"
  *instrument lefts rights "red open reel tape"
              ^~~~~
 

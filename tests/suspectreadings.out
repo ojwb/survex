@@ -1,13 +1,13 @@
-./suspectreadings.svx:3:5: warning: Negative tape reading
+suspectreadings.svx:3:5: warning: Negative tape reading
  1 2 -0.10 361 -91
      ^~~~~
-./suspectreadings.svx:3:5: warning: Negative adjusted tape reading
+suspectreadings.svx:3:5: warning: Negative adjusted tape reading
  1 2 -0.10 361 -91
      ^~~~~
-./suspectreadings.svx:3:11: warning: Suspicious compass reading
+suspectreadings.svx:3:11: warning: Suspicious compass reading
  1 2 -0.10 361 -91
            ^~~
-./suspectreadings.svx:3:15: warning: Clino reading over 90dg (absolute value)
+suspectreadings.svx:3:15: warning: Clino reading over 90dg (absolute value)
  1 2 -0.10 361 -91
                ^~~
 

@@ -1,4 +1,4 @@
-./multidiving.svx:17:3: warning: Tape reading is less than change in depth
+multidiving.svx:17:3: warning: Tape reading is less than change in depth
    0.99 000
    ^~~~
 

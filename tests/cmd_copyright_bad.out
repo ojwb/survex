@@ -1,97 +1,97 @@
-./cmd_copyright_bad.svx:3:11: warning: Invalid year
+cmd_copyright_bad.svx:3:11: warning: Invalid year
  *copyright
            ^
-./cmd_copyright_bad.svx:4:12: warning: Invalid year
+cmd_copyright_bad.svx:4:12: warning: Invalid year
  *copyright "
             ^
-./cmd_copyright_bad.svx:5:12: warning: Invalid year
+cmd_copyright_bad.svx:5:12: warning: Invalid year
  *copyright "X
             ^
-./cmd_copyright_bad.svx:6:12: warning: Invalid year
+cmd_copyright_bad.svx:6:12: warning: Invalid year
  *copyright "Just terrible
             ^
-./cmd_copyright_bad.svx:7:12: warning: Invalid year
+cmd_copyright_bad.svx:7:12: warning: Invalid year
  *copyright NoYear
             ^
-./cmd_copyright_bad.svx:8:12: warning: Invalid year
+cmd_copyright_bad.svx:8:12: warning: Invalid year
  *copyright "No year"
             ^
-./cmd_copyright_bad.svx:9:12: warning: Invalid year
+cmd_copyright_bad.svx:9:12: warning: Invalid year
  *copyright WrongOrder 2000
             ^
-./cmd_copyright_bad.svx:10:12: warning: Invalid year
+cmd_copyright_bad.svx:10:12: warning: Invalid year
  *copyright "Wrong Order" 2000
             ^
-./cmd_copyright_bad.svx:11:12: warning: Invalid year
+cmd_copyright_bad.svx:11:12: warning: Invalid year
  *copyright Unquoted wrong_order 1999
             ^
-./cmd_copyright_bad.svx:12:12: warning: Invalid year
+cmd_copyright_bad.svx:12:12: warning: Invalid year
  *copyright 999 BadYear
             ^~~
-./cmd_copyright_bad.svx:13:12: warning: Invalid year
+cmd_copyright_bad.svx:13:12: warning: Invalid year
  *copyright 999 "Bad Year"
             ^~~
-./cmd_copyright_bad.svx:14:34: warning: Missing "
+cmd_copyright_bad.svx:14:34: warning: Missing "
  *copyright 1999 "No closing quote
                                   ^
-./cmd_copyright_bad.svx:15:34: warning: Missing "
+cmd_copyright_bad.svx:15:34: warning: Missing "
  *copyright 1999 "No_closing_quote
                                   ^
-./cmd_copyright_bad.svx:16:28: warning: End of line not blank
+cmd_copyright_bad.svx:16:28: warning: End of line not blank
  *copyright 1999 No opening quote"
                             ^~~~~~
-./cmd_copyright_bad.svx:17:12: warning: Invalid year
+cmd_copyright_bad.svx:17:12: warning: Invalid year
  *copyright WrongOrder 2000-2001
             ^
-./cmd_copyright_bad.svx:18:12: warning: Invalid year
+cmd_copyright_bad.svx:18:12: warning: Invalid year
  *copyright "Wrong Order" 2000-2001
             ^
-./cmd_copyright_bad.svx:19:12: warning: Invalid year
+cmd_copyright_bad.svx:19:12: warning: Invalid year
  *copyright 999-1000 BadYear
             ^~~
-./cmd_copyright_bad.svx:20:12: warning: Invalid year
+cmd_copyright_bad.svx:20:12: warning: Invalid year
  *copyright 998-999 "Bad Year"
             ^~~
-./cmd_copyright_bad.svx:20:16: warning: Invalid year
+cmd_copyright_bad.svx:20:16: warning: Invalid year
  *copyright 998-999 "Bad Year"
                 ^~~
-./cmd_copyright_bad.svx:21:39: warning: Missing "
+cmd_copyright_bad.svx:21:39: warning: Missing "
  *copyright 1999-2020 "No closing quote
                                        ^
-./cmd_copyright_bad.svx:22:39: warning: Missing "
+cmd_copyright_bad.svx:22:39: warning: Missing "
  *copyright 1999-2012 "No_closing_quote
                                        ^
-./cmd_copyright_bad.svx:23:33: warning: End of line not blank
+cmd_copyright_bad.svx:23:33: warning: End of line not blank
  *copyright 1999-2001 No opening quote"
                                  ^~~~~~
-./cmd_copyright_bad.svx:24:17: warning: End of date range is before the start
+cmd_copyright_bad.svx:24:17: warning: End of date range is before the start
  *copyright 2000-1999 "Doctor Who"
                  ^~~~
-./cmd_copyright_bad.svx:25:17: warning: End of date range is before the start
+cmd_copyright_bad.svx:25:17: warning: End of date range is before the start
  *copyright 2000-1999 DrWho
                  ^~~~
-./cmd_copyright_bad.svx:26:12: warning: Date is in the future!
+cmd_copyright_bad.svx:26:12: warning: Date is in the future!
  *copyright 2078 "Doctor Who"
             ^~~~
-./cmd_copyright_bad.svx:27:17: warning: Date is in the future!
+cmd_copyright_bad.svx:27:17: warning: Date is in the future!
  *copyright 1900-2078 "Doctor Who"
                  ^~~~
-./cmd_copyright_bad.svx:28:12: warning: Date is in the future!
+cmd_copyright_bad.svx:28:12: warning: Date is in the future!
  *copyright 2077-2078 "Doctor Who"
             ^~~~
-./cmd_copyright_bad.svx:28:17: warning: Date is in the future!
+cmd_copyright_bad.svx:28:17: warning: Date is in the future!
  *copyright 2077-2078 "Doctor Who"
                  ^~~~
-./cmd_copyright_bad.svx:29:12: warning: Date is in the future!
+cmd_copyright_bad.svx:29:12: warning: Date is in the future!
  *copyright 2078-2077 "Doctor Who"
             ^~~~
-./cmd_copyright_bad.svx:29:17: warning: End of date range is before the start
+cmd_copyright_bad.svx:29:17: warning: End of date range is before the start
  *copyright 2078-2077 "Doctor Who"
                  ^~~~
-./cmd_copyright_bad.svx:30:52: warning: Missing "
+cmd_copyright_bad.svx:30:52: warning: Missing "
  *copyright 1999-2000 "Doctor Who" "No closing quote
                                                     ^
-./cmd_copyright_bad.svx:31:45: warning: Missing "
+cmd_copyright_bad.svx:31:45: warning: Missing "
  *copyright 1999-2000 DrWho "No closing quote
                                              ^
 

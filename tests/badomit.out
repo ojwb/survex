@@ -1,10 +1,10 @@
-./badomit.srv:3:5: error: Expecting numeric field, found "-"
+badomit.srv:3:5: error: Expecting numeric field, found "-"
  A C - 4 5
      ^
-./badomit.srv:4:5: error: Expecting numeric field, found "bad"
+badomit.srv:4:5: error: Expecting numeric field, found "bad"
  A D bad 4 5
      ^~~
-./badomit.srv:2:1: info: Survey has no fixed points. Therefore I've fixed A at (0,0,0)
+badomit.srv:2:1: info: Survey has no fixed points. Therefore I've fixed A at (0,0,0)
 
 Removing trailing traverses...
 

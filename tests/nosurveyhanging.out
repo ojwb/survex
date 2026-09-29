@@ -1,4 +1,4 @@
-./nosurveyhanging.svx:6:3: info: Survey has no fixed points. Therefore I've fixed test.2 at (0,0,0)
+nosurveyhanging.svx:6:3: info: Survey has no fixed points. Therefore I've fixed test.2 at (0,0,0)
 
 Removing trailing traverses...
 
@@ -7,7 +7,7 @@ Concatenating traverses...
 Simplifying network...
 cavern: warning: Survey not all connected to fixed stations
 The following survey stations are not attached to a fixed point:
-./nosurveyhanging.svx:6: info: test.1
+nosurveyhanging.svx:6: info: test.1
 
 Calculating network...
 

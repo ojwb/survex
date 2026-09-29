@@ -1,25 +1,25 @@
-./cmd_cartesian_bad.svx:3:12: error: Expecting "GRID", "MAGNETIC", or "TRUE"
+cmd_cartesian_bad.svx:3:12: error: Expecting "GRID", "MAGNETIC", or "TRUE"
  *cartesian fridge
             ^~~~~~
-./cmd_cartesian_bad.svx:4:12: error: Expecting "GRID", "MAGNETIC", or "TRUE"
+cmd_cartesian_bad.svx:4:12: error: Expecting "GRID", "MAGNETIC", or "TRUE"
  *cartesian fridge 1.0 degrees
             ^~~~~~
-./cmd_cartesian_bad.svx:5:22: error: Unknown units ""
+cmd_cartesian_bad.svx:5:22: error: Unknown units ""
  *cartesian magnetic 0
                       ^
-./cmd_cartesian_bad.svx:6:17: error: Expecting numeric field, found "degrees"
+cmd_cartesian_bad.svx:6:17: error: Expecting numeric field, found "degrees"
  *cartesian true degrees
                  ^~~~~~~
-./cmd_cartesian_bad.svx:7:12: error: Expecting "GRID", "MAGNETIC", or "TRUE"
+cmd_cartesian_bad.svx:7:12: error: Expecting "GRID", "MAGNETIC", or "TRUE"
  *cartesian grid2degrees
             ^~~~~~~~~~~~
-./cmd_cartesian_bad.svx:8:12: error: Expecting "GRID", "MAGNETIC", or "TRUE"
+cmd_cartesian_bad.svx:8:12: error: Expecting "GRID", "MAGNETIC", or "TRUE"
  *cartesian magnetic2 degrees
             ^~~~~~~~~
-./cmd_cartesian_bad.svx:9:20: warning: No blank after token
+cmd_cartesian_bad.svx:9:20: warning: No blank after token
  *cartesian magnetic+2 degrees
                     ^
-./cmd_cartesian_bad.svx:10:20: warning: No blank after token
+cmd_cartesian_bad.svx:10:20: warning: No blank after token
  *cartesian magnetic+2.degrees
                     ^
 

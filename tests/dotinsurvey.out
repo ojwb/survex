@@ -1,7 +1,7 @@
-./dotinsurvey.svx:4:11: warning: Separator in survey name
+dotinsurvey.svx:4:11: warning: Separator in survey name
  *begin 106.top
            ^
-./dotinsurvey.svx:11:11: warning: Separator in survey name
+dotinsurvey.svx:11:11: warning: Separator in survey name
  *begin 106.2
            ^
 

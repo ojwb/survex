@@ -1,25 +1,25 @@
-./back.svx:16:17: warning: CLINO reading and BACKCLINO reading disagree by 4grd
+back.svx:16:17: warning: CLINO reading and BACKCLINO reading disagree by 4grd
  1 Y 10 000  -   02  02
                  ^~~~~~
-./back.svx:17:16: warning: CLINO reading and BACKCLINO reading disagree by 2.5grd
+back.svx:17:16: warning: CLINO reading and BACKCLINO reading disagree by 2.5grd
  1 Z 10 000  -  -01.25 -01.25
                 ^~~~~~~~~~~~~
-./back.svx:29:9: warning: COMPASS reading and BACKCOMPASS reading disagree by 3dg
+back.svx:29:9: warning: COMPASS reading and BACKCOMPASS reading disagree by 3dg
  1 X1 10 000   183   +3   -6
          ^~~~~~~~~
-./back.svx:29:21: warning: CLINO reading and BACKCLINO reading disagree by 3dg
+back.svx:29:21: warning: CLINO reading and BACKCLINO reading disagree by 3dg
  1 X1 10 000   183   +3   -6
                      ^~~~~~~
-./back.svx:31:9: warning: COMPASS reading and BACKCOMPASS reading disagree by 3dg
+back.svx:31:9: warning: COMPASS reading and BACKCOMPASS reading disagree by 3dg
  1 X2 10 000   +3   183   -6
          ^~~
-./back.svx:31:15: warning: CLINO reading and BACKCLINO reading disagree by 3dg
+back.svx:31:15: warning: CLINO reading and BACKCLINO reading disagree by 3dg
  1 X2 10 000   +3   183   -6
                ^~
-./back.svx:33:20: warning: COMPASS reading and BACKCOMPASS reading disagree by 3dg
+back.svx:33:20: warning: COMPASS reading and BACKCOMPASS reading disagree by 3dg
  1 X3 10 183   -6   000   +3
                     ^~~
-./back.svx:33:26: warning: CLINO reading and BACKCLINO reading disagree by 3dg
+back.svx:33:26: warning: CLINO reading and BACKCLINO reading disagree by 3dg
  1 X3 10 183   -6   000   +3
                           ^~
 

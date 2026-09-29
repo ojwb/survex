@@ -1,4 +1,4 @@
-./wallscylpolar.srv:5:1: info: Survey has no fixed points. Therefore I've fixed 4 at (0,0,0)
+wallscylpolar.srv:5:1: info: Survey has no fixed points. Therefore I've fixed 4 at (0,0,0)
 
 Removing trailing traverses...
 

@@ -1,106 +1,106 @@
-./unknowndirective.srv:5:2: warning: Unknown command ""
+unknowndirective.srv:5:2: warning: Unknown command ""
  #<L,R,U,D>
   ^
-./unknowndirective.srv:6:2: warning: Unknown command ""
+unknowndirective.srv:6:2: warning: Unknown command ""
  #<1,2,3,hello>
   ^
-./unknowndirective.srv:7:2: warning: Unknown command ""
+unknowndirective.srv:7:2: warning: Unknown command ""
  #*L,R,U,D*
   ^
-./unknowndirective.srv:8:2: warning: Unknown command ""
+unknowndirective.srv:8:2: warning: Unknown command ""
  #<,>
   ^
-./unknowndirective.srv:9:2: warning: Unknown command ""
+unknowndirective.srv:9:2: warning: Unknown command ""
  #*,>
   ^
-./unknowndirective.srv:10:2: warning: Unknown command ""
+unknowndirective.srv:10:2: warning: Unknown command ""
  #<,*
   ^
-./unknowndirective.srv:11:2: warning: Unknown command ""
+unknowndirective.srv:11:2: warning: Unknown command ""
  #*,*
   ^
-./unknowndirective.srv:12:3: warning: Unknown command ""
+unknowndirective.srv:12:3: warning: Unknown command ""
  # <L,R,U,D>
    ^
-./unknowndirective.srv:13:3: warning: Unknown command ""
+unknowndirective.srv:13:3: warning: Unknown command ""
  # <1,2,3,hello>
    ^
-./unknowndirective.srv:14:3: warning: Unknown command ""
+unknowndirective.srv:14:3: warning: Unknown command ""
  # *L,R,U,D*
    ^
-./unknowndirective.srv:15:3: warning: Unknown command ""
+unknowndirective.srv:15:3: warning: Unknown command ""
  # <,>
    ^
-./unknowndirective.srv:16:3: warning: Unknown command ""
+unknowndirective.srv:16:3: warning: Unknown command ""
  # *,>
    ^
-./unknowndirective.srv:17:3: warning: Unknown command ""
+unknowndirective.srv:17:3: warning: Unknown command ""
  # <,*
    ^
-./unknowndirective.srv:18:3: warning: Unknown command ""
+unknowndirective.srv:18:3: warning: Unknown command ""
  # *,*
    ^
-./unknowndirective.srv:19:2: warning: Unknown command ""
+unknowndirective.srv:19:2: warning: Unknown command ""
  #
   ^
-./unknowndirective.srv:20:2: warning: Unknown command ""
+unknowndirective.srv:20:2: warning: Unknown command ""
  #!,!
   ^
-./unknowndirective.srv:21:2: warning: Unknown command ""
+unknowndirective.srv:21:2: warning: Unknown command ""
  #","
   ^
-./unknowndirective.srv:22:3: warning: Unknown command ""
+unknowndirective.srv:22:3: warning: Unknown command ""
  # !,!
    ^
-./unknowndirective.srv:23:3: warning: Unknown command ""
+unknowndirective.srv:23:3: warning: Unknown command ""
  # ","
    ^
-./unknowndirective.srv:24:3: warning: Unknown command ""
+unknowndirective.srv:24:3: warning: Unknown command ""
  # !,"
    ^
-./unknowndirective.srv:25:3: warning: Unknown command ""
+unknowndirective.srv:25:3: warning: Unknown command ""
  # ",!
    ^
-./unknowndirective.srv:26:3: warning: Unknown command "Q"
+unknowndirective.srv:26:3: warning: Unknown command "Q"
  # Q,Q
    ^
-./unknowndirective.srv:27:3: warning: Unknown command "W"
+unknowndirective.srv:27:3: warning: Unknown command "W"
  # W-T, F
    ^
-./unknowndirective.srv:28:3: warning: Unknown command "THANK"
+unknowndirective.srv:28:3: warning: Unknown command "THANK"
  # THANK,YOU
    ^~~~~
-./unknowndirective.srv:31:2: error: Unknown command "unknown"
+unknowndirective.srv:31:2: error: Unknown command "unknown"
  #unknown directive
   ^~~~~~~
-./unknowndirective.srv:32:3: error: Unknown command "bad"
+unknowndirective.srv:32:3: error: Unknown command "bad"
  # bad
    ^~~
-./unknowndirective.srv:33:2: error: Unknown command ""
+unknowndirective.srv:33:2: error: Unknown command ""
  #<
   ^
-./unknowndirective.srv:34:2: error: Unknown command ""
+unknowndirective.srv:34:2: error: Unknown command ""
  #<>
   ^
-./unknowndirective.srv:35:2: error: Unknown command ""
+unknowndirective.srv:35:2: error: Unknown command ""
  #!/bin/sh
   ^
-./unknowndirective.srv:36:15: error: Expecting "S", "SEG", or "SEGMENT"
+unknowndirective.srv:36:15: error: Expecting "S", "SEG", or "SEGMENT"
  Q0 U0  0 0 0 #sygment /TYPO
                ^~~~~~~
-./unknowndirective.srv:40:8: error: Unknown command "2.5"
+unknowndirective.srv:40:8: error: Unknown command "2.5"
  #units 2.5
         ^~~
-./unknowndirective.srv:41:9: error: Unknown command "2.5"
+unknowndirective.srv:41:9: error: Unknown command "2.5"
  #units "2.5"
          ^~~
-./unknowndirective.srv:43:17: error: Unknown command ""
+unknowndirective.srv:43:17: error: Unknown command ""
  #units typevb=N =C
                  ^
-./unknowndirective.srv:44:8: error: Unknown command ""
+unknowndirective.srv:44:8: error: Unknown command ""
  #units =C
         ^
-./unknowndirective.srv:36:1: info: Survey has no fixed points. Therefore I've fixed Q0 at (0,0,0)
+unknowndirective.srv:36:1: info: Survey has no fixed points. Therefore I've fixed Q0 at (0,0,0)
 
 Removing trailing traverses...
 

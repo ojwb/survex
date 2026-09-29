@@ -1,65 +1,65 @@
-In file included from ./wallsfsbs.wpj:10:
-./w_fsbs.srv:5:27: warning: COMPASS reading and BACKCOMPASS reading disagree by 5.1dg
+In file included from wallsfsbs.wpj:10:
+w_fsbs.srv:5:27: warning: COMPASS reading and BACKCOMPASS reading disagree by 5.1dg
  :S1   A1        20        359/184.1              2/-7.1
                            ^~~~~~~~~
-./w_fsbs.srv:5:50: warning: CLINO reading and BACKCLINO reading disagree by 5.1dg
+w_fsbs.srv:5:50: warning: CLINO reading and BACKCLINO reading disagree by 5.1dg
  :S1   A1        20        359/184.1              2/-7.1
                                                   ^~~~~~
-./w_fsbs.srv:6:26: warning: COMPASS reading and BACKCOMPASS reading disagree by 5.1dg
+w_fsbs.srv:6:26: warning: COMPASS reading and BACKCOMPASS reading disagree by 5.1dg
  A1   A2        20        359/173.9              2/3.1
                           ^~~~~~~~~
-./w_fsbs.srv:6:49: warning: CLINO reading and BACKCLINO reading disagree by 5.1dg
+w_fsbs.srv:6:49: warning: CLINO reading and BACKCLINO reading disagree by 5.1dg
  A1   A2        20        359/173.9              2/3.1
                                                  ^~~~~
-./w_fsbs.srv:12:31: warning: COMPASS reading and BACKCOMPASS reading disagree by 6.1dg
+w_fsbs.srv:12:31: warning: COMPASS reading and BACKCOMPASS reading disagree by 6.1dg
  :S1       S2        30        100/286.1              /-16  ;no forward inclination
                                ^~~~~~~~~
-./w_fsbs.srv:13:31: warning: COMPASS reading and BACKCOMPASS reading disagree by 6.1dg
+w_fsbs.srv:13:31: warning: COMPASS reading and BACKCOMPASS reading disagree by 6.1dg
  S2        S3        15.5      355/181.1              6/0
                                ^~~~~~~~~
-./w_fsbs.srv:13:54: warning: CLINO reading and BACKCLINO reading disagree by 6dg
+w_fsbs.srv:13:54: warning: CLINO reading and BACKCLINO reading disagree by 6dg
  S2        S3        15.5      355/181.1              6/0
                                                       ^~~
-./w_fsbs.srv:19:53: warning: CLINO reading and BACKCLINO reading disagree by 6.1dg
+w_fsbs.srv:19:53: warning: CLINO reading and BACKCLINO reading disagree by 6.1dg
  :S1       Z1        10       100/286                -12/18.1
                                                      ^~~~~~~~
-./w_fsbs.srv:34:12: warning: COMPASS reading and BACKCOMPASS reading disagree by 10dg
+w_fsbs.srv:34:12: warning: COMPASS reading and BACKCOMPASS reading disagree by 10dg
  :a1 b2a 10 90/270 0
             ^~~~~~
-./w_fsbs.srv:37:12: warning: COMPASS reading and BACKCOMPASS reading disagree by 10dg
+w_fsbs.srv:37:12: warning: COMPASS reading and BACKCOMPASS reading disagree by 10dg
  :a1 b3a 10 90/270 0
             ^~~~~~
-./w_fsbs.srv:41:12: warning: COMPASS reading and BACKCOMPASS reading disagree by 10dg
+w_fsbs.srv:41:12: warning: COMPASS reading and BACKCOMPASS reading disagree by 10dg
  :a1 b4b 10 90/280 0
             ^~~~~~
-./w_fsbs.srv:52:12: warning: COMPASS reading and BACKCOMPASS reading disagree by 10dg
+w_fsbs.srv:52:12: warning: COMPASS reading and BACKCOMPASS reading disagree by 10dg
  :a1 c2a 10 90/90 0
             ^~~~~
-./w_fsbs.srv:55:12: warning: COMPASS reading and BACKCOMPASS reading disagree by 10dg
+w_fsbs.srv:55:12: warning: COMPASS reading and BACKCOMPASS reading disagree by 10dg
  :a1 c3a 10 90/90 0
             ^~~~~
-./w_fsbs.srv:60:12: warning: COMPASS reading and BACKCOMPASS reading disagree by 10dg
+w_fsbs.srv:60:12: warning: COMPASS reading and BACKCOMPASS reading disagree by 10dg
  :a1 c4b 10 90/100 0
             ^~~~~~
-./w_fsbs.srv:69:19: warning: CLINO reading and BACKCLINO reading disagree by 5dg
+w_fsbs.srv:69:19: warning: CLINO reading and BACKCLINO reading disagree by 5dg
  :a1 d2a 10 90/270 -5/+5
                    ^~~~~
-./w_fsbs.srv:72:19: warning: CLINO reading and BACKCLINO reading disagree by 5dg
+w_fsbs.srv:72:19: warning: CLINO reading and BACKCLINO reading disagree by 5dg
  :a1 d3a 10 90/270 -5/+5
                    ^~~~~
-./w_fsbs.srv:76:19: warning: CLINO reading and BACKCLINO reading disagree by 5dg
+w_fsbs.srv:76:19: warning: CLINO reading and BACKCLINO reading disagree by 5dg
  :a1 d4b 10 90/270 -10/+5
                    ^~~~~~
-./w_fsbs.srv:83:19: warning: CLINO reading and BACKCLINO reading disagree by 5dg
+w_fsbs.srv:83:19: warning: CLINO reading and BACKCLINO reading disagree by 5dg
  :a1 e2a 10 90/270 +5/+5
                    ^~~~~
-./w_fsbs.srv:86:19: warning: CLINO reading and BACKCLINO reading disagree by 5dg
+w_fsbs.srv:86:19: warning: CLINO reading and BACKCLINO reading disagree by 5dg
  :a1 e3a 10 90/270 +5/+5
                    ^~~~~
-./w_fsbs.srv:90:19: warning: CLINO reading and BACKCLINO reading disagree by 5dg
+w_fsbs.srv:90:19: warning: CLINO reading and BACKCLINO reading disagree by 5dg
  :a1 e4b 10 90/270 0/+5
                    ^~~~
-./wallsfsbs.wpj:6: info: Declination: -4.8dg @ 2026-09-19, grid convergence: 0.6dg
+wallsfsbs.wpj:6: info: Declination: -4.8dg @ 2026-09-19, grid convergence: 0.6dg
  .REF 4113317.333 587658.557 16 0.596 329 6 37 9 43.761 86 0 45.793 19 "NAD83"
 
 Removing trailing traverses...

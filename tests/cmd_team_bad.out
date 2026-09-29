@@ -1,19 +1,19 @@
-./cmd_team_bad.svx:3:14: warning: Unknown team role "note"
+cmd_team_bad.svx:3:14: warning: Unknown team role "note"
  *team Wookey note
               ^~~~
-./cmd_team_bad.svx:4:32: warning: Unknown team role "tap"
+cmd_team_bad.svx:4:32: warning: Unknown team role "tap"
  *team "Olly Betts" instruments tap
                                 ^~~
-./cmd_team_bad.svx:8:20: warning: Unknown team role "lefts"
+cmd_team_bad.svx:8:20: warning: Unknown team role "lefts"
  *team "Olly Betts" lefts rights
                     ^~~~~
-./cmd_team_bad.svx:10:11: warning: Unknown team role ""
+cmd_team_bad.svx:10:11: warning: Unknown team role ""
  *team Bob "pics"
            ^
-./cmd_team_bad.svx:11:15: warning: Missing "
+cmd_team_bad.svx:11:15: warning: Missing "
  *team "Al Jobs
                ^
-./cmd_team_bad.svx:12:6: warning: Expecting string field
+cmd_team_bad.svx:12:6: warning: Expecting string field
  *team
       ^
 

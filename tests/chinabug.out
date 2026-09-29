@@ -6,16 +6,16 @@ Concatenating traverses...
 Simplifying network...
 cavern: warning: Survey not all connected to fixed stations
 The following survey stations are not attached to a fixed point:
-./chinabug.svx:4: info: e.s.1
-./chinabug.svx:3: info: j.m.1
-./chinabug.svx:2: info: n.g.1
+chinabug.svx:4: info: e.s.1
+chinabug.svx:3: info: j.m.1
+chinabug.svx:2: info: n.g.1
 
 Calculating network...
 
 Calculating traverses...
 
 Calculating trailing traverses...
-./chinabug.svx:5: warning: Unused fixed point "x.1"
+chinabug.svx:5: warning: Unused fixed point "x.1"
 
 Calculating statistics...
 

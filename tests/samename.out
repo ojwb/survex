@@ -1,16 +1,16 @@
-./samename.svx:3:10: error: "42" can't be both a station and a survey
+samename.svx:3:10: error: "42" can't be both a station and a survey
  42       42.1     1.0     90.0    0.0
           ^~
-./samename.svx:4:1: error: "42" can't be both a station and a survey
+samename.svx:4:1: error: "42" can't be both a station and a survey
  42.1     42.2     1.0     180.0   0.0
  ^~
-./samename.svx:4:10: error: "42" can't be both a station and a survey
+samename.svx:4:10: error: "42" can't be both a station and a survey
  42.1     42.2     1.0     180.0   0.0
           ^~
-./samename.svx:5:8: error: "17" can't be both a station and a survey
+samename.svx:5:8: error: "17" can't be both a station and a survey
  *begin 17
         ^~
-./samename.svx:6:6: error: "17" can't be both a station and a survey
+samename.svx:6:6: error: "17" can't be both a station and a survey
  *end 17
       ^~
 

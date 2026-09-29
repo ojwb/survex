@@ -1,31 +1,31 @@
-./baddatacylpolar.svx:5:24: error: Reading "foo" not allowed in data style "cylpolar"
+baddatacylpolar.svx:5:24: error: Reading "foo" not allowed in data style "cylpolar"
  *data cylpolar from to foo
                         ^~~
-./baddatacylpolar.svx:12:49: error: Reading "foo" not allowed in data style "cylpolar"
+baddatacylpolar.svx:12:49: error: Reading "foo" not allowed in data style "cylpolar"
  *data cylpolar from to tape compass depthchange foo
                                                  ^~~
-./baddatacylpolar.svx:15:49: error: Reading "f0o" not allowed in data style "cylpolar"
+baddatacylpolar.svx:15:49: error: Reading "f0o" not allowed in data style "cylpolar"
  *data cylpolar from to tape compass depthchange f0o
                                                  ^~~
-./baddatacylpolar.svx:18:7: error: Data style "cylp0lar" unknown
+baddatacylpolar.svx:18:7: error: Data style "cylp0lar" unknown
  *data cylp0lar from to tape compass depthchange
        ^~~~~~~~
-./baddatacylpolar.svx:20:30: error: NEWLINE can't be the last reading
+baddatacylpolar.svx:20:30: error: NEWLINE can't be the last reading
  *data cylpolar station depth newline
                               ^~~~~~~
-./baddatacylpolar.svx:22:40: error: NEWLINE can't be the last reading
+baddatacylpolar.svx:22:40: error: NEWLINE can't be the last reading
  *data cylpolar station depth ignoreall newline
                                         ^~~~~~~
-./baddatacylpolar.svx:24:55: error: NEWLINE can only be preceded by STATION, DEPTH, and COUNT
+baddatacylpolar.svx:24:55: error: NEWLINE can only be preceded by STATION, DEPTH, and COUNT
  *data cylpolar from to tape compass fromdepth todepth newline
                                                        ^~~~~~~
-./baddatacylpolar.svx:26:65: error: NEWLINE can only be preceded by STATION, DEPTH, and COUNT
+baddatacylpolar.svx:26:65: error: NEWLINE can only be preceded by STATION, DEPTH, and COUNT
  *data cylpolar from to tape compass fromdepth todepth ignoreall newline
                                                                  ^~~~~~~
-./baddatacylpolar.svx:28:16: error: NEWLINE can't be the first reading
+baddatacylpolar.svx:28:16: error: NEWLINE can't be the first reading
  *data cylpolar newline from to tape compass fromdepth todepth
                 ^~~~~~~
-./baddatacylpolar.svx:30: error: Interleaved readings, but no NEWLINE
+baddatacylpolar.svx:30: error: Interleaved readings, but no NEWLINE
  *data cylpolar station tape compass fromdepth todepth
 
 Removing trailing traverses...

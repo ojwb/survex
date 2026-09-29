@@ -6,8 +6,8 @@ Concatenating traverses...
 Simplifying network...
 cavern: warning: Survey not all connected to fixed stations
 The following survey stations are not attached to a fixed point:
-./hanging_cpt.svx:5: info: 3
-./hanging_cpt.svx:16: info: a
+hanging_cpt.svx:5: info: 3
+hanging_cpt.svx:16: info: a
 
 Calculating network...
 

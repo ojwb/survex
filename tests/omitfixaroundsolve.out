@@ -1,4 +1,4 @@
-./omitfixaroundsolve.svx:4:7: info: FIX command with no coordinates - fixing at (0,0,0)
+omitfixaroundsolve.svx:4:7: info: FIX command with no coordinates - fixing at (0,0,0)
  *fix a
        ^
 
@@ -13,7 +13,7 @@ Calculating network...
 Calculating traverses...
 
 Calculating trailing traverses...
-./omitfixaroundsolve.svx:4: error: Already had FIX command with no coordinates for station "a"
+omitfixaroundsolve.svx:4: error: Already had FIX command with no coordinates for station "a"
 
 Removing trailing traverses...
 

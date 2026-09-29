@@ -1,4 +1,4 @@
-./cmd_entrance_bad.svx:3:10: error: Expecting station name
+cmd_entrance_bad.svx:3:10: error: Expecting station name
  *entrance
           ^
 
@@ -22,6 +22,6 @@ Survey has 2 connected components.
 Total length of survey legs =    0.00m (   0.00m adjusted)
 Total plan length of survey legs =    0.00m
 Total vertical length of survey legs =    0.00m
-./cmd_entrance_bad.svx:4: warning: Station "2" referred to by *entrance but never used
+cmd_entrance_bad.svx:4: warning: Station "2" referred to by *entrance but never used
 
 There were 1 warning(s) and 1 error(s) - no output files produced.
