@@ -1863,7 +1863,9 @@ walls_reset(void)
     for (int i = 0; i < 3; ++i) {
 	free(p_walls_options->prefix[i]);
     }
+    walls_options * save_next = p_walls_options->next;
     *p_walls_options = walls_options_default;
+    p_walls_options->next = save_next;
 
     walls_update_data_order();
     walls_update_backcomp_calibration();

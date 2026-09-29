@@ -1,0 +1,9 @@
+;WALLS Project File
+; pos=yes warn=0 dummycrprotection=
+.BOOK	vtest Project
+.NAME	PROJECT
+.STATUS	3
+.SURVEY	vtest
+.NAME	W_FSBSC
+.STATUS	8
+.ENDBOOK

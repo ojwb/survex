@@ -122,6 +122,7 @@ TESTS_=
  wallsdiving.srv\
  wallsfix.srv\
  wallsfsbs.wpj\
+ wallsfsbsclino.wpj\
  wallshtie.wpj\
  wallsihth.wpj\
  passage hanging_lrud equatenosuchstn surveytypo\
