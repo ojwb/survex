@@ -135,13 +135,13 @@ utm.mak utm.out utm.dump\
 walls.srv walls.out walls.dump\
 wallsbaddatum.out wallsbaddatum.wpj\
 wallscylpolar.srv wallscylpolar.dump wallscylpolar.out\
-wallsdecl.wpj wallsdecl.srv wallsdecl.out wallsdecl.dump\
+wallsdecl.wpj wallsdecl.out wallsdecl.dump w_decl.srv\
 wallsdiving.srv wallsdiving.dump wallsdiving.out\
 wallsfix.srv wallsfix.dump wallsfix.out\
-wallsfsbs.wpj wallsfsbs.dump wallsfsbs.out wallsfsbs.srv\
+wallsfsbs.wpj wallsfsbs.dump wallsfsbs.out w_fsbs.srv\
 wallsfsbsclino.wpj wallsfsbsclino.out wallsfsbsclino.pos w_fsbsc.srv\
-wallshtie.wpj wallshtie.dump wallshtie.out wallshtie.srv\
-wallsihth.wpj wallsihth.dump wallsihth.out wallsihth.srv\
+wallshtie.wpj wallshtie.dump wallshtie.out w_htie.srv\
+wallsihth.wpj wallsihth.dump wallsihth.out w_ihth.srv\
 baddate.srv baddate.out\
 badomit.srv badomit.out\
 badopts.srv badopts.out\
