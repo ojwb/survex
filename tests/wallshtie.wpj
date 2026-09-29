@@ -1,4 +1,5 @@
 ;WALLS Project File
+; pos=dump warn=0 dummycrprotection=
 .BOOK	Horizontal Tie Test Project
 .NAME	SURVTST3
 .STATUS	2579

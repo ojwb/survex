@@ -1,4 +1,5 @@
 ;WALLS Project File
+; pos=fail warn=0 error=1 dummycrprotection=
 .BOOK	Test Project
 .NAME	PROJECT
 .OPTIONS	$macro=1

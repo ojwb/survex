@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Survex test suite - cavern tests
-# Copyright (C) 1999-2025 Olly Betts
+# Copyright (C) 1999-2026 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -231,20 +231,16 @@ for file in $TESTS ; do
       # case).  They all have the same settings.
       pos=fail
       ;;
-    wallsbaddatum.wpj)
-      # .wpj files can't start with a comment.
-      pos=fail
-      warn=0
-      err=1
-      ;;
-    *.wpj)
-      # .wpj files can't start with a comment.
-      pos=dump
-      warn=0
-      ;;
     *)
       survexportopts=
-      read header < "$realfile"
+      case $file in
+	*.wpj)
+	  # The first line of .wpj is a fixed format magic comment so we put
+	  # testcase settings in the second line.
+	  { read dummy; read header; } < "$realfile" ;;
+	*)
+	  read header < "$realfile" ;;
+      esac
       set dummy $header
       while shift && [ -n "$1" ] ; do
 	case $1 in
