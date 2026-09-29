@@ -24,3 +24,12 @@
 *data cartesian from to dx dy dz
 ; Work around variation in which station is picked for the maximum:
 1 max 9 12 36
+
+; Test that calibrating backcompass and backclino to measure forwards is
+; handled suitably - this should not warn:
+*calibrate compass 0
+*calibrate clino 0
+*calibrate backcompass 180
+*calibrate backclino 0 -1
+*data normal from to tape compass backcompass clino backclino
+1 6a 10.00 90 90 10 10
