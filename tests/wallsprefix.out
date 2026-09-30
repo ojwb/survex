@@ -1,0 +1,55 @@
+In file included from wallsprefix.wpj:9:
+w_prefix.srv:5:9: warning: Expecting station name
+ #fix cc:     600000m 4000000m 0m
+         ^
+w_prefix.srv:9:10: warning: Expecting station name
+ #fix bb::    600000m 4000000m 4m
+          ^
+w_prefix.srv:10:10: warning: Expecting station name
+ #fix a:::    600000m 4000000m 5m
+          ^
+w_prefix.srv:11:9: warning: Expecting station name
+ #fix :::     600000m 4000000m 6m
+         ^
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+w_prefix.srv:19: warning: Unused fixed point "DATUM"
+w_prefix.srv:18: warning: Unused fixed point "P2B: :NAM4"
+w_prefix.srv:15: warning: Unused fixed point "P3:P2:P1:NAM1"
+w_prefix.srv:16: warning: Unused fixed point "P3:P2:P1A:NAM2"
+w_prefix.srv:17: warning: Unused fixed point "P3:P2A:P1:NAM3"
+w_prefix.srv:33: warning: Unused fixed point "Prefix3: :shotpref:d1"
+w_prefix.srv:32: warning: Unused fixed point "Prefix3:Prefix2:shotpref:d1"
+w_prefix.srv:31: warning: Unused fixed point "Prefix3:shotpref: :d1"
+w_prefix.srv:10: warning: Unused fixed point "a: : :empty name"
+w_prefix.srv:7: warning: Unused fixed point "aa: : :dd"
+w_prefix.srv:6: warning: Unused fixed point "aa: :cc:dd"
+w_prefix.srv:5: warning: Unused fixed point "aa: :cc:empty name"
+w_prefix.srv:8: warning: Unused fixed point "aa:bb: :dd"
+w_prefix.srv:9: warning: Unused fixed point "aa:bb: :empty name"
+w_prefix.srv:36: warning: Unused fixed point "d1"
+w_prefix.srv:11: warning: Unused fixed point "empty name"
+w_prefix.srv:30: warning: Unused fixed point "shotpref: : :d1"
+w_prefix.srv:35: warning: Unused fixed point "shotpref: :d1"
+w_prefix.srv:34: warning: Unused fixed point "shotpref:d1"
+
+Calculating statistics...
+
+Survey contains 19 survey stations, joined by 0 legs.
+There are 0 loops.
+Survey has 19 connected components.
+Total length of survey legs =    0.00m (   0.00m adjusted)
+Total plan length of survey legs =    0.00m
+Total vertical length of survey legs =    0.00m
+
+There were 23 warning(s).

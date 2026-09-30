@@ -125,6 +125,7 @@ TESTS_=
  wallsfsbsclino.wpj\
  wallshtie.wpj\
  wallsihth.wpj\
+ wallsprefix.wpj\
  passage hanging_lrud equatenosuchstn surveytypo\
  skipafterbadomit passagebad badreadingdotplus badcalibrate calibrate_clino\
  badunits badbegin anonstn anonstnbad anonstnrev doubleinc reenterlots\

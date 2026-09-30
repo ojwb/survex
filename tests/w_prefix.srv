@@ -1,0 +1,36 @@
+; pos=dump warn=0 dummycrprotection=
+
+; Examples testing empty prefix and station names together:
+#units PREFIX3=aa prefix1=ZZ
+#fix cc:     600000m 4000000m 0m
+#fix cc:dd   600000m 4000000m 1m
+#fix :dd     600000m 4000000m 2m
+#fix bb::dd  600000m 4000000m 3m
+#fix bb::    600000m 4000000m 4m
+#fix a:::    600000m 4000000m 5m
+#fix :::     600000m 4000000m 6m
+
+; Examples from the Walls manual:
+#UNITS        PREFIX3=P3  PREFIX2=P2  PREFIX=P1  ;any order
+#FIX        NAM1            600000m 4100000m 0m
+#FIX        P1A:NAM2        600000m 4100000m 1m
+#FIX        P2A:P1:NAM3     600000m 4100000m 2m
+#FIX        :P2B::NAM4      600000m 4100000m 3m
+#FIX        :::DATUM        600000m 4100000m 4m
+
+; Examples from Joe Walko:
+#DATE 2026-09-19
+#UNITS order=NEU order=DAV
+
+#PREFIX	prefix
+#PREFIX1	Prefix1
+#PREFIX2	Prefix2
+#PREFIX3  	Prefix3
+
+#FIX	shotpref:::d1		4116200m	586700m	300m
+#FIX	shotpref::d1		4126300m	586700m	300m
+#FIX	shotpref:d1		4136400m	586700m	300m
+#FIX	:shotpref:d1		4136500m	586700m	300m
+#FIX	::shotpref:d1		4136500m	586700m	300m
+#FIX	:shotpref::d1		4136500m	586700m	300m
+#FiX	:::d1			4136500m	586700m	300m

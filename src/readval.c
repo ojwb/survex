@@ -1,6 +1,6 @@
 /* readval.c
  * Routines to read a prefix or number from the current input file
- * Copyright (C) 1991-2025 Olly Betts
+ * Copyright (C) 1991-2026 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -495,7 +495,7 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed, bool *p_new)
 
 	prefix *ptr = root;
 	for (int i = 0; i < 4; ++i) {
-	    char *name;
+	    const char *name;
 	    int sflag = BIT(SFLAGS_SURVEY);
 	    if (i == 3) {
 		name = p;
@@ -510,17 +510,24 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed, bool *p_new)
 		}
 
 		if (name == NULL) {
-		    // FIXME: This means :X::Y is treated as the same as
-		    // ::X:Y but is that right?  Walls docs don't really
-		    // say.  Need to test (and is they're different then
-		    // probably use a character not valid in Walls station
-		    // names for the empty prefix level (e.g. space or
-		    // `#`).
+		    // Walls omits leading empty prefix levels, so we do too.
+		    // This doesn't create ambiguity between names.
 		    //
-		    // Also, does Walls allow :::X as a station and
-		    // ::X:Y which would mean X is a station and survey?
-		    // If so, we probably want to keep every empty level.
-		    continue;
+		    // FIXME: However it looks like Walls allow :::X and ::X:Y
+		    // which give X and X:Y, but that means X is both a station
+		    // and a survey in the Survex hierarchy, which is not
+		    // allowed.
+		    //
+		    // We need to find a way to disambiguate which doesn't
+		    // uglify names in common cases where this situation does
+		    // not occur.
+		    if (ptr == root) continue;
+
+		    // Walls allows empty prefix levels but Survex doesn't, so
+		    // we replace empty prefix levels with a single space.  A
+		    // space is not allowed in a Walls prefix so this can't
+		    // collide.
+		    name = " ";
 		}
 	    }
 	    prefix *back_ptr = ptr;
@@ -535,9 +542,11 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed, bool *p_new)
 		if (strlen(name) < sizeof(ptr->ident.i)) {
 		    strcpy(ptr->ident.i, name);
 		    ptr->sflags |= BIT(SFLAGS_IDENT_INLINE);
-		    if (i >= 3) free(name);
+		    if (name == p) {
+			free(p);
+		    }
 		} else {
-		    ptr->ident.p = (i < 3 ? osstrdup(name) : name);
+		    ptr->ident.p = (name == p ? p : osstrdup(name));
 		}
 		name = NULL;
 		ptr->right = ptr->down = NULL;
@@ -573,9 +582,11 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed, bool *p_new)
 		    if (strlen(name) < sizeof(newptr->ident.i)) {
 			strcpy(newptr->ident.i, name);
 			newptr->sflags |= BIT(SFLAGS_IDENT_INLINE);
-			if (i >= 3) free(name);
+			if (name == p) {
+			    free(p);
+			}
 		    } else {
-			newptr->ident.p = (i < 3 ? osstrdup(name) : name);
+			newptr->ident.p = (name == p ? p : osstrdup(name));
 		    }
 		    name = NULL;
 		    if (ptrPrev == NULL)
