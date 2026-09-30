@@ -302,17 +302,21 @@ features are likely to be handled while more obscure features may not be.
     effect, both instrument and target are treated as if they were at the
     surface, where the inclination can be assumed zero.
 
+  Since Survex 1.4.23, ``TAPE=SS`` with ``ORDER=DAV`` and other orders
+  including ``V`` are mapped to diving data for legs where no readings are
+  given for the clino and backclino.
+
   Since Survex 1.4.23, ``TAPE=IT`` (Walls default setting) with instrument
   and/or target heights specified is corrected handled.  The particular
   combination of ``TAPE=IT`` with ``ORDER=DA`` or ``ORDER=AD`` is mapped to
   Survex's "cylpolar" data style.
 
   ``TAPE=IS`` and ``TAPE=ST`` are not currently implemented, nor is ``TAPE=SS``
-  with an order other than ``DA`` or ``AD``.  Since 1.4.23, Survex warns when
-  it encounters any such unsupported combinations which are active on a leg
-  which has a non-zero instrument or target height.  For such legs, the
-  heights are ignored so the instrument and target are effectively assumed to
-  be on their respective stations.
+  for legs with clino readings and instrument/target heights.  Since 1.4.23,
+  Survex warns when it encounters any such unsupported combinations which are
+  active on a leg which has a non-zero instrument or target height.  For such
+  legs, the heights are ignored so the instrument and target are effectively
+  assumed to be on their respective stations.
 
   Survex < 1.4.21 just skipped over ``TAPE=`` entirely (so invalid values
   were also quietly ignored).

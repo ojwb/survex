@@ -5287,6 +5287,7 @@ data_normal(void)
    bool fDepthChange;
    unsigned long compass_dat_flags = 0;
    if (p_walls_options) compass_dat_flags = p_walls_options->compass_dat_flags;
+   int style = pcs->style;
 
    VAL(Tape) = VAL(BackTape) = HUGE_REAL;
    VAL(Comp) = VAL(BackComp) = HUGE_REAL;
@@ -5908,8 +5909,8 @@ data_normal(void)
 	  break;
        }
        case WallsSRVHeights: {
-	  filepos fp;
-	  get_pos(&fp);
+	  filepos fp_ih;
+	  get_pos(&fp_ih);
 	  real instrument_height = read_walls_distance(true,
 						       pcs->units[Q_LENGTH]);
 	  if (instrument_height == HUGE_REAL) {
@@ -5924,7 +5925,10 @@ data_normal(void)
 	      }
 	  }
 	  if (instrument_height == HUGE_REAL) break;
+	  int width_ih = ftell(file.fh) - fp_ih.offset;
 
+	  filepos fp_th;
+	  get_pos(&fp_th);
 	  real target_height = read_walls_distance(true, pcs->units[Q_LENGTH]);
 	  if (target_height == HUGE_REAL) {
 	      target_height = 0.0;
@@ -5949,8 +5953,27 @@ data_normal(void)
 	      // elevation of the TO station with respect to the FROM
 	      // station"
 	      VAL(ToDepth) += instrument_height - target_height;
-	      LOC(ToDepth) = fp.offset;
-	      WID(ToDepth) = ftell(file.fh) - fp.offset;
+	      LOC(ToDepth) = fp_ih.offset;
+	      WID(ToDepth) = ftell(file.fh) - fp_ih.offset;
+	      break;
+	  }
+
+	  if (p_walls_options->tape_method == WALLS_TAPE_SS &&
+	      ctype == CTYPE_OMIT &&
+	      backctype == CTYPE_OMIT) {
+	      // Support TAPE=SS ORDER=DAV (or another order including V)
+	      // where readings either have clinos or depths.  (This handles
+	      // the depths with no clino case; the clino with no depths is
+	      // handled by the "both zero" check above.)
+	      style = STYLE_DIVING;
+	      LOC(FrDepth) = fp_ih.offset;
+	      VAL(FrDepth) = -instrument_height;
+	      WID(FrDepth) = width_ih;
+	      VAR(FrDepth) = var(Q_DEPTH);
+	      LOC(ToDepth) = fp_th.offset;
+	      VAL(ToDepth) = -target_height;
+	      WID(ToDepth) = ftell(file.fh) - fp_th.offset;
+	      VAR(ToDepth) = var(Q_DEPTH);
 	      break;
 	  }
 
@@ -5972,7 +5995,7 @@ data_normal(void)
 
 	  // TRANSLATORS: "Walls" is David McKenzie's cave surveying package,
 	  // so should not be translated.
-	  compile_diagnostic(DIAG_WARN|DIAG_FROM(fp),
+	  compile_diagnostic(DIAG_WARN|DIAG_FROM(fp_ih),
 			     /*Instrument and target heights currently ignored with Walls option combination “TAPE=%s” and “ORDER=%s”*/581,
 			     tape_method, order);
 	  break;
@@ -6059,7 +6082,7 @@ data_normal(void)
 	     if (implicit_splay) {
 		pcs->flags |= BIT(FLAGS_SPLAY);
 	     }
-	     switch (pcs->style) {
+	     switch (style) {
 	      case STYLE_NORMAL:
 		r = process_normal(fr, to, (first_stn == To) ^ fRev,
 				   ctype, backctype);
@@ -6197,16 +6220,24 @@ data_normal(void)
 		    VAR(Dz) = 1e-6;
 		}
 	     }
-	     switch (pcs->style) {
+	     switch (style) {
 	      case STYLE_NORMAL:
 		process_normal(fr, to, (first_stn == To) ^ fRev,
 			       ctype, backctype);
 		break;
-	      case STYLE_DIVING:
+	      case STYLE_DIVING: {
+		int saved_recorded_style = pcs->recorded_style;
+		// This is needed for e.g. Walls TAPE=SS ORDER=DAV with IH/TH
+		// and clino omitted.  It shouldn't cause problems for other
+		// cases, but it'd probably be better to pass recorded_style
+		// as a parameter.
+		pcs->recorded_style = STYLE_DIVING;
 		/* FIXME: Handle any clino readings */
 		process_diving(fr, to, (first_stn == To) ^ fRev,
 			       fDepthChange);
+		pcs->recorded_style = saved_recorded_style;
 		break;
+	      }
 	      case STYLE_CYLPOLAR:
 		process_cylpolar(fr, to, (first_stn == To) ^ fRev,
 				 fDepthChange);
