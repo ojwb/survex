@@ -4,6 +4,6 @@
 .NAME	PREFIX
 .STATUS	3
 .SURVEY	prefix test
-.NAME	W_PREFIX
+.NAME	w_prefix
 .STATUS	8
 .ENDBOOK
