@@ -110,7 +110,7 @@ walls.srv:111:5: warning: Parsing as "to" station but may be isolated LRUD with 
  U23 <8 5 15 3.58
      ^~
 walls.srv:127:24: warning: Interpreting "," as separating readings but may be intended as a decimal point
- U23        U24        5,00    0       30
+ U23        U24        5,00    0       30   (3,3)
                         ^
 walls.srv:128:32: warning: Interpreting "," as separating readings but may be intended as a decimal point
  U23        U25        5.00    0,0     30

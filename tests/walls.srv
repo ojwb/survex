@@ -124,7 +124,7 @@ U23 suf2d 3.2131m 15.175d -2:51:44.64
 ; Test mils (360d=6400m)
 U23 suf2e 3.2131m 269.7778m -50.8871m
 ; Test warning about `,` being interpreted as a space.
-U23        U24        5,00    0       30
+U23        U24        5,00    0       30   (3,3)
 U23        U25        5.00    0,0     30
 U23        U26        5.00    0       30,5
 ; Test we don't warn when there's a decimal point as well.

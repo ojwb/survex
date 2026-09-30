@@ -1958,7 +1958,7 @@ bad_angle_units:
 }
 
 static real
-read_walls_distance(bool f_optional, real default_units)
+read_walls_distance(bool f_optional, real default_units, bool comma_ok)
 {
     bool f_decimal_point = false;
     real distance;
@@ -2008,7 +2008,7 @@ bad_distance_units:
 		while (!isBlank(ch) && !isEol(ch)) nextch();
 	    }
 	} else {
-	    if (ch == ',') {
+	    if (!comma_ok && ch == ',') {
 		walls_comma_warning(f_decimal_point);
 	    }
 	    distance *= default_units;
@@ -2051,7 +2051,7 @@ read_walls_variance_overrides(real* p_var_xy, real* p_var_z)
 	    nextch();
 	}
 
-	val_h = read_walls_distance(false, pcs->units[Q_LENGTH]);
+	val_h = read_walls_distance(false, pcs->units[Q_LENGTH], true);
     }
     bool rms_v = rms_h;
     real val_v = val_h;
@@ -2558,11 +2558,11 @@ walls_parse_options(void)
 	    update_backcomp_calibration = true;
 	    break;
 	  case WALLS_UNITS_OPT_INCD:
-	    pcs->z[Q_LENGTH] = -read_walls_distance(false, pcs->units[Q_LENGTH]);
+	    pcs->z[Q_LENGTH] = -read_walls_distance(false, pcs->units[Q_LENGTH], false);
 	    break;
 	  case WALLS_UNITS_OPT_INCH:
 	    p_walls_options->inch =
-		read_walls_distance(false, pcs->units[Q_LENGTH]);
+		read_walls_distance(false, pcs->units[Q_LENGTH], false);
 	    break;
 	  case WALLS_UNITS_OPT_INCV:
 	    pcs->z[Q_GRADIENT] = -read_walls_angle(pcs->units[Q_GRADIENT]);
@@ -3081,7 +3081,7 @@ next_line:
 		    // Read as a distance if this is the altitude, or we've
 		    // already seen a distance for x or y, or if the coordinate
 		    // doesn't start with a compass point letter.
-		    coord = read_walls_distance(false, pcs->units[Q_LENGTH]);
+		    coord = read_walls_distance(false, pcs->units[Q_LENGTH], false);
 		    if (dim != 2) format = UTM;
 		} else {
 		    // Set negate if S or W.
@@ -5531,7 +5531,7 @@ data_normal(void)
 	  filepos fp;
 	  get_pos(&fp);
 	  LOC(Tape) = ftell(file.fh);
-	  VAL(Tape) = read_walls_distance(true, pcs->units[Q_LENGTH]);
+	  VAL(Tape) = read_walls_distance(true, pcs->units[Q_LENGTH], false);
 	  if (VAL(Tape) == HUGE_REAL) {
 	      // Walls expects 2 or more `-` for an omitted value in this
 	      // context, so a single `-` is an error.
@@ -5891,7 +5891,7 @@ data_normal(void)
        case WallsSRVToDepth: {
 	  reading r = *ordering - WallsSRVFrDepth + FrDepth;
 	  LOC(r) = ftell(file.fh);
-	  real depth = read_walls_distance(true, pcs->units[Q_LENGTH]);
+	  real depth = read_walls_distance(true, pcs->units[Q_LENGTH], false);
 	  if (depth == HUGE_REAL) {
 	      depth = 0.0;
 	      if (ch == '-') {
@@ -5912,7 +5912,8 @@ data_normal(void)
 	  filepos fp_ih;
 	  get_pos(&fp_ih);
 	  real instrument_height = read_walls_distance(true,
-						       pcs->units[Q_LENGTH]);
+						       pcs->units[Q_LENGTH],
+						       false);
 	  if (instrument_height == HUGE_REAL) {
 	      if (ch == '-') {
 		  instrument_height = 0.0;
@@ -5929,7 +5930,8 @@ data_normal(void)
 
 	  filepos fp_th;
 	  get_pos(&fp_th);
-	  real target_height = read_walls_distance(true, pcs->units[Q_LENGTH]);
+	  real target_height = read_walls_distance(true, pcs->units[Q_LENGTH],
+						   false);
 	  if (target_height == HUGE_REAL) {
 	      target_height = 0.0;
 	      if (ch == '-') {
