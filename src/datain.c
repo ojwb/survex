@@ -1598,6 +1598,19 @@ typedef struct walls_options {
     // Current INCAB= setting.
     real incab;
 
+    // Current UVH= setting (also set by UV=).
+    real uvh;
+
+    // Current UVV= setting (also set by UV=).
+    real uvv;
+
+#ifndef NO_COVARIANCES
+    // Current covariance(horizontal,z) scale factor.
+    //
+    // We cache this value to save a lot of redundant square root calculations.
+    real uv_covzh;
+#endif
+
     // Current path including trailing directory separator if one is needed.
     string path;
 
@@ -1645,6 +1658,17 @@ static const walls_options walls_options_default = {
 
     // incab
     0.0,
+
+    // uvh
+    1.0,
+
+    // uvv
+    1.0,
+
+#ifndef NO_COVARIANCES
+    // uv_covzh
+    1.0,
+#endif
 
     // path
     S_INIT,
@@ -2109,6 +2133,10 @@ read_walls_variance_overrides(real* p_var_xy, real* p_var_z)
 	// variances.
 	*p_var_z = var(Q_POS) / 3.0 + var(Q_LENGTH) / 2.0;
     }
+
+    // Apply UV=/UVH=/UVV= options.
+    *p_var_xy *= p_walls_options->uvh;
+    *p_var_z *= p_walls_options->uvv;
 }
 
 // Walls #FLAG values seem to be arbitrary strings - we attempt to infer
@@ -2722,7 +2750,7 @@ walls_parse_options(void)
 	  case WALLS_UNITS_OPT_UVH:
 	  case WALLS_UNITS_OPT_UVV: {
 	    // Scale factors for variances (with horizontal-only and
-	    // vertical-only variants).  FIXME: Actually apply these!
+	    // vertical-only variants).
 	    filepos fp_arg;
 	    get_pos(&fp_arg);
 	    real scale_factor = read_numeric(false);
@@ -2731,14 +2759,30 @@ walls_parse_options(void)
 		// TRANSLATORS: "Walls" is David McKenzie's cave surveying package,
 		// so should not be translated.
 		compile_diagnostic(DIAG_ERR|DIAG_NUM, /*Value can not be negative*/583);
-	    } else if (scale_factor != 1.0) {
-		filepos fp;
-		get_pos(&fp);
-		set_pos(&fp_option);
-		// TRANSLATORS: "Walls" is David McKenzie's cave surveying package,
-		// so should not be translated.
-		compile_diagnostic(DIAG_WARN|DIAG_QTOKEN, /*Ignoring unsupported Walls option “%s”*/582, s_str(&token));
-		set_pos(&fp);
+	    } else if (opt == WALLS_UNITS_OPT_UV) {
+		p_walls_options->uvh = scale_factor;
+		p_walls_options->uvv = scale_factor;
+#ifndef NO_COVARIANCES
+		p_walls_options->uv_covzh = scale_factor;
+#endif
+	    } else {
+		if (opt == WALLS_UNITS_OPT_UVH) {
+		    p_walls_options->uvh = scale_factor;
+		} else {
+		    p_walls_options->uvv = scale_factor;
+		}
+#ifndef NO_COVARIANCES
+		// Update cached covariance(horizontal,z) scale factor.
+		//
+		// If either uvv or uvh is infinite we set the covariance
+		// factor to 0.0 to decouple horizontal and vertical closures.
+		real sc = 0.0;
+		if (p_walls_options->uvh != HUGE_REAL &&
+		    p_walls_options->uvv != HUGE_REAL) {
+		    sc = sqrt(p_walls_options->uvh * p_walls_options->uvv);
+		}
+		p_walls_options->uv_covzh = sc;
+#endif
 	    }
 	    if (!isBlank(ch) && !isComm(ch) && !isEol(ch)) {
 		// Walls quietly ignores junk after a valid number here.
@@ -4639,23 +4683,36 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
    }
 
    // Apply any Walls variance overrides (also from Compass C shot flag).
+#ifndef NO_COVARIANCES
+   if (p_walls_options) {
+       cxy *= p_walls_options->uvh;
+       czx *= p_walls_options->uv_covzh;
+       cyz *= p_walls_options->uv_covzh;
+   }
+#endif
    if (VAR(Dx) >= 0) {
        vx = VAR(Dx);
 #ifndef NO_COVARIANCES
        czx = cxy = 0.0;
 #endif
+   } else {
+       if (p_walls_options) vx *= p_walls_options->uvh;
    }
    if (VAR(Dy) >= 0) {
        vy = VAR(Dy);
 #ifndef NO_COVARIANCES
        cxy = cyz = 0.0;
 #endif
+   } else {
+       if (p_walls_options) vy *= p_walls_options->uvh;
    }
    if (VAR(Dz) >= 0) {
        vz = VAR(Dz);
 #ifndef NO_COVARIANCES
        cyz = czx = 0.0;
 #endif
+   } else {
+       if (p_walls_options) vz *= p_walls_options->uvv;
    }
 
    // For Walls INCH= and also instrument and target heights.
