@@ -2095,6 +2095,8 @@ read_walls_variance_overrides(real* p_var_xy, real* p_var_z)
 
     if (val_h == 0) {
 	// Use default variance, which is exact for a fixed point.
+	// Apply UV=/UVH= options.
+	*p_var_xy *= p_walls_options->uvh;
     } else if (val_h == HUGE_REAL) {
 	// Infinite variance.  It seems `?` and `*` effectively
 	// mean the same for a fixed point.  We don't really
@@ -2110,6 +2112,8 @@ read_walls_variance_overrides(real* p_var_xy, real* p_var_z)
 	// 100, while each horizontal component would be given half
 	// that variance, or 50".
 	*p_var_xy = val_h * val_h / 2.0;
+	// Apply UV=/UVH= options.
+	*p_var_xy *= p_walls_options->uvh;
     } else {
 	// The value is to be treated as the length of a leg to use
 	// the variances of, so this is based on the leg variance
@@ -2117,14 +2121,20 @@ read_walls_variance_overrides(real* p_var_xy, real* p_var_z)
 	// that for Survex the leg length does not affect the
 	// variances.
 	*p_var_xy = var(Q_POS) / 3.0 + var(Q_LENGTH) / 2.0;
+	// Apply UV=/UVH= options.
+	*p_var_xy *= p_walls_options->uvh;
     }
-    if (val_v < 0.0) {
+    if (val_v == 0.0) {
 	// Use default variance, which is exact for a fixed point.
+	// Apply UV=/UVV= options.
+	*p_var_z *= p_walls_options->uvv;
     } else if (val_v == HUGE_REAL) {
 	// Infinite variance.
 	*p_var_z = HUGE_REAL;
     } else if (rms_v) {
 	*p_var_z = val_v * val_v;
+	// Apply UV=/UVV= options.
+	*p_var_z *= p_walls_options->uvv;
     } else {
 	// The value is to be treated as the length of a leg to use
 	// the variances of, so this is based on the leg variance
@@ -2132,11 +2142,9 @@ read_walls_variance_overrides(real* p_var_xy, real* p_var_z)
 	// that for Survex the leg length does not affect the
 	// variances.
 	*p_var_z = var(Q_POS) / 3.0 + var(Q_LENGTH) / 2.0;
+	// Apply UV=/UVV= options.
+	*p_var_z *= p_walls_options->uvv;
     }
-
-    // Apply UV=/UVH=/UVV= options.
-    *p_var_xy *= p_walls_options->uvh;
-    *p_var_z *= p_walls_options->uvv;
 }
 
 // Walls #FLAG values seem to be arbitrary strings - we attempt to infer
@@ -2773,15 +2781,8 @@ walls_parse_options(void)
 		}
 #ifndef NO_COVARIANCES
 		// Update cached covariance(horizontal,z) scale factor.
-		//
-		// If either uvv or uvh is infinite we set the covariance
-		// factor to 0.0 to decouple horizontal and vertical closures.
-		real sc = 0.0;
-		if (p_walls_options->uvh != HUGE_REAL &&
-		    p_walls_options->uvv != HUGE_REAL) {
-		    sc = sqrt(p_walls_options->uvh * p_walls_options->uvv);
-		}
-		p_walls_options->uv_covzh = sc;
+		p_walls_options->uv_covzh =
+		    sqrt(p_walls_options->uvh * p_walls_options->uvv);
 #endif
 	    }
 	    if (!isBlank(ch) && !isComm(ch) && !isEol(ch)) {
