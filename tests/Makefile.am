@@ -224,6 +224,7 @@ imgtest_survey.svx
 EXTRA_DIST +=\
 cmapstn.adj cmapstn.dump\
 cmap.sht cmap.dump\
+cmapyyyy.sht cmapyyyy.dump\
 dump3ddate.3d dump3ddate.dump\
 extendsurveyx.3d extendsurveyx.dump\
 filter.plt filter.dump\

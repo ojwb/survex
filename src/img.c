@@ -1075,7 +1075,7 @@ cmap_xyz_open(img *pimg, const char *survey)
     len = strlen(line);
     if (len > 59) {
 	/* Don't just truncate at column 59, allow for a > 2 digit year. */
-	char * p = strstr(line + len, "Page");
+	char * p = strstr(line + 59, "Page");
 	if (p) {
 	    while (p > line && p[-1] == ' ')
 		--p;
