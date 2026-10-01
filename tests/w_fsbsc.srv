@@ -6,5 +6,5 @@ X	C1	100	90/270	+60/+60
 X	C2	100	90/270	+60/+60
 #units reset m incvb=10
 X	I1	100	90/270	+60/-70
-#units reset m typevb=C,0 incvb=10
+#units reset m typevb=C incvb=10
 X	B1	100	90/270	+60/+50
