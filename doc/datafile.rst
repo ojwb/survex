@@ -565,22 +565,24 @@ Description
    * ``EUR79Z30`` for UTM zone 30, EUR79 datum.  Supported since Survex
      1.2.15.
 
-   * ``FILE`` followed by the name of a file which describes the coordinate
-     system (like in the example above).  The description may be a PROJ string,
-     but the point of reading it from a file is that it can also be WKT or
-     PROJJSON, which are made up of double quoted strings written over several
-     lines and so are awkward to write in a ``.svx`` file.  It means a ``.prj``
-     file such as those which accompany ESRI shapefiles can be used directly,
-     so you can georeference a survey to match GIS data you already have.
+   * ``FILE`` followed by the name of a file which contains a description of
+     the coordinate system (like in the example above).  The description can
+     be anything PROJ understands.  This provides a convenient way to specify
+     the coordinate system using a format such as WKT or PROJJSON, which
+     contain double quoted strings written over several lines and so are
+     awkward to write inline in a ``.svx`` file as required by ``CUSTOM``.
+     This also allows ``.prj`` file such as those which accompany ESRI
+     shapefiles to be used directly, so you can georeference a survey to match
+     GIS data you already have.
 
      WKT can also express datums which a PROJ string can't, such as
      NAD83(2011), ETRS89 and GDA2020.
 
      The file is resolved relative to the directory which the file containing
-     the ``*cs`` is in, and if the name as specified is not found cavern will
-     try adding a ``.prj`` extension.  If the filename contains spaces, it must
-     be enclosed in double quotes, and you can double the quote character to
-     include it in the filename.
+     the ``*cs`` is in, and the same case-mapping is applied as for opening
+     survey data files.  If the file has an extension, you need to include it.
+     If the filename contains spaces, it must be enclosed in double quotes, and
+     you can double the quote character to include it in the filename.
 
      The lines of the file are joined with a single space, since the coordinate
      system is stored in the ``.3d`` file as a single line.  Neither WKT nor

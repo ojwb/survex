@@ -2515,7 +2515,7 @@ read_cs_from_file(const char *fnm, const filepos *fp)
 {
    char *pth = path_from_fnm(file.filename);
    char *fnm_used = NULL;
-   FILE *fh = fopen_portable(pth, fnm, EXT_PRJ, "rb", &fnm_used);
+   FILE *fh = fopen_portable(pth, fnm, NULL, "rb", &fnm_used);
    free(pth);
    if (fh == NULL) {
       set_pos(fp);
