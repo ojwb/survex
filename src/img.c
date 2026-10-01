@@ -3094,6 +3094,7 @@ out_of_memory_error:
 	    img_errno = IMG_BADFORMAT;
 	    return img_BAD;
 	 }
+	 /* Note: label_buf is at least 257 bytes. */
 	 memcpy(pimg->label, line, 6);
 	 q = (char *)memchr(pimg->label, ' ', 6);
 	 if (!q) q = pimg->label + 6;
@@ -3147,6 +3148,7 @@ out_of_memory_error:
 		pimg->flags = 0;
 		return img_MOVE;
 	    }
+	    /* Note: new_len is at most 8 and label_buf at least 257 bytes. */
 	    memcpy(pimg->label, new_, new_len + 1);
 	    free(line);
 	    pimg->pending = img_MOVE + 4;
@@ -3165,6 +3167,7 @@ out_of_memory_error:
 		pimg->flags = 0;
 		return img_LINE;
 	    }
+	    /* Note: new_len is at most 8 and label_buf at least 257 bytes. */
 	    memcpy(pimg->label, new_, new_len + 1);
 	    free(line);
 	    pimg->pending = img_LINE + 4;
@@ -3175,6 +3178,7 @@ out_of_memory_error:
 	 int r = compass_plt_update_station(pimg, new_, new_len, 0);
 	 if (r < 0)
 	     goto out_of_memory_error;
+	 /* Note: label_buf is at least 257 bytes. */
 	 memcpy(pimg->label + 16, line, 70);
 	 if (r > 0) {
 	     /* We've already emitted img_LABEL for this station. */
@@ -3187,6 +3191,7 @@ out_of_memory_error:
 	     return img_MOVE;
 	 }
 
+	 /* Note: new_len is at most 8 and label_buf at least 257 bytes. */
 	 memcpy(pimg->label, new_, new_len + 1);
 	 pimg->pending = img_LABEL + 4;
 
