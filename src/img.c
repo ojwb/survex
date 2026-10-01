@@ -1097,6 +1097,8 @@ cmap_xyz_open(img *pimg, const char *survey)
 	}
 	p = pimg->datestamp;
 	v = strtoul(p, &p, 10);
+	if (v == ULONG_MAX || *p++ != '/')
+	    goto bad_cmap_date;
 	if (v <= 50) {
 	    /* In the absence of a spec for cmap files, assume <= 50 means 21st
 	     * century. */
@@ -1105,8 +1107,6 @@ cmap_xyz_open(img *pimg, const char *survey)
 	    /* Map 100-199 to 21st century. */
 	    v += 1900;
 	}
-	if (v == ULONG_MAX || *p++ != '/')
-	    goto bad_cmap_date;
 	tm.tm_year = v - 1900;
 	v = strtoul(p, &p, 10);
 	if (v < 1 || v > 12 || *p++ != '/')
