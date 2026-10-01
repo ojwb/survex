@@ -3108,6 +3108,7 @@ out_of_memory_error:
 	 read_xyz_station_coords(p, line);
 	 pimg->flags = img_SFLAG_UNDERGROUND;
 	 /* FIXME: look at prev for lines (line + 32, 5) */
+	 free(line);
 	 return img_LABEL;
       } else {
 	 /* Shot variant (IMG_VERSION_CMAP_SHOT) */
@@ -3716,6 +3717,8 @@ img_close(img *pimg)
       }
       if (pimg->data) {
 	  switch (pimg->version) {
+	    case IMG_VERSION_CMAP_SHOT:
+	    case IMG_VERSION_CMAP_STATION:
 	    case IMG_VERSION_COMPASS_PLT:
 	      compass_plt_free_data(pimg);
 	      break;
