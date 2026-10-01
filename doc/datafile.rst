@@ -556,7 +556,11 @@ Description
      resource for finding the EPSG code you want.  For example, ``EPSG:4167``
      is NZGD2000.  Supported since Survex 1.2.15.
 
-   * ``CUSTOM`` followed by a PROJ string (like in the example above).
+   * ``CUSTOM`` followed by a string PROJ understands (like in the example
+     above).  If the coordinate system description is long you may find it
+     cumbersome to have to write the description inline in the ``.svx`` file,
+     in which case see ``FILE`` below which allows specifying it in a separate
+     file.
 
    * ``ESRI:`` followed by a positive integer code.  ESRI codes are used by
      ArcGIS to specify coordinate systems (in a similar way to EPSG codes)
