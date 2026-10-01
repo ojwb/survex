@@ -1,4 +1,4 @@
-; pos=dump warn=4 dummycrprotection=
+; Test diving data handling
 #units m
 #units save
 #UNITS ORDER=DA Tape=SS

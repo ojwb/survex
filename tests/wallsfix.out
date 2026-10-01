@@ -10,16 +10,16 @@ Calculating network...
 Calculating traverses...
 
 Calculating trailing traverses...
-wallsfix.srv:33: warning: Unused fixed point "seg1"
-wallsfix.srv:34: warning: Unused fixed point "seg2"
-wallsfix.srv:35: warning: Unused fixed point "seg3"
-wallsfix.srv:36: warning: Unused fixed point "seg4"
-wallsfix.srv:37: warning: Unused fixed point "seg5"
-wallsfix.srv:38: warning: Unused fixed point "seg6"
-wallsfix.srv:40: warning: Unused fixed point "seg7"
-wallsfix.srv:41: warning: Unused fixed point "seg8"
-wallsfix.srv:42: warning: Unused fixed point "seg9"
-wallsfix.srv:3: warning: Unused fixed point "unused"
+w_fix.srv:33: warning: Unused fixed point "seg1"
+w_fix.srv:34: warning: Unused fixed point "seg2"
+w_fix.srv:35: warning: Unused fixed point "seg3"
+w_fix.srv:36: warning: Unused fixed point "seg4"
+w_fix.srv:37: warning: Unused fixed point "seg5"
+w_fix.srv:38: warning: Unused fixed point "seg6"
+w_fix.srv:40: warning: Unused fixed point "seg7"
+w_fix.srv:41: warning: Unused fixed point "seg8"
+w_fix.srv:42: warning: Unused fixed point "seg9"
+w_fix.srv:3: warning: Unused fixed point "unused"
 
 Calculating statistics...
 

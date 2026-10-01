@@ -1,4 +1,4 @@
-; pos=fail warn=6 dummycrprotection=
+; Test cases where readings trigger warnings or errors.
 a b 10.0 f 005d +10
 a c 10.0f 365d +10
 a d 10.0d 005d N10E

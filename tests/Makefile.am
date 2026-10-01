@@ -134,19 +134,19 @@ folder.mak subdir/cave1a.dat subdir/cave1b.dat subdir/subsubdir/cave2.dat\
 utm.mak utm.out utm.dump\
 walls.srv walls.out walls.dump\
 wallsbaddatum.out wallsbaddatum.wpj\
-wallscylpolar.srv wallscylpolar.dump wallscylpolar.out\
+wallscylpolar.wpj wallscylpolar.dump wallscylpolar.out w_cylpol.srv\
 wallsdecl.wpj wallsdecl.out wallsdecl.dump w_decl.srv\
-wallsdiving.srv wallsdiving.dump wallsdiving.out\
-wallsfix.srv wallsfix.dump wallsfix.out\
+wallsdiving.wpj wallsdiving.dump wallsdiving.out w_diving.srv\
+wallsfix.wpj wallsfix.dump wallsfix.out w_fix.srv\
 wallsfsbs.wpj wallsfsbs.dump wallsfsbs.out w_fsbs.srv\
 wallsfsbsclino.wpj wallsfsbsclino.out wallsfsbsclino.pos w_fsbsc.srv\
 wallshtie.wpj wallshtie.dump wallshtie.out w_htie.srv\
 wallsihth.wpj wallsihth.dump wallsihth.out w_ihth.srv\
 wallsprefix.wpj wallsprefix.dump wallsprefix.out w_prefix.srv\
+wallsbadreadings.srv wallsbadreadings.out wb_read.srv\
 baddate.srv baddate.out\
 badomit.srv badomit.out\
 badopts.srv badopts.out\
-badreadings.srv badreadings.out\
 unknowndirective.srv unknowndirective.out\
 dot17.svx dot17.pos 3dcorner.svx 3dcorner.pos\
 complexhanging.svx complexhanging.out\

@@ -1,0 +1,9 @@
+;WALLS Project File
+; pos=fail warn=6 dummycrprotection=
+.BOOK	Bad Readings Test Project
+.NAME	BADREAD
+.STATUS	3
+.SURVEY	Bad Readings
+.NAME	wb_read
+.STATUS	8
+.ENDBOOK

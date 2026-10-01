@@ -1,0 +1,9 @@
+;WALLS Project File
+; pos=dump warn=4 dummycrprotection=
+.BOOK	Diving Test Project
+.NAME	DIVING
+.STATUS	3
+.SURVEY	diving data test
+.NAME	w_diving
+.STATUS	8
+.ENDBOOK

@@ -1,4 +1,4 @@
-; pos=dump warn=0 dummycrprotection=
+; Test CylPolar style data handling
 #units m
 #units save
 #UNITS ORDER=DA

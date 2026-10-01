@@ -1,0 +1,9 @@
+;WALLS Project File
+; pos=dump warn=10 dummycrprotection=
+.BOOK	FIX directive Test Project
+.NAME	FIX
+.STATUS	3
+.SURVEY	FIX directive tests
+.NAME	w_fix
+.STATUS	8
+.ENDBOOK

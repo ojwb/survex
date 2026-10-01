@@ -1,5 +1,5 @@
-; pos=dump warn=10 dummycrprotection=
 ; Test unused fix point warnings and suppressions
+
 #fix unused 410000 580000 1000
 
 #note quiet1 /unused

@@ -114,18 +114,19 @@ TESTS_=
  fixfeet.mak utm.mak\
  clptest.dat clptest.clp\
  walls.srv\
- baddate.srv badomit.srv badopts.srv badreadings.srv\
+ baddate.srv badomit.srv badopts.srv\
  unknowndirective.srv\
  wallsbaddatum.wpj\
- wallscylpolar.srv\
+ wallscylpolar.wpj\
  wallsdecl.wpj\
- wallsdiving.srv\
- wallsfix.srv\
+ wallsdiving.wpj\
+ wallsfix.wpj\
  wallsfsbs.wpj\
  wallsfsbsclino.wpj\
  wallshtie.wpj\
  wallsihth.wpj\
  wallsprefix.wpj\
+ wallsbadreadings.wpj\
  passage hanging_lrud equatenosuchstn surveytypo\
  skipafterbadomit passagebad badreadingdotplus badcalibrate calibrate_clino\
  badunits badbegin anonstn anonstnbad anonstnrev doubleinc reenterlots\
