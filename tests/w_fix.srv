@@ -18,7 +18,7 @@
 #flag quiet5
 
 #fix quiet6 410006 580006 1006
-#flag quiet6 /Q
+#flag quiet6 /ENTRANCE
 
 #fix quiet7 410007 580007 1007
 quiet7 <--,--,--,--,0>
