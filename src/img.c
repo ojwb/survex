@@ -1169,6 +1169,7 @@ bad_cmap_date:
 	return IMG_OUTOFMEMORY;
     }
     if (line[0] != ' ' || (line[1] != 'S' && line[1] != 'O')) {
+	free(line);
 	return IMG_BADFORMAT;
     }
     if (line[1] == 'S') {
@@ -1182,6 +1183,7 @@ bad_cmap_date:
 	return IMG_OUTOFMEMORY;
     }
     if (line[0] != ' ' || line[1] != '-') {
+	free(line);
 	return IMG_BADFORMAT;
     }
     free(line);
