@@ -9,6 +9,7 @@
  * - Compass Plot files (".plt" and ".plf")
  * - CMAP XYZ files (".sht", ".adj", ".una"; ".xyz" also recognised though
  *   it seems this is a misunderstanding)
+ * - Walls ".LST" files
  *
  * Writing Survex ".3d" image files is supported.
  *
