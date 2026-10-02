@@ -3246,7 +3246,13 @@ no_xsect:
       char *q;
       int i;
 
-walls_lst_next_line:
+      if (pimg->pending) {
+	 pimg->label[pimg->label_len] = '\0';
+	 i = pimg->pending - 1;
+	 pimg->pending = 0;
+	 return i;
+      }
+
       line = getline_alloc(pimg->fh);
       if (!line) {
 	  return IMG_OUTOFMEMORY;
@@ -3308,18 +3314,6 @@ walls_lst_next_line:
       memcpy(pimg->label + i, name, q - name - 1);
       pimg->label_len = i + (q - name - 1);
       pimg->label[pimg->label_len] = '\0';
-      if (pimg->data) {
-	  int r = compass_plt_update_station(pimg, pimg->label, pimg->label_len, 0);
-	  if (r < 0) {
-	      free(line);
-	      goto out_of_memory_error;
-	  }
-	  if (r > 0) {
-	      /* We've already emitted img_LABEL for this station. */
-	      free(line);
-	      goto walls_lst_next_line;
-	  }
-      }
 
       p->x = atof(q);
       q = strchr(q, '\t');
@@ -3340,6 +3334,26 @@ walls_lst_next_line:
 	  p->x *= METRES_PER_FOOT;
 	  p->y *= METRES_PER_FOOT;
 	  p->z *= METRES_PER_FOOT;
+      }
+      if (pimg->data) {
+	  /* If the line ends `-` or `->` this station connects to the station
+	   * on the previous line.
+	   */
+	  char ch = q[strlen(q) - 1];
+	  int code = (ch == '-' || ch == '>') ? img_LINE : img_MOVE;
+
+	  int r = compass_plt_update_station(pimg, pimg->label, pimg->label_len, 0);
+	  if (r < 0) {
+	      free(line);
+	      goto out_of_memory_error;
+	  }
+	  if (r > 0) {
+	      free(line);
+	      pimg->label[pimg->label_len] = '\0';
+	      return code;
+	  }
+	  /* img_MOVE has value 0 so add one to the pending code. */
+	  pimg->pending = code + 1;
       }
       free(line);
       return img_LABEL;

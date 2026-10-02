@@ -13,8 +13,9 @@ information to usefully read as processed survey data, and doing so means
 tools such as ``diffpos`` can be used to compare the same dataset processed
 by Walls and by Survex.  Depending on the options chosen when creating a
 ``.LST`` file in Walls, it may include the links between stations as well
-as the station names and positions.  Currently the links are ignored so
-e.g. viewing a ``.LST`` in aven will only show the stations.
+as the station names and positions.  This leg information is handled if present
+so you can view a Walls-processed centre-line in ``aven`` by exporting it as
+a ``.LST`` file.
 
 ---------------------------
 Walls .WPJ and .SRV support

@@ -20,12 +20,19 @@ display the processed data.  If there are any warnings and errors, it will
 show a log window with the output with clickable links to open the affected
 file at the problematic line.
 
-``SURVEY_FILE`` can also be processed survey data - a Survex ``.3d`` file, a
-Compass ``.plt`` file or a CMAP ``.sht`` file.  It can also be a Survex
-``.pos`` file, a CMAP ``.una`` or ``.adj`` file, or a Walls ``.LST`` file, but
-for these only stations are shown, not any legs (for ``.pos`` this is because
-the format only records station positions).  (All Survex programs which read
-``.3d`` files can also transparently handle these formats.)
+``SURVEY_FILE`` can also be processed survey data in any of these formats:
+
+ - Survex ``.3d``
+ - Compass ``.plt`` or ``.plf``
+ - Walls ``.LST`` (by default this format only includes station information;
+   select `Connected vectors with file references` in Walls to include legs)
+ - CMAP ``.sht``
+ - Survex ``.pos`` (format only includes station names and positions)
+ - CMAP ``.una`` or ``.adj`` file, but for these only stations are shown
+   (the format contains leg information but it is ignored).
+
+(All Survex programs which read ``.3d`` files can also transparently handle
+these formats.)
 
 On-Screen Indicators
 ~~~~~~~~~~~~~~~~~~~~
