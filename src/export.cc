@@ -857,8 +857,8 @@ PLT::PLT(const char * input_datum)
 	return;
     }
 
-    // img_compass_utm_proj_str() also returns PROJ4 strings for NAD27 and
-    // NAD83 zones which don't have an EPSG code, so handle these too here:
+    // img_utm_proj_str() also returns PROJ4 strings for NAD27 and NAD83 zones
+    // which don't have an EPSG code, so handle these too here:
     //
     // "+proj=utm +zone=%d +datum=NAD27 +units=m +no_defs +type=crs"
     // "+proj=utm +zone=%d +datum=NAD83 +units=m +no_defs +type=crs"

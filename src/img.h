@@ -448,7 +448,7 @@ typedef enum {
  */
 img_errcode img_error(void);
 
-/* Datum codes returned by img_parse_compass_datum_string().
+/* Datum codes returned by img_parse_datum_string().
  *
  * We currently don't handle the following, which appear in the datum list
  * in Compass, but there don't seem to be any EPSG codes for UTM with any
@@ -482,8 +482,8 @@ typedef enum {
     img_DATUM_WGS84
 } img_datum;
 
-/* Parse a Compass datum string and return an img_datum code. */
-img_datum img_parse_compass_datum_string(const char *s, size_t len);
+/* Parse a Compass or Walls datum string and return an img_datum code. */
+img_datum img_parse_datum_string(const char *s, size_t len);
 
 /* Return a CRS string to pass to PROJ from an img_datum and UTM zone.
  *
@@ -504,13 +504,18 @@ img_datum img_parse_compass_datum_string(const char *s, size_t len);
  * The returned value is allocated with malloc() and the caller is responsible
  * for calling free().
  */
-char *img_compass_utm_proj_str(img_datum datum, int utm_zone);
+char *img_utm_proj_str(img_datum datum, int utm_zone);
 
 /* Return EPSG code for geodetic CRS (i.e. long/lat) with datum img_datum.
  *
  * Returns -1 for img_DATUM_UNKNOWN.
  */
-int img_compass_longlat_epsg_code(img_datum datum);
+int img_longlat_epsg_code(img_datum datum);
+
+/* Macro aliases to match older versions of img: */
+#define img_parse_compass_datum_string(S, L) img_parse_datum_string(S, L)
+#define img_compass_utm_proj_str(D, Z) img_utm_proj_str(D, Z)
+#define img_compass_longlat_epsg_code(D) img_longlat_epsg_code(D)
 
 #ifdef __cplusplus
 }

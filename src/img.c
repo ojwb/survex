@@ -1036,7 +1036,7 @@ compass_plt_open(img *pimg, const char *survey)
 		  continue;
 	      }
 
-	      new_datum = img_parse_compass_datum_string(line, strlen(line));
+	      new_datum = img_parse_datum_string(line, strlen(line));
 	      if (new_datum == img_DATUM_UNKNOWN) {
 		  utm_zone = 99;
 	      } else if (datum == img_DATUM_UNKNOWN) {
@@ -4087,7 +4087,7 @@ img_close(img *pimg)
 }
 
 img_datum
-img_parse_compass_datum_string(const char *s, size_t len)
+img_parse_datum_string(const char *s, size_t len)
 {
 #define EQ(S) len == LITLEN(S) && memcmp(s, S, LITLEN(S)) == 0
     /* First check the three which seem to be commonly used in Compass data. */
@@ -4096,6 +4096,12 @@ img_parse_compass_datum_string(const char *s, size_t len)
     if (EQ("North American 1927"))
 	return img_DATUM_NAD27;
     if (EQ("North American 1983"))
+	return img_DATUM_NAD83;
+
+    /* Walls has different name strings to Compass for some datums. */
+    if (EQ("NAD27 CONUS"))
+	return img_DATUM_NAD27;
+    if (EQ("NAD83"))
 	return img_DATUM_NAD83;
 
     if (EQ("Adindan"))
@@ -4119,11 +4125,17 @@ img_parse_compass_datum_string(const char *s, size_t len)
     if (EQ("WGS 1972"))
 	return img_DATUM_WGS72;
 
+    /* Walls has different name strings to Compass for some datums. */
+    if (EQ("Geodetic Datum `49"))
+	return img_DATUM_NZGD49;
+    if (EQ("Hu-Tzu-Shan"))
+	return img_DATUM_HUTZUSHAN1950;
+
     return img_DATUM_UNKNOWN;
 }
 
 char *
-img_compass_utm_proj_str(img_datum datum, int utm_zone)
+img_utm_proj_str(img_datum datum, int utm_zone)
 {
     int epsg_code = 0;
     const char* proj4_datum = NULL;
@@ -4236,7 +4248,7 @@ img_compass_utm_proj_str(img_datum datum, int utm_zone)
 }
 
 int
-img_compass_longlat_epsg_code(img_datum datum)
+img_longlat_epsg_code(img_datum datum)
 {
     switch (datum) {
       case img_DATUM_UNKNOWN:

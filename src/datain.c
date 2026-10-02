@@ -1003,8 +1003,7 @@ data_file_compass_mak(void)
 		  s_truncate(&dat_fnm, trim_len);
 		  if (base_utm_zone) {
 		      // Process the previous @ command using the datum from &.
-		      char *proj_str = img_compass_utm_proj_str(datum,
-								base_utm_zone);
+		      char *proj_str = img_utm_proj_str(datum, base_utm_zone);
 		      if (proj_str) {
 			  // Temporarily reset line and lpos so dec_context and
 			  // dec_line refer to the @ command.
@@ -1122,7 +1121,7 @@ update_proj_str:
 	    pcs->input_convergence = HUGE_REAL;
 	    if (datum && utm_zone && abs(utm_zone) <= 60) {
 		/* Set up coordinate system. */
-		char *proj_str = img_compass_utm_proj_str(datum, utm_zone);
+		char *proj_str = img_utm_proj_str(datum, utm_zone);
 		if (proj_str) {
 		    pcs->proj_str = proj_str;
 		    if (!proj_str_out) {
@@ -1146,7 +1145,7 @@ update_proj_str:
 		  nextch_handling_eol();
 	      }
 	      if (ch == ';') nextch_mak();
-	      datum = img_parse_compass_datum_string(s_str(&p), datum_len);
+	      datum = img_parse_datum_string(s_str(&p), datum_len);
 	      s_free(&p);
 	      goto update_proj_str;
 	  }
@@ -3186,7 +3185,7 @@ next_line:
 		// set by .REF in the wpj.
 		if (walls_ref.img_datum_code > 0 && proj_str_out) {
 		    int epsg_code =
-			img_compass_longlat_epsg_code(walls_ref.img_datum_code);
+			img_longlat_epsg_code(walls_ref.img_datum_code);
 		    char proj_longlat[32];
 		    snprintf(proj_longlat, sizeof(proj_longlat),
 			     "EPSG:%d", epsg_code);
@@ -3816,34 +3815,20 @@ detached_or_not_srv:
 	    get_pos(&fp);
 	    string datum_str = S_INIT;
 	    read_string(&datum_str);
-	    int datum = img_parse_compass_datum_string(s_str(&datum_str),
-						       s_len(&datum_str));
+	    int datum = img_parse_datum_string(s_str(&datum_str),
+					       s_len(&datum_str));
 	    if (datum == 0) {
-		// Walls has different name strings to Compass for some datums.
-		if (S_EQ(&datum_str, "NAD27 CONUS")) {
-		    // FIXME Assuming this is right.  Walls seems to have 6
-		    // variant NAD27 datums, not sure what's going on.
-		    datum = img_DATUM_NAD27;
-		} else if (S_EQ(&datum_str, "NAD83")) {
-		    datum = img_DATUM_NAD83;
-		} else if (S_EQ(&datum_str, "Geodetic Datum `49")) {
-		    datum = img_DATUM_NZGD49;
-		} else if (S_EQ(&datum_str, "Hu-Tzu-Shan")) {
-		    datum = img_DATUM_HUTZUSHAN1950;
-		} else {
-		    compile_diagnostic(DIAG_ERR|DIAG_FROM(fp),
-				       /*Datum “%s” not supported*/503,
-				       s_str(&datum_str));
-		    // Set a datum to avoid causing problems converting
-		    // coordinates.
-		    datum = img_DATUM_WGS84;
-		}
+		compile_diagnostic(DIAG_ERR|DIAG_FROM(fp),
+				   /*Datum “%s” not supported*/503,
+				   s_str(&datum_str));
+		// Set a datum to avoid causing problems converting
+		// coordinates.
+		datum = img_DATUM_WGS84;
 	    }
 	    s_free(&datum_str);
 
 	    if (datum && walls_ref.zone && abs(walls_ref.zone) <= 60) {
-		char *proj_str = img_compass_utm_proj_str(datum,
-							  walls_ref.zone);
+		char *proj_str = img_utm_proj_str(datum, walls_ref.zone);
 		set_declination_location(walls_ref.x, walls_ref.y, walls_ref.z,
 					 proj_str, NULL);
 		if (!pcs->proj_str) {
