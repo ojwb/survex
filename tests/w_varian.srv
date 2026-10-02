@@ -1,0 +1,5 @@
+; Variance handling tests
+#units m
+#units save
+#UNITS UV=0
+A1	X1	12.34   065     0

@@ -2787,6 +2787,11 @@ walls_parse_options(void)
 	    filepos fp_arg;
 	    get_pos(&fp_arg);
 	    real scale_factor = read_numeric(false);
+	    if (scale_factor == 0) {
+		// Survex doesn't currently support zero variance, so map to a
+		// very small factor for now.
+		scale_factor = 0.000001;
+	    }
 	    if (scale_factor < 0) {
 		set_pos(&fp_arg);
 		// TRANSLATORS: "Walls" is David McKenzie's cave surveying package,

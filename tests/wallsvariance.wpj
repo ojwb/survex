@@ -1,0 +1,9 @@
+;WALLS Project File
+; pos=dump warn=0 dummycrprotection=
+.BOOK	Variance Test Project
+.NAME	VARIANCE
+.STATUS	3
+.SURVEY	variance handling test
+.NAME	w_varian
+.STATUS	8
+.ENDBOOK
