@@ -3330,14 +3330,14 @@ no_xsect:
 	  img_errno = IMG_BADFORMAT;
 	  return img_BAD;
       }
-      p->y = atof(q);
-      q = strchr(q, '\t');
+      p->y = atof(q + 1);
+      q = strchr(q + 1, '\t');
       if (!q) {
 	  free(line);
 	  img_errno = IMG_BADFORMAT;
 	  return img_BAD;
       }
-      p->z = atof(q);
+      p->z = atof(q + 1);
       if (pimg->version == IMG_VERSION_WALLS_LST_FEET) {
 	  p->x *= METRES_PER_FOOT;
 	  p->y *= METRES_PER_FOOT;
