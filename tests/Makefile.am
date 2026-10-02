@@ -229,6 +229,7 @@ separator.3d separator.dump\
 cmapstn.adj cmapstn.dump\
 cmap.sht cmap.dump\
 cmapyyyy.sht cmapyyyy.dump\
+wallsgeoref.lst wallsgeoref.dump\
 wallsfeet.lst wallsfeet.dump\
 wallsmetric.lst wallsmetric.dump\
 wallsshots.lst wallsshots.dump\

@@ -14,6 +14,7 @@ tools such as ``diffpos`` can be used to compare the same dataset processed
 by Walls and by Survex.  Some details:
 
 - All stations are assumed to be underground and flagged as ``UNDERGROUND``.
+- Georeferencing is handled.
 - If *Connected vectors with file references* was selected when creating a
   ``.LST`` file in Walls, the file includes links between stations which
   is handled, so you can view a Walls-processed centre-line in ``aven`` by

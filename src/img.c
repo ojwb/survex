@@ -1261,20 +1261,29 @@ walls_lst_open(img *pimg, const char *survey)
     }
 bad_walls_date:
 
-    /* `Component 1 of 1 - Reference Station:  4` */
+    /* The next line tells us the "Reference Station", which may be
+     * a real station or the fictional `<REF>`.  This station seems
+     * to be at (0,0,0) in the coordinate system with fixed points
+     * represented as legs from this station.
+     *
+     * Unhelpfully, `<REF>` is a valid station name so it isn't necessarily
+     * fictional, though it seems unlikely to appear in real data.
+     *
+     * `Component 1 of 1 - Reference Station:  4`
+     * `Component 1 of 1 - Reference Station:  <REF>`
+     */
     free(line);
     line = getline_alloc(pimg->fh);
     if (!line) {
 	return IMG_OUTOFMEMORY;
     }
 
-    /* The next line tells us the units for the coordiantes:
+    /* The next line tells us the units for the coordinates, e.g.:
      *
      * `Vectors Listed: 16  Length: 254.78 Feet`
-     *
-     * or
-     *
+     * `Length: 245.80 Feet`
      * `Vectors Listed: 16  Length: 77.66 Meters`
+     * `Length: 69754.69 Meters`
      */
     free(line);
     line = getline_alloc(pimg->fh);
@@ -1287,12 +1296,38 @@ bad_walls_date:
 	pimg->version = IMG_VERSION_WALLS_LST;
     }
 
-    /* Skip further lines (1 currently) until we reach a blank line. */
+    /* Skip further header lines (it seems there's one giving highest and
+     * lowest stations and an optional one if the data is georeferenced).
+     */
     do {
 	free(line);
 	line = getline_alloc(pimg->fh);
 	if (!line) {
 	    return IMG_OUTOFMEMORY;
+	}
+	if (!pimg->cs && strncmp(line, "UTM ", LITLEN("UTM ")) == 0) {
+	    /* Handle georeferencing, e.g.:
+	     * `UTM 34N Grid Conv: -0.819  Datum: WGS 1984`
+	     */
+	    char *q;
+	    unsigned long v = strtoul(line + LITLEN("UTM "), &q, 10);
+	    if (v <= 60 && v != 0) {
+		int utm_zone = v;
+		if (*q == 'S') utm_zone = -utm_zone;
+		q = strstr(q, "Datum: ");
+		if (q) {
+		    q += LITLEN("Datum: ");
+		    int datum = img_parse_datum_string(q, strlen(q));
+		    if (datum != img_DATUM_UNKNOWN) {
+			img_errno = 0;
+			pimg->cs = img_utm_proj_str(datum, utm_zone);
+			if (!pimg->cs && img_errno) {
+			    free(line);
+			    return IMG_OUTOFMEMORY;
+			}
+		    }
+		}
+	    }
 	}
     } while (line[0] != '\0');
 

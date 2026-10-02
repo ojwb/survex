@@ -1,0 +1,15 @@
+KATASTER Project
+Segment: /...
+Vector total: 2  Report Date: 10/03/26 10:23
+Component 1 of 1 - Reference Station:  <REF>
+Length: 2.95 Meters
+High Pt: 2027.84 (0),  Low Pt: 992.41 (1.24)
+UTM 34N Grid Conv: -0.819  Datum: WGS 1984
+
+PREFIX	NAME	EAST	NORTH	UP	FILE:LINE
+
+	<REF>	0.00	0.00	0.00
+Zwolinsk	0	425581.29	5455904.45	1290.09	OTWORY:450-
+Zwolinsk	1	425580.84	5455902.39	1289.42	JZWOLIN:27-
+
+Vectors Listed: 2  Length: 2.95 Meters
