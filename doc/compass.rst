@@ -3,7 +3,7 @@ Larry Fish's Compass
 ====================
 
 Survex can read Compass survey data - it supports survey data files
-and project files (``.DAT`` and ``.MAK files``), closed data files (``.CLP``),
+and project files (``.DAT`` and ``.MAK`` files), closed data files (``.CLP``),
 and processed survey data (``.PLT`` and ``.PLF`` files).  Survex 1.0.19 was
 the first to support this but we currently recommend using 1.4.6 or newer if
 you're working with Compass data as this version made significant improvements
