@@ -1217,6 +1217,7 @@ walls_lst_open(img *pimg, const char *survey)
     }
 
     /* `Vector total: [N]  Report Date: [MM]/[DD]/[YY] [HH]:[MM]` */
+    free(line);
     line = getline_alloc(pimg->fh);
     if (!line) {
 	return IMG_OUTOFMEMORY;
@@ -3309,10 +3310,13 @@ walls_lst_next_line:
       pimg->label[pimg->label_len] = '\0';
       if (pimg->data) {
 	  int r = compass_plt_update_station(pimg, pimg->label, pimg->label_len, 0);
-	  if (r < 0)
+	  if (r < 0) {
+	      free(line);
 	      goto out_of_memory_error;
+	  }
 	  if (r > 0) {
 	      /* We've already emitted img_LABEL for this station. */
+	      free(line);
 	      goto walls_lst_next_line;
 	  }
       }
@@ -3337,6 +3341,7 @@ walls_lst_next_line:
 	  p->y *= METRES_PER_FOOT;
 	  p->z *= METRES_PER_FOOT;
       }
+      free(line);
       return img_LABEL;
    } else {
       /* CMAP XYZ file */
