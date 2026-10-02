@@ -1585,8 +1585,9 @@ xyz_file:
        goto successful_return;
      }
      case EXT3('l', 's', 't'): /* Walls .LST */ {
+       int result;
 walls_lst_file:
-       int result = walls_lst_open(pimg, survey);
+       result = walls_lst_open(pimg, survey);
        if (result) {
 	   img_errno = result;
 	   goto error;
