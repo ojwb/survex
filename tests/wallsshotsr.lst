@@ -1,0 +1,39 @@
+CylPolar style test
+Segment: /
+Vector total: 16  Report Date: 10/02/26 08:35
+Component 1 of 1 - Reference Station:  4
+Length: 77.66 Meters
+High Pt: 0.00 (4),  Low Pt: -9.50 (8c)
+Criteria for Listing: All vectors in current profile view.
+View Frame: 24.98 x 19.72 Meters, View Direction: 270.00 Deg
+Frame Center: 0.00 East, -8.54 North, -3.28 Up
+
+PREFIX	NAME	EAST	NORTH	UP	FILE:LINE
+
+	4	0.00	0.00	0.00	w_cylpol:27
+	5c	-2.83	-2.83	0.00	w_cylpol:27-
+	6c	-5.83	-2.83	-1.50	w_cylpol:28-
+	7c	-8.66	-0.00	-5.50	w_cylpol:29-
+	8c	-8.66	5.00	-9.50	w_cylpol:30->
+	4	0.00	0.00	0.00	w_cylpol:20
+	5b	-2.83	-2.83	0.00	w_cylpol:20-
+	6b	-5.83	-2.83	-1.50	w_cylpol:21-
+	7b	-8.66	-0.00	-5.50	w_cylpol:22-
+	8b	-8.66	5.00	-9.50	w_cylpol:23->
+	4	0.00	0.00	0.00	w_cylpol:12
+	5a	-2.83	-2.83	0.00	w_cylpol:12-
+	6a	-5.83	-2.83	-1.50	w_cylpol:13-
+	7a	-8.66	-0.00	-5.50	w_cylpol:14-
+	8a	-8.66	5.00	-9.50	w_cylpol:15->
+	4	0.00	0.00	0.00	w_cylpol:5
+	5	-2.83	-2.83	0.00	w_cylpol:5-
+	6	-5.83	-2.83	-1.50	w_cylpol:6-
+	7	-8.66	-0.00	-5.50	w_cylpol:7-
+	8	-8.66	5.00	-9.50	w_cylpol:8->
+
+Vectors Listed: 16  Length: 77.66 Meters
+Vectors Crossing Frame Boundary: 4
+Coordinate Ranges of Stations Inside Frame --
+East: 	-8.66	0.00
+North:	-2.83	0.00
+Elev: 	-5.50	0.00

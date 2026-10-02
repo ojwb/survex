@@ -226,6 +226,10 @@ cmapstn.adj cmapstn.dump\
 cmap.sht cmap.dump\
 cmapyyyy.sht cmapyyyy.dump\
 dump3ddate.3d dump3ddate.dump\
+wallsfeet.lst wallsfeet.dump\
+wallsmetric.lst wallsmetric.dump\
+wallsshots.lst wallsshots.dump\
+wallsshotsr.lst wallsshotsr.dump\
 extendsurveyx.3d extendsurveyx.dump\
 filter.plt filter.dump\
 separator.3d separator.dump\

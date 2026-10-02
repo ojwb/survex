@@ -1,0 +1,39 @@
+CylPolar style Test Project
+Segment: /...
+Vector total: 16  Report Date: 10/02/26 10:46
+Component 1 of 1 - Reference Station:  4
+Length: 77.66 Meters
+High Pt: 0.00 (4),  Low Pt: -9.50 (8c)
+Criteria for Listing: All vectors in current plan view.
+View Frame: 16.50 x 13.03 Meters, View Direction: 0.00 Deg
+Frame Center: -4.33 East, 1.09 North, 0.00 Up
+
+PREFIX	NAME	EAST	NORTH	UP	FILE:LINE
+
+	4	0.00	0.00	0.00	W_CYLPOL:27
+	5c	-2.83	-2.83	0.00	W_CYLPOL:27-
+	6c	-5.83	-2.83	-1.50	W_CYLPOL:28-
+	7c	-8.66	-0.00	-5.50	W_CYLPOL:29-
+	8c	-8.66	5.00	-9.50	W_CYLPOL:30-
+	4	0.00	0.00	0.00	W_CYLPOL:20
+	5b	-2.83	-2.83	0.00	W_CYLPOL:20-
+	6b	-5.83	-2.83	-1.50	W_CYLPOL:21-
+	7b	-8.66	-0.00	-5.50	W_CYLPOL:22-
+	8b	-8.66	5.00	-9.50	W_CYLPOL:23-
+	4	0.00	0.00	0.00	W_CYLPOL:12
+	5a	-2.83	-2.83	0.00	W_CYLPOL:12-
+	6a	-5.83	-2.83	-1.50	W_CYLPOL:13-
+	7a	-8.66	-0.00	-5.50	W_CYLPOL:14-
+	8a	-8.66	5.00	-9.50	W_CYLPOL:15-
+	4	0.00	0.00	0.00	W_CYLPOL:5
+	5	-2.83	-2.83	0.00	W_CYLPOL:5-
+	6	-5.83	-2.83	-1.50	W_CYLPOL:6-
+	7	-8.66	-0.00	-5.50	W_CYLPOL:7-
+	8	-8.66	5.00	-9.50	W_CYLPOL:8-
+
+Vectors Listed: 16  Length: 77.66 Meters
+
+Coordinate Ranges of Stations Inside Frame --
+East: 	-8.66	0.00
+North:	-2.83	5.00
+Elev: 	-9.50	0.00

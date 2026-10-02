@@ -1191,6 +1191,179 @@ bad_cmap_date:
     return 0;
 }
 
+static int
+walls_lst_open(img *pimg, const char *survey)
+{
+    char *line = getline_alloc(pimg->fh);
+    if (!line) {
+	return IMG_OUTOFMEMORY;
+    }
+
+    /* Walls uses `:` for the prefix separator. */
+    pimg->separator = ':';
+
+    if (survey) {
+	if (!initialise_survey_filter(pimg, survey))
+	    return IMG_OUTOFMEMORY;
+    }
+
+    /* First line is the title. */
+    pimg->title = line;
+
+    /* `Segment: /[...]` */
+    line = getline_alloc(pimg->fh);
+    if (!line) {
+	return IMG_OUTOFMEMORY;
+    }
+
+    /* `Vector total: [N]  Report Date: [MM]/[DD]/[YY] [HH]:[MM]` */
+    line = getline_alloc(pimg->fh);
+    if (!line) {
+	return IMG_OUTOFMEMORY;
+    }
+    /* There isn't a spec for LST files, so we arbitrarily map YY >= 70 to 19YY
+     * and YY < 70 to 20YY.
+     */
+    char * p = strstr(line, "Report Date:");
+    if (p) {
+	p += LITLEN("Report Date:");
+	while (isspace((unsigned char)*p)) ++p;
+	/* MM/DD/YY/ HH:MM */
+	struct tm tm;
+	unsigned long v;
+	pimg->datestamp = STRDUP(p);
+	if (!pimg->datestamp) {
+	    free(line);
+	    return IMG_OUTOFMEMORY;
+	}
+	v = strtoul(p, &p, 10);
+	if (v < 1 || v > 12 || *p++ != '/')
+	    goto bad_walls_date;
+	tm.tm_mon = v - 1;
+	v = strtoul(p, &p, 10);
+	if (v < 1 || v > 31 || *p++ != '/')
+	    goto bad_walls_date;
+	tm.tm_mday = v;
+	v = strtoul(p, &p, 10);
+	if (v == ULONG_MAX || *p++ != ' ')
+	    goto bad_walls_date;
+	if (v < 70) {
+	    /* There isn't a spec for LST files, so we arbitrarily assume < 70
+	     * means 20YY.
+	     */
+	    v += 2000;
+	} else if (v < 200) {
+	    /* Map 70-99 to 19YY and 100-199 to 20(YY-100). */
+	    v += 1900;
+	}
+	tm.tm_year = v - 1900;
+	v = strtoul(p, &p, 10);
+	if (v >= 24 || *p++ != ':')
+	    goto bad_walls_date;
+	tm.tm_hour = v;
+	v = strtoul(p, &p, 10);
+	if (v >= 60)
+	    goto bad_walls_date;
+	tm.tm_min = v;
+	/* Walls doesn't currently output seconds, but handle if present. */
+	if (*p == ':') {
+	    v = strtoul(p + 1, &p, 10);
+	    if (v > 60)
+		goto bad_walls_date;
+	    tm.tm_sec = v;
+	} else {
+	    tm.tm_sec = 0;
+	}
+	tm.tm_isdst = 0;
+	/* Testing shows Walls writes the time in the local time of the machine
+	 * which wrote the LST file.  We just assume UTC, which is at least
+	 * fairly central in the possibilities.
+	 */
+	pimg->datestamp_numeric = mktime_with_tz(&tm, "");
+    } else {
+	pimg->datestamp = STRDUP(TIMENA);
+	if (!pimg->datestamp) {
+	    free(line);
+	    return IMG_OUTOFMEMORY;
+	}
+    }
+bad_walls_date:
+
+    /* `Component 1 of 1 - Reference Station:  4` */
+    free(line);
+    line = getline_alloc(pimg->fh);
+    if (!line) {
+	return IMG_OUTOFMEMORY;
+    }
+
+    /* The next line tells us the units for the coordiantes:
+     *
+     * `Vectors Listed: 16  Length: 254.78 Feet`
+     *
+     * or
+     *
+     * `Vectors Listed: 16  Length: 77.66 Meters`
+     */
+    free(line);
+    line = getline_alloc(pimg->fh);
+    if (!line) {
+	return IMG_OUTOFMEMORY;
+    }
+    if (strstr(line, " Feet")) {
+	pimg->version = IMG_VERSION_WALLS_LST_FEET;
+    } else {
+	pimg->version = IMG_VERSION_WALLS_LST;
+    }
+
+    /* Skip further lines (1 currently) until we reach a blank line. */
+    do {
+	free(line);
+	line = getline_alloc(pimg->fh);
+	if (!line) {
+	    return IMG_OUTOFMEMORY;
+	}
+    } while (line[0] != '\0');
+
+    free(line);
+    line = getline_alloc(pimg->fh);
+    if (!line) {
+	return IMG_OUTOFMEMORY;
+    }
+#define WALLS_LST_HEADER "PREFIX\tNAME\tEAST\tNORTH\tUP\t"
+    if (strncmp(line, WALLS_LST_HEADER, LITLEN(WALLS_LST_HEADER)) != 0) {
+	free(line);
+	return IMG_BADFORMAT;
+    }
+    /* For a "station" LST file the last field is `NOTE`. */
+    if (strncmp(line + LITLEN(WALLS_LST_HEADER), "NOTE", 4) != 0) {
+	/* We only need to check for duplicate stations in a "shot" LST file. */
+	pimg->data = compass_plt_allocate_hash();
+	if (!pimg->data) {
+	    free(line);
+	    return IMG_OUTOFMEMORY;
+	}
+    }
+
+    /* Skip blank lines (there should be exactly one). */
+    do {
+	pimg->start = ftell(pimg->fh);
+	free(line);
+	line = getline_alloc(pimg->fh);
+	if (!line) {
+	    return IMG_OUTOFMEMORY;
+	}
+    } while (line[0] == '\0');
+    free(line);
+
+    /* Set the file position back to the start of the first data line. */
+    if (fseek(pimg->fh, pimg->start, SEEK_SET) != 0) {
+	img_errno = IMG_READERROR;
+	return 0;
+    }
+
+    return 0;
+}
+
 static char *
 translate_proj4(char * cs, size_t cs_len)
 {
@@ -1282,7 +1455,7 @@ img_read_stream_survey(FILE *stream, int (*close_func)(FILE*),
 		       const char *survey)
 {
    img *pimg;
-   char buf[LITLEN(FILEID) + 9];
+   char buf[256];
    int ch;
    UINT32_T ext;
 
@@ -1410,6 +1583,15 @@ xyz_file:
        }
        goto successful_return;
      }
+     case EXT3('l', 's', 't'): /* Walls .LST */ {
+walls_lst_file:
+       int result = walls_lst_open(pimg, survey);
+       if (result) {
+	   img_errno = result;
+	   goto error;
+       }
+       goto successful_return;
+     }
    }
 
    /* Try to guess the file type from the start of the file. */
@@ -1440,6 +1622,16 @@ xyz_file:
 	 /* Looks like a Survex .pos file. */
 	 goto pos_file;
       }
+
+      if (FREAD(buf, sizeof(buf), 1, pimg->fh) == 1) {
+	  const char *p = memchr(buf, '\n', sizeof(buf) - LITLEN("Segment: "));
+	  if (p && memcmp(p + 1, "Segment: ", LITLEN("Segment: ")) == 0) {
+	      /* Looks like a Walls .LST file. */
+	      rewind(pimg->fh);
+	      goto walls_lst_file;
+	  }
+      }
+
       img_errno = IMG_BADFORMAT;
       goto error;
    }
@@ -3044,6 +3236,102 @@ no_xsect:
 	       return img_BAD;
 	 }
       }
+   } else if (pimg->version == IMG_VERSION_WALLS_LST ||
+              pimg->version == IMG_VERSION_WALLS_LST_FEET) {
+      /* Walls LST file. */
+      char *line;
+      char *prefix;
+      char *name;
+      char *q;
+      int i;
+
+walls_lst_next_line:
+      line = getline_alloc(pimg->fh);
+      if (!line) {
+	  return IMG_OUTOFMEMORY;
+      }
+      if (line[0] == '\0') {
+	  free(line);
+	  return img_STOP;
+      }
+
+      // Tab separated fields: prefix, name, east, north, up, final
+      // The "final" field is different for a "station" vs "shot" LST file
+      // (here pimg->data is set only for "shot" LST files):
+      //
+      // * station: Station note (we ignore)
+      //
+      // * shot: Empty for the start of a traverse; FILE:LINE- for continuing a
+      //   traverse; FILE:LINE-> to indicate the traverse goes off the viewed
+      //   area and the export was limited to the viewed area.
+      prefix = line;
+      name = strchr(prefix, '\t');
+      if (!name) {
+	  free(line);
+	  img_errno = IMG_BADFORMAT;
+	  return img_BAD;
+      }
+      ++name;
+      q = strchr(name, '\t');
+      if (!q) {
+	  free(line);
+	  img_errno = IMG_BADFORMAT;
+	  return img_BAD;
+      }
+      ++q;
+
+      /* Allow for needing to insert a space for each empty prefix level. */
+      if (!check_label_space(pimg, q - prefix + (name - prefix) + 1)) {
+	  free(line);
+	  goto out_of_memory_error;
+      }
+
+      i = 0;
+      if (name - prefix > 1) {
+	  char *r;
+	  char last = '\t';
+	  name[-1] = ':';
+	  for (r = prefix; r != name; ++r) {
+	      if (*q == last) {
+		  pimg->label[i++] = ' ';
+	      }
+	      pimg->label[i++] = *r;
+	  }
+      }
+      memcpy(pimg->label + i, name, q - name - 1);
+      pimg->label_len = i + (q - name - 1);
+      pimg->label[pimg->label_len] = '\0';
+      if (pimg->data) {
+	  int r = compass_plt_update_station(pimg, pimg->label, pimg->label_len, 0);
+	  if (r < 0)
+	      goto out_of_memory_error;
+	  if (r > 0) {
+	      /* We've already emitted img_LABEL for this station. */
+	      goto walls_lst_next_line;
+	  }
+      }
+
+      p->x = atof(q);
+      q = strchr(q, '\t');
+      if (!q) {
+	  free(line);
+	  img_errno = IMG_BADFORMAT;
+	  return img_BAD;
+      }
+      p->y = atof(q);
+      q = strchr(q, '\t');
+      if (!q) {
+	  free(line);
+	  img_errno = IMG_BADFORMAT;
+	  return img_BAD;
+      }
+      p->z = atof(q);
+      if (pimg->version == IMG_VERSION_WALLS_LST_FEET) {
+	  p->x *= METRES_PER_FOOT;
+	  p->y *= METRES_PER_FOOT;
+	  p->z *= METRES_PER_FOOT;
+      }
+      return img_LABEL;
    } else {
       /* CMAP XYZ file */
       char *line = NULL;
@@ -3731,6 +4019,8 @@ img_close(img *pimg)
 	    case IMG_VERSION_CMAP_SHOT:
 	    case IMG_VERSION_CMAP_STATION:
 	    case IMG_VERSION_COMPASS_PLT:
+	    case IMG_VERSION_WALLS_LST:
+	    case IMG_VERSION_WALLS_LST_FEET:
 	      compass_plt_free_data(pimg);
 	      break;
 	    default:

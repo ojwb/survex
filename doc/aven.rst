@@ -22,10 +22,10 @@ file at the problematic line.
 
 ``SURVEY_FILE`` can also be processed survey data - a Survex ``.3d`` file, a
 Compass ``.plt`` file or a CMAP ``.sht`` file.  It can also be a Survex
-``.pos`` file or a CMP ``.una`` or ``.adj`` file, but for these only
-stations are shown, not any legs (for ``.pos`` this is because the format
-only records station positions).  (All Survex programs which read ``.3d``
-files can also transparently handle these formats.)
+``.pos`` file, a CMAP ``.una`` or ``.adj`` file, or a Walls ``.LST`` file, but
+for these only stations are shown, not any legs (for ``.pos`` this is because
+the format only records station positions).  (All Survex programs which read
+``.3d`` files can also transparently handle these formats.)
 
 On-Screen Indicators
 ~~~~~~~~~~~~~~~~~~~~

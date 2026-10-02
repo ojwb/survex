@@ -2,6 +2,24 @@
 David McKenzie's Walls
 ======================
 
+Survex can read Walls unprocessed survey data files and project files (``.SRV``
+and ``.WPJ`` files).  The first release with any support was Survex 1.4.9, but
+the support has evolved and improved since then, and we recommend using the
+latest Survex release if you are processing Walls data.
+
+Survex 1.4.23 added support for reading Walls ``.LST`` reports as processed
+survey data.  ``.LST`` is intended as a text report format, but contains enough
+information to usefully read as processed survey data, and doing so means
+tools such as ``diffpos`` can be used to compare the same dataset processed
+by Walls and by Survex.  Depending on the options chosen when creating a
+``.LST`` file in Walls, it may include the links between stations as well
+as the station names and positions.  Currently the links are ignored so
+e.g. viewing a ``.LST`` in aven will only show the stations.
+
+---------------------------
+Walls .WPJ and .SRV support
+---------------------------
+
 Survex 1.4.9 and later can read Walls unprocessed survey data (``.SRV``
 and ``.WPJ`` files).  Walls is no longer being developed, so the focus of
 support for Walls formats is primarily to help people with existing Walls data
@@ -17,16 +35,43 @@ As of 1.4.10, some large Walls datasets can be successfully processed
 (e.g. Mammoth Cave, the Thailand dataset from https://cave-registry.org.uk/,
 the Tatra Cave Registry from
 https://github.com/dlubom/Jaskiniowy-Kataster-Tatr-Zachodnich
-and Big Bat Cave).  Behaviour is not identical and station positions after
-loop closure will inevitably be different, but large or apparently systematic
-errors are worth reporting.  An easy way to compare is to export a Shapefile
-from ``Walls32.exe`` and overlay it in ``aven``.  The way to export is a bit
-hidden - after processing select the `Segments` tab, make sure the whole
-project is selected, and click the `Details / Rpts...` button which is towards
-the upper right.  Click the `Shapefile...` button in the new dialog box, and
-select what you want to output (e.g. `Vectors`).  Due to limitations in the
-Shapefile format each `Shape Type` selected here exports a separate Shapefile.
-To overlay a Shapefile in ``aven`` use `File->Overlay Geodata...`.
+and Big Bat Cave).
+
+Behaviour is not identical and station positions after loop closure will
+inevitably be different, but we encourage processing your Walls dataset with
+both Walls and Survex and comparing the result.  Please report large or
+apparently systematic errors, or anything that seems suspect.  We suggest a
+couple of ways to compare the results:
+
+- Survex tools can read Walls ``.LST`` reports as processed survey data
+  (since Survex 1.4.23).  This allows using ``diffpos SURVEY.LST SURVEY.3d``
+  to compare station positions.  By default ``diffpos`` ignores a difference
+  along any axis of 0.01 metres (about 0.4 inches), but you can specify a
+  larger threshold; for example, to report stations whose positions are
+  different by more than 0.5m::
+
+    diffpos SURVEY.LST SURVEY.3d 0.5
+
+  Note that ``diffpos`` doesn't compare connectivity (and currently the
+  Survex ``.LST`` parsing doesn't report survey legs even if they are present
+  in the file).
+
+  The way to export ``.LST`` is a bit hidden - after processing select the
+  `Segments` tab, make sure the whole project is selected, and click the
+  `Details / Rpts...` button which is towards the upper right.  Click the
+  `Coordinates...` button in the new dialog box.  If you want to include legs
+  select `Connected vectors with file references`.
+
+- A more visual way to compare is to export a Shapefile from ``Walls32.exe``
+  and overlay it in ``aven``.  The way to export is a bit hidden - after
+  processing select the `Segments` tab, make sure the whole project is
+  selected, and click the `Details / Rpts...` button which is towards
+  the upper right.  Click the `Shapefile...` button in the new dialog box, and
+  select what you want to output (e.g. `Vectors`).  Due to limitations in the
+  Shapefile format each `Shape Type` selected here exports a separate
+  Shapefile.
+
+  To overlay a Shapefile in ``aven`` use `File->Overlay Geodata...`.
 
 See below for a list of known limitations.  We've mostly prioritised what
 to implement based on testing with real-world datasets so commonly used

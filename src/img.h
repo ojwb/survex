@@ -192,6 +192,8 @@ typedef struct {
     *  IMG_VERSION_CMAP_STATION => CMAP XYZ file, station variant (.adj, .una)
     *  IMG_VERSION_COMPASS_PLT => Compass .plt (or .plf) file
     *  IMG_VERSION_SURVEX_POS => .pos file
+    *  IMG_VERSION_WALLS_LST => Walls .LST file (metric)
+    *  IMG_VERSION_WALLS_LST_FEET => Walls .LST file (feet)
     */
    int version;
    char *survey;
@@ -214,6 +216,8 @@ typedef struct {
  * the version member of the img struct.  These are not valid in
  * img_output_version.
  */
+#define IMG_VERSION_WALLS_LST_FEET	-6
+#define IMG_VERSION_WALLS_LST		-5
 #define IMG_VERSION_CMAP_SHOT		-4
 #define IMG_VERSION_CMAP_STATION	-3
 #define IMG_VERSION_COMPASS_PLT		-2

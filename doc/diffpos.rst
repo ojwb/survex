@@ -19,7 +19,7 @@ defaults to 0.01m if not specified.
 Note that the input files can be any format the "img" library can read (and
 can be different formats), so it works with Survex ``.3d`` and ``.pos`` files,
 Compass ``.plt`` and ``.plf`` files, CMAP ``.sht``, ``.adj`` and ``.una``
-files.
+files, Walls ``.LST`` files.
 
 ~~~~~~~
 OPTIONS
