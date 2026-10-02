@@ -1222,9 +1222,7 @@ walls_lst_open(img *pimg, const char *survey)
     if (!line) {
 	return IMG_OUTOFMEMORY;
     }
-    /* There isn't a spec for LST files, so we arbitrarily map YY >= 70 to 19YY
-     * and YY < 70 to 20YY.
-     */
+
     char * p = strstr(line, "Report Date:");
     if (p) {
 	p += LITLEN("Report Date:");
