@@ -1,4 +1,4 @@
-w_varian.srv:5:1: info: Survey has no fixed points. Therefore I've fixed A1 at (0,0,0)
+w_varian.srv:4:1: info: Survey has no fixed points. Therefore I've fixed A1 at (0,0,0)
 
 Removing trailing traverses...
 
@@ -14,11 +14,11 @@ Calculating trailing traverses...
 
 Calculating statistics...
 
-Survey contains 2 survey stations, joined by 1 leg.
-There are 0 loops.
-Total length of survey legs =   12.34m (  12.34m adjusted)
-Total plan length of survey legs =   12.34m
-Total vertical length of survey legs =    0.00m
-Vertical range = 0.00m (from X1 at 0.00m to X1 at 0.00m)
-North-South range = 5.22m (from X1 at 5.22m to A1 at 0.00m)
-East-West range = 11.18m (from X1 at 11.18m to A1 at 0.00m)
+Survey contains 3 survey stations, joined by 3 legs.
+There is 1 loop.
+Total length of survey legs =   65.79m (  83.59m adjusted)
+Total plan length of survey legs =   65.62m
+Total vertical length of survey legs =    4.25m
+Vertical range = 3.12m (from A2 at 3.12m to A1 at 0.00m)
+North-South range = 19.37m (from A1 at 0.00m to A2 at -19.37m)
+East-West range = 36.85m (from A2 at 36.85m to A1 at 0.00m)
