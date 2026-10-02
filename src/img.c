@@ -752,54 +752,10 @@ compass_plt_open(img *pimg, const char *survey)
 	    }
 
 	    if (datum && utm_zone && abs(utm_zone) <= 60) {
-		/* Map to an EPSG code where we can. */
-		const char* template = "EPSG:%d";
-		int value = 0;
-		switch (datum) {
-		  case img_DATUM_NAD27:
-		    if (utm_zone < 0) {
-			template = "+proj=utm +zone=%d +datum=NAD27 +south +units=m +no_defs +type=crs";
-			value = -utm_zone;
-		    } else if (utm_zone <= 23) {
-			value = 26700 + utm_zone;
-		    } else if (utm_zone < 59) {
-			template = "+proj=utm +zone=%d +datum=NAD27 +units=m +no_defs +type=crs";
-			value = utm_zone;
-		    } else {
-			value = 3311 + utm_zone;
-		    }
-		    break;
-		  case img_DATUM_NAD83:
-		    if (utm_zone < 0) {
-			template = "+proj=utm +zone=%d +datum=NAD83 +south +units=m +no_defs +type=crs";
-			value = -utm_zone;
-		    } else if (utm_zone <= 23) {
-			value = 26900 + utm_zone;
-		    } else if (utm_zone == 24) {
-			value = 9712;
-		    } else if (utm_zone < 59) {
-			template = "+proj=utm +zone=%d +datum=NAD83 +units=m +no_defs +type=crs";
-			value = utm_zone;
-		    } else {
-			value = 3313 + utm_zone;
-		    }
-		    break;
-		  case img_DATUM_WGS84:
-		    if (utm_zone > 0) {
-			value = 32600 + utm_zone;
-		    } else {
-			value = 32700 - utm_zone;
-		    }
-		    break;
-		}
-		if (value) {
-		    size_t len = strlen(template) + 4;
-		    pimg->cs = (char*)malloc(len);
-		    if (!pimg->cs) {
-			goto out_of_memory_error;
-		    }
-		    SNPRINTF(pimg->cs, len, template, value);
-		}
+		img_errno = 0;
+		pimg->cs = img_utm_proj_str(datum, utm_zone);
+		if (!pimg->cs && img_errno)
+		    goto out_of_memory_error;
 	    }
 
 	    free(from);
@@ -4137,6 +4093,7 @@ img_parse_datum_string(const char *s, size_t len)
 char *
 img_utm_proj_str(img_datum datum, int utm_zone)
 {
+    /* Map to an EPSG code where we can. */
     int epsg_code = 0;
     const char* proj4_datum = NULL;
 

@@ -45,9 +45,9 @@ esac
 
 : ${DUMP3D="$testdir"/../src/dump3d}
 
-: ${TESTS=${*:-"cmapstn.adj cmap.sht cmapyyyy.sht \
-multisection.plt multisurvey.plt pre1970.plt \
-dump3ddate.3d extendsurveyx.3d filter.plt separator.3d
+: ${TESTS=${*:-"dump3ddate.3d extendsurveyx.3d separator.3d \
+cmapstn.adj cmap.sht cmapyyyy.sht \
+filter.plt multisection.plt multisurvey.plt nzgd49.plt pre1970.plt \
 wallsfeet.lst wallsmetric.lst wallsshots.lst wallsshotsr.lst wallsstns.lst"}}
 
 # Suppress checking for leaks on exit if we're build with lsan - we don't
