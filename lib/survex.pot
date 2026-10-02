@@ -1611,6 +1611,14 @@ msgstr ""
 msgid "Expecting quadrant bearing, found “%s”"
 msgstr ""
 
+#. TRANSLATORS: Walls allows explicit units of inches with the
+#. syntax i5.5 or -i6, but the number must be strictly < 12.
+#: ../src/datain.c:1985
+#: n:585
+#, c-format
+msgid "Measurement in inches must be < 12"
+msgstr ""
+
 #. TRANSLATORS: The first %s is replaced by a station name,
 #. the second %s by "entrance" or "export".
 #: ../src/listpos.c:95

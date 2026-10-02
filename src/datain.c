@@ -1961,17 +1961,42 @@ static real
 read_walls_distance(bool f_optional, real default_units, bool comma_ok)
 {
     bool f_decimal_point = false;
-    real distance;
     skipblanks();
-    if (ch == 'i' || ch == 'I') {
-	// Length specified in inches only, e.g. `i6` is 6 inches.
-	distance = 0.0;
-	goto inches_only;
+
+    filepos fp;
+    get_pos(&fp);
+    bool negative = (ch == '-');
+    if (ch == '-' || ch == '+') {
+	nextch();
     }
-    distance = read_number_or_int(f_optional, false, &f_decimal_point);
+    if (ch == 'i' || ch == 'I') {
+	// Length specified in inches only, e.g. `i6` is 6 inches.  The sign
+	// must come *before* the `i` (e.g. `-i6.5`).
+	get_token_legacy();
+	// Only one letter is allowed here.
+	if (s_str(&uctoken)[1] != '\0') {
+	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN,
+			       /*Expecting “%s”*/103, "I");
+	    // Skip past rest of this field to try to reduce error avalanche.
+	    while (!isBlank(ch) && !isEol(ch)) nextch();
+	    return 0.0;
+	}
+	real inches = read_number(false, true);
+	if (inches >= 12.0) {
+	    // TRANSLATORS: Walls allows explicit units of inches with the
+	    // syntax i5.5 or -i6, but the number must be strictly < 12.
+	    set_pos(&fp);
+	    compile_diagnostic(DIAG_ERR|DIAG_WORD,
+			       /*Measurement in inches must be < 12*/585);
+	}
+	if (negative) inches = -inches;
+	return inches * (METRES_PER_FOOT / 12.0);
+    }
+    set_pos(&fp);
+
+    real distance = read_number_or_int(f_optional, false, &f_decimal_point);
     if (distance != HUGE_REAL) {
 	if (isalpha((unsigned char)ch)) {
-inches_only:
 	    get_token_legacy();
 	    // Only one letter is allowed here.
 	    if (s_str(&uctoken)[1] != '\0') goto bad_distance_units;

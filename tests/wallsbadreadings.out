@@ -47,6 +47,15 @@ wb_read.srv:14:17: error: Expecting numeric field, found ":30"
 wb_read.srv:15:20: error: End of line not blank
  a o 10.0 12:0 0:1.5:1
                     ^~
+wb_read.srv:16:5: error: Measurement in inches must be < 12
+ a p i12 12:30: 0:
+     ^~~
+wb_read.srv:16:15: warning: Expecting numeric field, found ""
+ a p i12 12:30: 0:
+               ^
+wb_read.srv:16:18: warning: Expecting numeric field, found ""
+ a p i12 12:30: 0:
+                  ^
 wb_read.srv:2:1: info: Survey has no fixed points. Therefore I've fixed a at (0,0,0)
 
 Removing trailing traverses...
@@ -63,13 +72,13 @@ Calculating trailing traverses...
 
 Calculating statistics...
 
-Survey contains 9 survey stations, joined by 8 legs.
+Survey contains 10 survey stations, joined by 9 legs.
 There are 0 loops.
-Total length of survey legs =   57.25m (  57.25m adjusted)
-Total plan length of survey legs =   35.61m
+Total length of survey legs =   57.55m (  57.55m adjusted)
+Total plan length of survey legs =   35.92m
 Total vertical length of survey legs =   25.59m
 Vertical range = 19.88m (from e at 9.88m to i at -10.00m)
 North-South range = 18.28m (from o at 9.78m to k at -8.50m)
 East-West range = 7.05m (from o at 2.08m to k at -4.98m)
 
-There were 6 warning(s) and 10 error(s) - no output files produced.
+There were 8 warning(s) and 11 error(s) - no output files produced.
