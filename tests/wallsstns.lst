@@ -1,0 +1,28 @@
+CylPolar style test
+Segment: /
+Vector total: 16  Report Date: 10/02/26 08:32
+Component 1 of 1 - Reference Station:  4
+Length: 77.66 Meters
+High Pt: 0.00 (4),  Low Pt: -9.50 (8c)
+
+PREFIX	NAME	EAST	NORTH	UP	NOTE
+
+	4	0.00	0.00	0.00
+FOO	5	-2.83	-2.83	0.00
+FOO	6	-5.83	-2.83	-1.50
+FOO	7	-8.66	-0.00	-5.50
+FOO	8	-8.66	5.00	-9.50
+F::	5a	-2.83	-2.83	0.00
+G:	5b	-2.83	-2.83	0.00
+X:Y:Z	5c	-2.83	-2.83	0.00
+Y:Z	6a	-5.83	-2.83	-1.50
+A::B	6b	-5.83	-2.83	-1.50
+	6c	-5.83	-2.83	-1.50
+	7a	-8.66	-0.00	-5.50
+	7b	-8.66	-0.00	-5.50
+	7c	-8.66	-0.00	-5.50
+	8a	-8.66	5.00	-9.50
+	8b	-8.66	5.00	-9.50
+	8c	-8.66	5.00	-9.50
+
+Station total: 17

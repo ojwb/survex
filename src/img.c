@@ -3289,13 +3289,19 @@ walls_lst_next_line:
       i = 0;
       if (name - prefix > 1) {
 	  char *r;
-	  char last = '\t';
+	  int after_colon = 0;
 	  name[-1] = ':';
 	  for (r = prefix; r != name; ++r) {
-	      if (*q == last) {
-		  pimg->label[i++] = ' ';
+	      int ch = *r;
+	      if (ch == ':') {
+		  if (after_colon) {
+		      pimg->label[i++] = ' ';
+		  }
+		  after_colon = 1;
+	      } else {
+		  after_colon = 0;
 	      }
-	      pimg->label[i++] = *r;
+	      pimg->label[i++] = ch;
 	  }
       }
       memcpy(pimg->label + i, name, q - name - 1);

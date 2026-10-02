@@ -230,6 +230,7 @@ wallsfeet.lst wallsfeet.dump\
 wallsmetric.lst wallsmetric.dump\
 wallsshots.lst wallsshots.dump\
 wallsshotsr.lst wallsshotsr.dump\
+wallsstns.lst wallsstns.dump\
 extendsurveyx.3d extendsurveyx.dump\
 filter.plt filter.dump\
 separator.3d separator.dump\
