@@ -1412,8 +1412,12 @@ xyz_file:
      }
    }
 
-   if (FREAD(buf, LITLEN(FILEID) + 1, 1, pimg->fh) != 1 ||
-       memcmp(buf, FILEID"\n", LITLEN(FILEID) + 1) != 0) {
+   /* Try to guess the file type from the start of the file. */
+   if (FREAD(buf, LITLEN(FILEID) + 1, 1, pimg->fh) != 1) {
+       img_errno = IMG_BADFORMAT;
+       goto error;
+   }
+   if (memcmp(buf, FILEID"\n", LITLEN(FILEID) + 1) != 0) {
       if (FREAD(buf + LITLEN(FILEID) + 1, 8, 1, pimg->fh) == 1 &&
 	  memcmp(buf, FILEID"\r\nv0.01\r\n", LITLEN(FILEID) + 9) == 0) {
 	 /* v0 3d file with DOS EOLs */
