@@ -2791,6 +2791,13 @@ walls_parse_options(void)
 		// Survex doesn't currently support zero variance, so map to a
 		// very small factor for now.
 		scale_factor = 0.000001;
+	    } else if (scale_factor > 9999.0) {
+		// Cap the scale factor for now as very large scale factors can
+		// cause assertion failures due slightly non-symmetric
+		// covariance matrices.
+		//
+		// FIXME: Map to infinite variances once we support those.
+		scale_factor = 9999.0;
 	    }
 	    if (scale_factor < 0) {
 		set_pos(&fp_arg);
