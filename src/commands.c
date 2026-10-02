@@ -432,14 +432,20 @@ get_token_no_blanks(void)
 void
 get_word(void)
 {
-   s_clear(&token);
    skipblanks();
+   get_word_no_blanks();
+}
+
+void
+get_word_no_blanks(void)
+{
+   s_clear(&token);
    while (!isBlank(ch) && !isComm(ch) && !isEol(ch)) {
       s_appendch(&token, ch);
       nextch();
    }
 #if 0
-   printf("get_word() got “%s”\n", s_str(&token));
+   printf("get_word_no_blanks() got “%s”\n", s_str(&token));
 #endif
 }
 

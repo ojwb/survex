@@ -5636,11 +5636,17 @@ data_normal(void)
 					  VAL(Comp) -= seconds / (60.0 * 60.0);
 				      }
 				  } else {
-				      compile_diagnostic(DIAG_WARN|DIAG_COL, /*Expecting numeric field, found “%s”*/9, "");
+				      get_word_no_blanks();
+				      compile_diagnostic(DIAG_ERR|DIAG_TOKEN,
+							 /*Expecting numeric field, found “%s”*/9,
+							 s_str(&token));
 				  }
 			      }
 			  } else {
-			      compile_diagnostic(DIAG_WARN|DIAG_COL, /*Expecting numeric field, found “%s”*/9, "");
+			      get_word_no_blanks();
+			      compile_diagnostic(DIAG_ERR|DIAG_TOKEN,
+						 /*Expecting numeric field, found “%s”*/9,
+						 s_str(&token));
 			  }
 			  VAL(Comp) *= M_PI / 180.0 / pcs->units[Q_BEARING];
 			  break;
@@ -5713,11 +5719,17 @@ data_normal(void)
 					  VAL(BackComp) -= seconds / (60.0 * 60.0);
 				      }
 				  } else {
-				      compile_diagnostic(DIAG_WARN|DIAG_COL, /*Expecting numeric field, found “%s”*/9, "");
+				      get_word_no_blanks();
+				      compile_diagnostic(DIAG_ERR|DIAG_TOKEN,
+							 /*Expecting numeric field, found “%s”*/9,
+							 s_str(&token));
 				  }
 			      }
 			  } else {
-			      compile_diagnostic(DIAG_WARN|DIAG_COL, /*Expecting numeric field, found “%s”*/9, "");
+			      get_word_no_blanks();
+			      compile_diagnostic(DIAG_ERR|DIAG_TOKEN,
+						 /*Expecting numeric field, found “%s”*/9,
+						 s_str(&token));
 			  }
 			  VAL(BackComp) *= M_PI / 180.0 / pcs->units[Q_BACKBEARING];
 			  break;
@@ -5801,11 +5813,17 @@ data_normal(void)
 				      clin -= seconds / (60.0 * 60.0);
 				  }
 			      } else {
-				  compile_diagnostic(DIAG_WARN|DIAG_COL, /*Expecting numeric field, found “%s”*/9, "");
+				  get_word_no_blanks();
+				  compile_diagnostic(DIAG_ERR|DIAG_TOKEN,
+						     /*Expecting numeric field, found “%s”*/9,
+						     s_str(&token));
 			      }
 			  }
 		      } else {
-			  compile_diagnostic(DIAG_WARN|DIAG_COL, /*Expecting numeric field, found “%s”*/9, "");
+			  get_word_no_blanks();
+			  compile_diagnostic(DIAG_ERR|DIAG_TOKEN,
+					     /*Expecting numeric field, found “%s”*/9,
+					     s_str(&token));
 		      }
 		      clin *= M_PI / 180.0 / pcs->units[Q_GRADIENT];
 		      break;
@@ -5885,11 +5903,17 @@ data_normal(void)
 				      backclin -= seconds / (60.0 * 60.0);
 				  }
 			      } else {
-				  compile_diagnostic(DIAG_WARN|DIAG_COL, /*Expecting numeric field, found “%s”*/9, "");
+				  get_word_no_blanks();
+				  compile_diagnostic(DIAG_ERR|DIAG_TOKEN,
+						     /*Expecting numeric field, found “%s”*/9,
+						     s_str(&token));
 			      }
 			  }
 		      } else {
-			  compile_diagnostic(DIAG_WARN|DIAG_COL, /*Expecting numeric field, found “%s”*/9, "");
+			  get_word_no_blanks();
+			  compile_diagnostic(DIAG_ERR|DIAG_TOKEN,
+					     /*Expecting numeric field, found “%s”*/9,
+					     s_str(&token));
 		      }
 		      backclin *= M_PI / 180.0 / pcs->units[Q_BACKGRADIENT];
 		      break;

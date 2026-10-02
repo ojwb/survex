@@ -1,5 +1,5 @@
 ;WALLS Project File
-; pos=fail warn=8 dummycrprotection=
+; pos=fail warn=6 dummycrprotection=
 .BOOK	Bad Readings Test Project
 .NAME	BADREAD
 .STATUS	3
