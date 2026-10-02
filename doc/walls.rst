@@ -11,11 +11,16 @@ Survex 1.4.23 added support for reading Walls ``.LST`` reports as processed
 survey data.  ``.LST`` is intended as a text report format, but contains enough
 information to usefully read as processed survey data, and doing so means
 tools such as ``diffpos`` can be used to compare the same dataset processed
-by Walls and by Survex.  Depending on the options chosen when creating a
-``.LST`` file in Walls, it may include the links between stations as well
-as the station names and positions.  This leg information is handled if present
-so you can view a Walls-processed centre-line in ``aven`` by exporting it as
-a ``.LST`` file.
+by Walls and by Survex.  Some details:
+
+- All stations are assumed to be underground and flagged as ``UNDERGROUND``.
+- If *Connected vectors with file references* was selected when creating a
+  ``.LST`` file in Walls, the file includes links between stations which
+  is handled, so you can view a Walls-processed centre-line in ``aven`` by
+  exporting it as a ``.LST`` file.
+- If *Include only vectors or stations in current view frame* was selected
+  legs which cross to outside the exported area are flagged as ``DUPLICATE``
+  so they can be easily distinguished.
 
 ---------------------------
 Walls .WPJ and .SRV support

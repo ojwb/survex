@@ -407,6 +407,21 @@ static img_errcode img_errno = IMG_NONE;
 #define PENDING_XSECT		0x008 /* Only for IMG_VERSION_COMPASS_PLT */
 #define PENDING_FLAGS_SHIFT	9 /* Only for IMG_VERSION_COMPASS_PLT */
 
+/* `pending` values for Walls `.LST`.
+ *
+ * These are chosen such that:
+ *
+ * + they are all non-zero (because pending == 0 means nothing pending)
+ * + (pending & PENDING_LST_MASK) gives the item type
+ * + (pending << PENDING_LST_SHIFT) gives the flags
+ */
+#define PENDING_LST_MASK    0x01
+#define PENDING_LST_SHIFT   2
+#define PENDING_LST_MOVE    (img_MOVE | 0x02)
+#define PENDING_LST_LINE    img_LINE
+#define PENDING_LST_LINEOFF \
+    (img_LINE | (img_FLAG_DUPLICATE << PENDING_LST_SHIFT))
+
 /* Days from start of 1900 to start of 1970. */
 #define DAYS_1900 25567
 
@@ -3248,10 +3263,11 @@ no_xsect:
       int i;
 
       if (pimg->pending) {
-	 pimg->label[pimg->label_len] = '\0';
-	 i = pimg->pending - 1;
-	 pimg->pending = 0;
-	 return i;
+	  int pending = pimg->pending;
+	  pimg->pending = 0;
+	  pimg->label[pimg->label_len] = '\0';
+	  pimg->flags = pending >> PENDING_LST_SHIFT;
+	  return pending & PENDING_LST_MASK;
       }
 
       line = getline_alloc(pimg->fh);
@@ -3338,11 +3354,20 @@ no_xsect:
       }
       if (pimg->data) {
 	  /* If the line ends `-` or `->` this station connects to the station
-	   * on the previous line.
+	   * on the previous line.  `->` means the export was restricted to the
+	   * current view and this leg goes off the view, which we flag as
+	   * "DUPLICATE" to allow such legs to be easily distinguished.
 	   */
 	  char ch = q[strlen(q) - 1];
-	  int code = (ch == '-' || ch == '>') ? img_LINE : img_MOVE;
-
+	  int code = PENDING_LST_MOVE;
+	  switch (ch) {
+	    case '-':
+	      code = PENDING_LST_LINE;
+	      break;
+	    case '>':
+	      code = PENDING_LST_LINEOFF;
+	      break;
+	  }
 	  int r = compass_plt_update_station(pimg, pimg->label, pimg->label_len, 0);
 	  if (r < 0) {
 	      free(line);
@@ -3351,12 +3376,14 @@ no_xsect:
 	  if (r > 0) {
 	      free(line);
 	      pimg->label[pimg->label_len] = '\0';
-	      return code;
+	      pimg->flags = code >> PENDING_LST_SHIFT;
+	      return code & PENDING_LST_MASK;
 	  }
-	  /* img_MOVE has value 0 so add one to the pending code. */
-	  pimg->pending = code + 1;
+	  pimg->pending = code;
       }
       free(line);
+      /* No flag information in .LST so assume all stations underground. */
+      pimg->flags = img_SFLAG_UNDERGROUND;
       return img_LABEL;
    } else {
       /* CMAP XYZ file */
