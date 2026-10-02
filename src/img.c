@@ -1073,19 +1073,21 @@ cmap_xyz_open(img *pimg, const char *survey)
      *  * full year being specified instead of 2 digits
      */
     len = strlen(line);
-    if (len > 59) {
-	/* Don't just truncate at column 59, allow for a > 2 digit year. */
-	char * p = strstr(line + 59, "Page");
-	if (p) {
-	    while (p > line && p[-1] == ' ')
-		--p;
-	    *p = '\0';
-	    len = p - line;
-	} else {
-	    line[59] = '\0';
-	}
-    }
     if (len > 45) {
+	if (len > 59) {
+	    /* Don't just truncate at column 59, allow for a > 2 digit year. */
+	    char * p = strstr(line + 59, "Page");
+	    if (p) {
+		while (p > line && p[-1] == ' ')
+		    --p;
+		*p = '\0';
+		len = p - line;
+	    } else {
+		line[59] = '\0';
+		len = 59;
+	    }
+	}
+
 	/* YY/MM/DD HH:MM */
 	struct tm tm;
 	unsigned long v;
