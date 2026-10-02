@@ -1973,17 +1973,15 @@ Syntax
 
 Description
    Station names may be of any length in Survex, but some other (mostly older)
-   cave surveying software only regards the first few characters of a name as
-   significant (e.g. "entran" and "entrance" might be treated as the same).
-   To facilitate using data imported from such a package, Survex allows you to
-   truncate names to whatever length you want (but by default truncation is
-   off).
+   cave surveying software imposes a limit on the length of station names.
+   An 8 character limit seems common (e.g. Smaps 4, Surveyor87/88, Walls),
+   but CMAP had a 6 character limit and Compass has a limit of 12.
 
-   Figures for the number of characters which are significant in various
-   software packages: Compass currently has a limit of 12, CMAP has a limit of
-   6, Smaps 4 had a limit of 8, Surveyor87/8 used 8. Survex itself used 8 per
-   prefix level up to version 0.41, and 12 per prefix level up to 0.73 (more
-   recent versions removed this rather archaic restriction).
+   Rather than giving an error, some software only regarded the first few
+   characters of a name as significant (e.g. "entran" and "entrance" might be
+   treated as the same).  To facilitate working with data imported from such
+   software Survex allows you to truncate names to whatever length you want.
+   By default truncation is off.
 
 See Also
    ``*case``
