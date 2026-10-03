@@ -3252,6 +3252,7 @@ no_xsect:
       char *name;
       char *q;
       int i;
+      int sflags = 0;
 
       if (pimg->pending) {
 	  int pending = pimg->pending;
@@ -3261,6 +3262,7 @@ no_xsect:
 	  return pending & PENDING_LST_MASK;
       }
 
+walls_lst_next_line:
       line = getline_alloc(pimg->fh);
       if (!line) {
 	  return IMG_OUTOFMEMORY;
@@ -3338,6 +3340,12 @@ no_xsect:
 	  return img_BAD;
       }
       p->z = atof(q + 1);
+      if (pimg->label_len == 5 && memcmp(pimg->label, "<REF>", 5) == 0 &&
+	  p->x == 0.0 && p->y == 0.0 && p->z == 0.0) {
+	  sflags = img_SFLAG_FIXED;
+	  free(line);
+	  goto walls_lst_next_line;
+      }
       if (pimg->version == IMG_VERSION_WALLS_LST_FEET) {
 	  p->x *= METRES_PER_FOOT;
 	  p->y *= METRES_PER_FOOT;
@@ -3348,16 +3356,28 @@ no_xsect:
 	   * on the previous line.  `->` means the export was restricted to the
 	   * current view and this leg goes off the view, which we flag as
 	   * "DUPLICATE" to allow such legs to be easily distinguished.
+	   *
+	   * A fixed point in a georeferenced survey is represented as a leg
+	   * from pseudo-station `<REF>` like so:
+	   *
+	   *         <REF>   0.00    0.00    0.00
+	   *   Zwolinsk	0	425581.29	5455904.45	1290.09	OTWORY:450-
+	   *
+	   * We handle the first line above by setting sflags to
+	   * img_SFLAG_FIXED and reading the next line, so we need to ignore
+	   * the leg indicator character if sflags is non-zero.
 	   */
 	  char ch = q[strlen(q) - 1];
 	  int code = PENDING_LST_MOVE;
-	  switch (ch) {
-	    case '-':
-	      code = PENDING_LST_LINE;
-	      break;
-	    case '>':
-	      code = PENDING_LST_LINEOFF;
-	      break;
+	  if (sflags == 0) {
+	      switch (ch) {
+		case '-':
+		  code = PENDING_LST_LINE;
+		  break;
+		case '>':
+		  code = PENDING_LST_LINEOFF;
+		  break;
+	      }
 	  }
 	  int r = compass_plt_update_station(pimg, pimg->label, pimg->label_len, 0);
 	  if (r < 0) {
@@ -3374,7 +3394,7 @@ no_xsect:
       }
       free(line);
       /* No flag information in .LST so assume all stations underground. */
-      pimg->flags = img_SFLAG_UNDERGROUND;
+      pimg->flags = sflags | img_SFLAG_UNDERGROUND;
       return img_LABEL;
    } else {
       /* CMAP XYZ file */

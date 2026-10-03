@@ -14,6 +14,7 @@ tools such as ``diffpos`` can be used to compare the same dataset processed
 by Walls and by Survex.  Some details:
 
 - All stations are assumed to be underground and flagged as ``UNDERGROUND``.
+- Fixed stations are flagged as ``FIXED``.
 - Georeferencing is handled.
 - If *Connected vectors with file references* was selected when creating a
   ``.LST`` file in Walls, the file includes links between stations which
@@ -22,6 +23,11 @@ by Walls and by Survex.  Some details:
 - If *Include only vectors or stations in current view frame* was selected
   legs which cross to outside the exported area are flagged as ``DUPLICATE``
   so they can be easily distinguished.
+- The ``.LST`` format uses ``<REF>`` as a fake station at ``(0,0,0)`` which
+  fixed points are connected to, but ``<REF>>`` is actually a valid station
+  name in Walls.  It's unlikely this name would be chosen in real-world data,
+  but if it is, has no prefix, and is at coordinates ``(0,0,0))`` it will be
+  assumed to be this fake station.
 
 ---------------------------
 Walls .WPJ and .SRV support
