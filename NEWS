@@ -1,6 +1,108 @@
-up to: f68680d2c3a3ab5f9f15decf68bc01183fffc15f
+up to: 427ab73d32ca703c05b30533769ab33c3d5057dc
+
+    img: Use img_utm_proj_str() when reading PLT files
+    Previously we had essentially equivalent code here but which only
+    handled the more common datums.
+    The user-visible improvement here is that we now correctly handle
+    more instances of georefenced PLT files.
 
 
+
+    img: Extend to handle Walls datum names
+
+    The datum string parsing now also handles the datum names which Walls
+    uses.  These are mostly the same as those Compass uses, but some are
+    spelled differently (e.g. `Hu-Tzu-Shan` instead of `Hu Tzu Shan`;
+    `NAD83` instead of `North American 1983`).
+
+    To reflect that they're no longer specific to Compass, these functions
+    have been renamed:
+
+     img_parse_compass_datum_string(S, L) -> img_parse_datum_string(S, L)
+     img_compass_utm_proj_str(D, Z) -> img_utm_proj_str(D, Z)
+     img_compass_longlat_epsg_code(D) -> img_longlat_epsg_code(D)
+
+    Macros are defined in img.h so that code using the old names will still
+    compile.
+
+
+
+    Improve diagnostics for bad Walls quadrant bearings
+
+    Error for Walls explicit inches >= 12
+    This matches Walls behaviour.
+
+    Improve docs for *truncate
+    Add Walls station name limit, and note that `*truncate` is only useful
+    for software which truncates a name longer than its limit, not for
+    software which gives an error for an overlong name.  (Walls definitely
+    gives an error; I'm not sure which of the other software mentioned here
+    actually does).
+
+    Test Walls #flag entrance handling
+
+    Restructure some Walls tests to use .wpj, and limit the basename of
+    the `.srv` files to 8 characters.  This makes it much easier to process
+    them in Walls32.exe to compare results.
+
+    Test Walls `typevb=C` (without a number)
+
+    Support Walls TAPE=SS with ORDER=DAV, etc better
+    We now map legs with clinos omitted and IH/TH given to diving data.
+    Addresses case noted in #164 by Joe Walko.
+
+    Stop squashing empty Walls prefix levels
+    We were treating `X::1` as being the same as `X:1`, but now we map
+    it to `X: :1`.  Walls doesn't allow a space in a prefix name so this
+    can't collide.
+    Fixes #163, reported by Joe Walko.
+
+    Implement Walls UV=/UVH=/UVV= options
+    Also error is the factor is negative, which matches what Walls does.
+
+    Fix Walls RESET in .srv file
+    RESET was clearing the `next` pointer, which would then lead to a
+    segmentation fault if we tried to pop the settings.
+
+    Fix Walls TYPEAB= and INCAB= to work together
+    They are both implemented by setting the zero error on the backcompass
+    instrument, so we need to store the current settings and compute the
+    zero error taking both into account.  Previously setting one would
+    effectively reset the other.
+    Fixes #161, reported by Joe Walko.
+
+    Store test parameters in .wpj testcases
+    For .svx and .srv testcases we put these in a comment in the first
+    line.  That doesn't work for .wpj files as the first line is a
+    magic comment with a fixed value, but we can add our own comment
+    as a second line and Walls can still read and process the file.
+    This means we no longer need to store these parameters in cavern.tst.
+    Saving from Walls does not preserve our special comment, but that seems
+    a minor problem.
+
+    Add test coverage for measuring back insts forwards
+    This is handled correctly in native Survex data, but reportedly fails
+    for Walls data.  See #161.
+
+    aven: Right-align numeric values in colour key
+
+    aven: Label error key as being in σ
+    This will hopefully make it clearer that it's a number of Standard
+    Deviations.
+    The numbers are now shown as integers if the labels are 0, 1, 2, 3, etc,
+    which is the case in currently aven.
+    Inspired by a question from Wookey.
+
+    Improve when we warn for compass on plumbed legs
+    We already suppressed the warning for some cases, but now we take
+    the simple approach of not warning for an explicit compass or
+    backcompass value of either 0° or 180° on an inferred plumb.
+    Fixes unhelpful warnings in some real-world Walls datasets, reported
+    by Joe Walko in #158.
+
+    Walls: Handle `#segment` on `#fix` directive line
+
+    Fix minor doc typos
 
     Improve parsing of Walls LRUD
     Handle "to" starting "<" or "*" in the same way Walls does when there
@@ -25,19 +127,14 @@ Author: Philip Schuchardt <vpicaver@gmail.com>
     match GIS data you already have.
 
     The filename is resolved relative to the directory of the file the
-    *cs is in, a .prj extension is tried if the name as given isn't found,
-    and the lines of the file are joined with a space since the coordinate
+    *cs is in, and the same case variants are tried as survey data files.
+    The lines of the file are joined with a space since the coordinate
     system is stored in the .3d file as a single line.
 
     There's no UTF-8 BOM skipping - PROJ rejects a BOM and so does GDAL's
     .prj reader.
 
     Fixes #150
-
-
-
-
-
 
 
 
@@ -186,6 +283,21 @@ Changes in 1.4.23 (UNRELEASED):
 
   + Fix possible out-of-bounds read when handling the coordinate system in v8
     .3d files.  Patch from Philip Schuchardt.  Fixes #154.
+
+  + Avoid reading uninitialised buffer.  If asked to open a file <= 20 bytes
+    which didn't have a recognised extension, we'd test for a magic string
+    against a partly uninitialised buffer.  This is undefined behaviour, though
+    at the more harmless end.
+
+  + Add support for reading Walls .LST files.  Currently title, date,
+    datum, UTM zone, fixed points, station names and station positions are
+    handled.  Depending on the Walls options chosen when creating the file, a
+    .LST may include connections between stations - if so these are read as
+    legs.
+
+  + Fix parsing of longer CMAP date strings.
+
+  + Fix memory leaks reading CMAP files.
 
   + Eliminate `//` comments for C90 compatibility.
 
