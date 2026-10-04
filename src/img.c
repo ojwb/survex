@@ -461,6 +461,9 @@ struct compass_station {
 
 #define COMPASS_SFLAG_MASK 0x7f
 
+/* We set this flag when we've returned img_LABEL for a station. */
+#define WALLS_SFLAG_REPORTED 0x80
+
 /* How many hash buckets to use (must be a power of 2).
  *
  * Each bucket is a linked list so this doesn't limit how many entries we can
@@ -558,6 +561,56 @@ compass_plt_get_station_flags(img *pimg, const char *name, int name_len)
 	}
     }
     return -1;
+}
+
+/* For "shot" Walls .LST files we prescan the data when opening the file,
+ * filling in hash table entries for fixed stations with img_SFLAG_FIXED
+ * in flags.
+ *
+ * When reading the data, the first read for a station gives the flags and
+ * the second a negative value so we know we've already reported IMG_LABEL
+ * for it.  We iterate through and clear the WALLS_SFLAG_REPORTED bit in
+ * img_rewind().
+ */
+static int
+walls_lst_get_station_flags(img *pimg, const char *name, int name_len)
+{
+    struct compass_station *p;
+    struct compass_station **htab = (struct compass_station**)pimg->data;
+    htab += hash_data(name, name_len) & (HASH_BUCKETS - 1U);
+    for (p = *htab; p; p = p->next) {
+	if (p->len == name_len) {
+	    if (memcmp(name, p->name, name_len) == 0) {
+		int flags = p->flags;
+		p->flags |= WALLS_SFLAG_REPORTED;
+		// Sign-extend the WALLS_SFLAG_REPORTED bit.
+		return (int)(signed char)flags;
+	    }
+	}
+    }
+    p = malloc(offsetof(struct compass_station, name) + name_len);
+    if (!p) return -1;
+    p->flags = WALLS_SFLAG_REPORTED;
+    p->len = name_len;
+    memcpy(p->name, name, name_len);
+    p->next = *htab;
+    *htab = p;
+    return 0;
+}
+
+static void
+mask_station_flags(img *pimg, int mask)
+{
+    struct compass_station **htab = (struct compass_station**)pimg->data;
+    int i = HASH_BUCKETS;
+    while (--i) {
+	struct compass_station *p = *htab;
+	while (p) {
+	    p->flags &= mask;
+	    p = p->next;
+	}
+	++htab;
+    }
 }
 
 #define getline_alloc(FH) getline_alloc_len(FH, NULL)
@@ -1164,6 +1217,59 @@ bad_cmap_date:
     return 0;
 }
 
+/* Parse prefix and name from Walls .LST data line and fill in pimg->label.
+ *
+ * Returns:
+ * - NULL on failure to allocate memory
+ * - "" on IMG_BADFORMAT
+ * - pointer to the (non-empty) rest of the line on success
+ */
+static char*
+walls_lst_parse_prefix_and_name(img *pimg, char *line)
+{
+    /* line should start: prefix '\t' name '\t'
+     * (prefix may be empty)
+     */
+    char *prefix = line;
+    char *name = strchr(prefix, '\t');
+    char *q;
+    int i;
+
+    if (!name) return (char*)"";
+    ++name;
+    q = strchr(name, '\t');
+    if (!q) return (char*)"";
+    ++q;
+
+    /* Allow for needing to insert a space for each empty prefix level. */
+    if (!check_label_space(pimg, q - prefix + (name - prefix) + 1)) {
+	return NULL;
+    }
+
+    i = 0;
+    if (name - prefix > 1) {
+	char *p;
+	int after_colon = 0;
+	name[-1] = ':';
+	for (p = prefix; p != name; ++p) {
+	    int ch = *p;
+	    if (ch == ':') {
+		if (after_colon) {
+		    pimg->label[i++] = ' ';
+		}
+		after_colon = 1;
+	    } else {
+		after_colon = 0;
+	    }
+	    pimg->label[i++] = ch;
+	}
+    }
+    memcpy(pimg->label + i, name, q - name - 1);
+    pimg->label_len = i + (q - name - 1);
+    pimg->label[pimg->label_len] = '\0';
+    return q;
+}
+
 static int
 walls_lst_open(img *pimg, const char *survey)
 {
@@ -1175,129 +1281,22 @@ walls_lst_open(img *pimg, const char *survey)
     /* Walls uses `:` for the prefix separator. */
     pimg->separator = ':';
 
+    /* This may get changed to IMG_VERSION_WALLS_LST_FEET below. */
+    pimg->version = IMG_VERSION_WALLS_LST;
+
     if (survey) {
 	if (!initialise_survey_filter(pimg, survey))
 	    return IMG_OUTOFMEMORY;
     }
 
-    /* First line is the title. */
+    /* The first line is the survey title (with no field markers). */
     pimg->title = line;
+    line = NULL;
 
-    /* `Segment: /[...]` */
-    line = getline_alloc(pimg->fh);
-    if (!line) {
-	return IMG_OUTOFMEMORY;
-    }
-
-    /* `Vector total: [N]  Report Date: [MM]/[DD]/[YY] [HH]:[MM]` */
-    free(line);
-    line = getline_alloc(pimg->fh);
-    if (!line) {
-	return IMG_OUTOFMEMORY;
-    }
-
-    char * p = strstr(line, "Report Date:");
-    if (p) {
-	p += LITLEN("Report Date:");
-	while (isspace((unsigned char)*p)) ++p;
-	/* MM/DD/YY/ HH:MM */
-	struct tm tm;
-	unsigned long v;
-	pimg->datestamp = STRDUP(p);
-	if (!pimg->datestamp) {
-	    free(line);
-	    return IMG_OUTOFMEMORY;
-	}
-	v = strtoul(p, &p, 10);
-	if (v < 1 || v > 12 || *p++ != '/')
-	    goto bad_walls_date;
-	tm.tm_mon = v - 1;
-	v = strtoul(p, &p, 10);
-	if (v < 1 || v > 31 || *p++ != '/')
-	    goto bad_walls_date;
-	tm.tm_mday = v;
-	v = strtoul(p, &p, 10);
-	if (v == ULONG_MAX || *p++ != ' ')
-	    goto bad_walls_date;
-	if (v < 70) {
-	    /* There isn't a spec for LST files, so we arbitrarily assume < 70
-	     * means 20YY.
-	     */
-	    v += 2000;
-	} else if (v < 200) {
-	    /* Map 70-99 to 19YY and 100-199 to 20(YY-100). */
-	    v += 1900;
-	}
-	tm.tm_year = v - 1900;
-	v = strtoul(p, &p, 10);
-	if (v >= 24 || *p++ != ':')
-	    goto bad_walls_date;
-	tm.tm_hour = v;
-	v = strtoul(p, &p, 10);
-	if (v >= 60)
-	    goto bad_walls_date;
-	tm.tm_min = v;
-	/* Walls doesn't currently output seconds, but handle if present. */
-	if (*p == ':') {
-	    v = strtoul(p + 1, &p, 10);
-	    if (v > 60)
-		goto bad_walls_date;
-	    tm.tm_sec = v;
-	} else {
-	    tm.tm_sec = 0;
-	}
-	tm.tm_isdst = 0;
-	/* Testing shows Walls writes the time in the local time of the machine
-	 * which wrote the LST file.  We just assume UTC, which is at least
-	 * fairly central in the possibilities.
-	 */
-	pimg->datestamp_numeric = mktime_with_tz(&tm, "");
-    } else {
-	pimg->datestamp = STRDUP(TIMENA);
-	if (!pimg->datestamp) {
-	    free(line);
-	    return IMG_OUTOFMEMORY;
-	}
-    }
-bad_walls_date:
-
-    /* The next line tells us the "Reference Station", which may be
-     * a real station or the fictional `<REF>`.  This station seems
-     * to be at (0,0,0) in the coordinate system with fixed points
-     * represented as legs from this station.
-     *
-     * Unhelpfully, `<REF>` is a valid station name so it isn't necessarily
-     * fictional, though it seems unlikely to appear in real data.
-     *
-     * `Component 1 of 1 - Reference Station:  4`
-     * `Component 1 of 1 - Reference Station:  <REF>`
-     */
-    free(line);
-    line = getline_alloc(pimg->fh);
-    if (!line) {
-	return IMG_OUTOFMEMORY;
-    }
-
-    /* The next line tells us the units for the coordinates, e.g.:
-     *
-     * `Vectors Listed: 16  Length: 254.78 Feet`
-     * `Length: 245.80 Feet`
-     * `Vectors Listed: 16  Length: 77.66 Meters`
-     * `Length: 69754.69 Meters`
-     */
-    free(line);
-    line = getline_alloc(pimg->fh);
-    if (!line) {
-	return IMG_OUTOFMEMORY;
-    }
-    if (strstr(line, " Feet")) {
-	pimg->version = IMG_VERSION_WALLS_LST_FEET;
-    } else {
-	pimg->version = IMG_VERSION_WALLS_LST;
-    }
-
-    /* Skip further header lines (it seems there's one giving highest and
-     * lowest stations and an optional one if the data is georeferenced).
+    /* There's no spec for the `.LST` format, and it's meant to be a
+     * report, presumably primarily for human consumption, so we avoid
+     * assuming anything about what other header fields are present
+     * or their order.
      */
     do {
 	free(line);
@@ -1305,31 +1304,141 @@ bad_walls_date:
 	if (!line) {
 	    return IMG_OUTOFMEMORY;
 	}
+
+	if (!pimg->datestamp &&
+	    strncmp(line, "Vector total:", LITLEN("Vector total:")) == 0) {
+	    /* `Vector total: [N]  Report Date: [MM]/[DD]/[YY] [HH]:[MM]` */
+	    char *p = strstr(line + LITLEN("Vector total:"), "Report Date:");
+	    if (!p) continue;
+	    p += LITLEN("Report Date:");
+	    while (isspace((unsigned char)*p)) ++p;
+	    /* MM/DD/YY/ HH:MM */
+	    struct tm tm;
+	    unsigned long v;
+	    pimg->datestamp = STRDUP(p);
+	    if (!pimg->datestamp) {
+		free(line);
+		return IMG_OUTOFMEMORY;
+	    }
+	    v = strtoul(p, &p, 10);
+	    if (v < 1 || v > 12 || *p++ != '/')
+		continue;
+	    tm.tm_mon = v - 1;
+	    v = strtoul(p, &p, 10);
+	    if (v < 1 || v > 31 || *p++ != '/')
+		continue;
+	    tm.tm_mday = v;
+	    v = strtoul(p, &p, 10);
+	    if (v == ULONG_MAX || *p++ != ' ')
+		continue;
+	    if (v < 70) {
+		/* There isn't a spec for LST files, so we arbitrarily assume <
+		 * 70 means 20YY.
+		 */
+		v += 2000;
+	    } else if (v < 200) {
+		/* Map 70-99 to 19YY and 100-199 to 20(YY-100). */
+		v += 1900;
+	    }
+	    tm.tm_year = v - 1900;
+	    v = strtoul(p, &p, 10);
+	    if (v >= 24 || *p++ != ':')
+		continue;
+	    tm.tm_hour = v;
+	    v = strtoul(p, &p, 10);
+	    if (v >= 60)
+		continue;
+	    tm.tm_min = v;
+	    /* Walls doesn't currently output seconds, but handle if present. */
+	    if (*p == ':') {
+		v = strtoul(p + 1, &p, 10);
+		if (v > 60)
+		    continue;
+		tm.tm_sec = v;
+	    } else {
+		tm.tm_sec = 0;
+	    }
+	    tm.tm_isdst = 0;
+	    /* Testing shows Walls writes the time in the local time of the
+	     * machine which wrote the LST file.  We just assume UTC, which is
+	     * at least fairly central in the possibilities.
+	     */
+	    pimg->datestamp_numeric = mktime_with_tz(&tm, "");
+	    continue;
+	}
+
+	if (strncmp(line, "Vectors Listed:", LITLEN("Vectors Listed:")) == 0 ||
+	    strncmp(line, "Length:", LITLEN("Length:")) == 0) {
+	    /* This line tells us the units for the coordinates, e.g.:
+	     *
+	     * `Vectors Listed: 16  Length: 254.78 Feet`
+	     * `Length: 245.80 Feet`
+	     * `Vectors Listed: 16  Length: 77.66 Meters`
+	     * `Length: 69754.69 Meters`
+	     *
+	     * We need to store the units somewhere in the img struct so we
+	     * can convert coordinates to metres, so we encode them by using
+	     * a different version code.
+	     */
+	    if (strstr(line + LITLEN("Length:"), " Feet")) {
+		pimg->version = IMG_VERSION_WALLS_LST_FEET;
+	    }
+	    continue;
+	}
+
 	if (!pimg->cs && strncmp(line, "UTM ", LITLEN("UTM ")) == 0) {
-	    /* Handle georeferencing, e.g.:
-	     * `UTM 34N Grid Conv: -0.819  Datum: WGS 1984`
+	    /* `UTM 34N Grid Conv: -0.819  Datum: WGS 1984`
+	     *
+	     * Optional header line which is present if the data is
+	     * georeferenced.
 	     */
 	    char *q;
+	    int utm_zone;
 	    unsigned long v = strtoul(line + LITLEN("UTM "), &q, 10);
-	    if (v <= 60 && v != 0) {
-		int utm_zone = v;
-		if (*q == 'S') utm_zone = -utm_zone;
-		q = strstr(q, "Datum: ");
-		if (q) {
-		    q += LITLEN("Datum: ");
-		    int datum = img_parse_datum_string(q, strlen(q));
-		    if (datum != img_DATUM_UNKNOWN) {
-			img_errno = 0;
-			pimg->cs = img_utm_proj_str(datum, utm_zone);
-			if (!pimg->cs && img_errno) {
-			    free(line);
-			    return IMG_OUTOFMEMORY;
-			}
-		    }
-		}
+	    if (v > 60 || v == 0) continue;
+		utm_zone = v;
+	    if (*q == 'S') utm_zone = -utm_zone;
+	    q = strstr(q, "Datum: ");
+	    if (!q) continue;
+	    q += LITLEN("Datum: ");
+	    int datum = img_parse_datum_string(q, strlen(q));
+	    if (datum == img_DATUM_UNKNOWN) continue;
+	    img_errno = 0;
+	    pimg->cs = img_utm_proj_str(datum, utm_zone);
+	    if (!pimg->cs && img_errno) {
+		free(line);
+		return IMG_OUTOFMEMORY;
 	    }
+	    continue;
 	}
+
+	/* Other known header lines that we currently ignore:
+	 *
+	 * `Segment: /[...]`
+	 *     Doesn't seem useful to us.
+	 *
+	 * `Component 1 of 1 - Reference Station:  4`
+	 * `Component 1 of 1 - Reference Station:  <REF>`
+	 *     This tells us the "Reference Station", which may be a real
+	 *     station or the fictional `<REF>` which is at (0,0,0) in the
+	 *     coordinate system with fixed points represented as legs to or
+	 *     from this station.  Unhelpfully, `<REF>` is a valid station name
+	 *     so it isn't necessarily fictional, though it seems unlikely to
+	 *     appear in real data.  We just assume `<REF>` is fictional if at
+	 *     (0,0,0) and real otherwise.
+	 *
+	 * `High Pt: 771.65 (MORRISON),  Low Pt: 0.00 (SB203)`
+	 *     Highest and lowest stations and their altitudes.
+	 */
     } while (line[0] != '\0');
+
+    if (!pimg->datestamp) {
+	pimg->datestamp = STRDUP(TIMENA);
+	if (!pimg->datestamp) {
+	    free(line);
+	    return IMG_OUTOFMEMORY;
+	}
+    }
 
     free(line);
     line = getline_alloc(pimg->fh);
@@ -1342,7 +1451,7 @@ bad_walls_date:
 	return IMG_BADFORMAT;
     }
     /* For a "station" LST file the last field is `NOTE`. */
-    if (strncmp(line + LITLEN(WALLS_LST_HEADER), "NOTE", 4) != 0) {
+    if (strncmp(line + LITLEN(WALLS_LST_HEADER), "NOTE", LITLEN("NOTE")) != 0) {
 	/* We only need to check for duplicate stations in a "shot" LST file. */
 	pimg->data = compass_plt_allocate_hash();
 	if (!pimg->data) {
@@ -1351,21 +1460,140 @@ bad_walls_date:
 	}
     }
 
-    /* Skip blank lines (there should be exactly one). */
+    free(line);
+    line = getline_alloc(pimg->fh);
+    if (!line) {
+	return IMG_OUTOFMEMORY;
+    }
+
+    /* There should be a blank line after the header. */
+    if (line[0]) {
+	free(line);
+	return IMG_BADFORMAT;
+    }
+
+    /* Record the position to rewind to. */
+    pimg->start = ftell(pimg->fh);
+    if (pimg->start < 0) {
+	return IMG_READERROR;
+    }
+
+    if (!pimg->data) {
+	/* This is a "station" .LST file so we're done parsing the header. */
+	free(line);
+	return 0;
+    }
+
+    free(line);
+    line = getline_alloc(pimg->fh);
+    if (!line) {
+	return IMG_OUTOFMEMORY;
+    }
+
+    /* This is a "shot" .LST file, so we pre-scan the data and accumulate FIXED
+     * flags.  A station is fixed by being linked to a fake `<REF>` station at
+     * (0,0,0) but the link may not be on the first use of the fixed station,
+     * so we need to make two passes over the data or to buffer up all the
+     * stations.
+     *
+     * The link to the fake `<REF>` station came go in either direction, or
+     * even both - for example:
+     *
+     *            <REF>   0.00    0.00    0.00
+     *   Zwolinsk 0       5581.29 5904.45 1290.09 OTWORY:450-
+     *
+     * or:
+     *
+     *   SHEET    SB112   8694.82 6302.94 0.00    SHEETS21:285
+     *            <REF>   0.00    0.00    0.00    SHEETS21:158-
+     *
+     * or:
+     *
+     *   SHEET    SB114   6695.51 6276.57 0.00    SHEETS21:123
+     *            <REF>   0.00    0.00    0.00    SHEETS21:123-
+     *            CSHT8   7736.36 3165.72 0.00    SHTCTR21:21-
+     */
+    int sflags = 0;
     do {
-	pimg->start = ftell(pimg->fh);
+	/* Tab separated fields for a "shot" .LST file:
+	 *
+	 *   prefix, name, east, north, up, file:line '-'? '>'?
+	 *
+	 * If `-` is present, this station connects to the previous one.
+	 *
+	 * If '>' is present, this station is outside the viewed area (and the
+	 * export was restricted to the viewed area).
+	 */
+
+	/* Check for the reference station.  We scan line directly to
+	 * preserve pimg->label in case there's a link back from this
+	 * <REF> and we need to set img_SFLAG_FIXED for it.
+	 */
+	if (strncmp(line, "\t<REF>\t", LITLEN("\t<REF>\t")) == 0) {
+	    char *q = line + LITLEN("\tREF\t");
+	    if (atof(q) == 0.0 && (q = strchr(q, '\t')) &&
+		atof(q + 1) == 0.0 && (q = strchr(q, '\t')) &&
+		atof(q + 1) == 0.0) {
+		q += strlen(q + 1);
+		char ch = q[0];
+		if (ch == '>')
+		    ch = q[-1];
+		if (ch == '-' && pimg->label_len) {
+		    /* Mark the previous station as fixed. */
+		    int r = compass_plt_update_station(pimg,
+						       pimg->label,
+						       pimg->label_len,
+						       img_SFLAG_FIXED);
+		    if (r < 0) {
+			free(line);
+			return IMG_OUTOFMEMORY;
+		    }
+		}
+		/* Mark the next station as fixed if it links back. */
+		sflags = img_SFLAG_FIXED;
+		goto next_line;
+	    }
+	}
+
+	char *q = walls_lst_parse_prefix_and_name(pimg, line);
+	if (!q) {
+	    free(line);
+	    return IMG_OUTOFMEMORY;
+	}
+	if (!*q) {
+	    free(line);
+	    return IMG_BADFORMAT;
+	}
+
+	if (sflags) {
+	    /* Check for a connection back to the `<REF>` on the line before. */
+	    q += strlen(q);
+	    char ch = q[-1];
+	    if (ch == '>')
+		ch = q[-2];
+	    if (ch == '-') {
+		int r = compass_plt_update_station(pimg,
+						   pimg->label, pimg->label_len,
+						   sflags);
+		if (r < 0) {
+		    free(line);
+		    return IMG_OUTOFMEMORY;
+		}
+	    }
+	    sflags = 0;
+	}
+
+next_line:
 	free(line);
 	line = getline_alloc(pimg->fh);
 	if (!line) {
 	    return IMG_OUTOFMEMORY;
 	}
-    } while (line[0] == '\0');
+    } while (line[0]);
     free(line);
 
-    /* Set the file position back to the start of the first data line. */
-    if (fseek(pimg->fh, pimg->start, SEEK_SET) != 0) {
-	img_errno = IMG_READERROR;
-	return 0;
+    if (fseek(pimg->fh, pimg->start, SEEK_SET) < 0) {
+	return IMG_READERROR;
     }
 
     return 0;
@@ -1493,6 +1721,7 @@ img_read_stream_survey(FILE *stream, int (*close_func)(FILE*),
       img_errno = IMG_OUTOFMEMORY;
       return NULL;
    }
+   pimg->label = pimg->label_buf;
 
    pimg->fRead = 1; /* reading from this file */
    img_errno = IMG_NONE;
@@ -1833,6 +2062,13 @@ img_rewind(img *pimg)
     * whether we MOVE or LINE */
    pimg->label_len = 0;
    pimg->style = img_STYLE_UNKNOWN;
+
+   switch (pimg->version) {
+     case IMG_VERSION_WALLS_LST:
+     case IMG_VERSION_WALLS_LST_FEET:
+       mask_station_flags(pimg, ~WALLS_SFLAG_REPORTED);
+       break;
+   }
    return 1;
 }
 
@@ -3248,11 +3484,8 @@ no_xsect:
               pimg->version == IMG_VERSION_WALLS_LST_FEET) {
       /* Walls LST file. */
       char *line;
-      char *prefix;
-      char *name;
       char *q;
-      int i;
-      int sflags = 0;
+      int previous_was_ref = 0;
 
       if (pimg->pending) {
 	  int pending = pimg->pending;
@@ -3281,49 +3514,15 @@ walls_lst_next_line:
       // * shot: Empty for the start of a traverse; FILE:LINE- for continuing a
       //   traverse; FILE:LINE-> to indicate the traverse goes off the viewed
       //   area and the export was limited to the viewed area.
-      prefix = line;
-      name = strchr(prefix, '\t');
-      if (!name) {
-	  free(line);
-	  img_errno = IMG_BADFORMAT;
-	  return img_BAD;
-      }
-      ++name;
-      q = strchr(name, '\t');
+      q = walls_lst_parse_prefix_and_name(pimg, line);
       if (!q) {
 	  free(line);
-	  img_errno = IMG_BADFORMAT;
-	  return img_BAD;
+	  return IMG_OUTOFMEMORY;
       }
-      ++q;
-
-      /* Allow for needing to insert a space for each empty prefix level. */
-      if (!check_label_space(pimg, q - prefix + (name - prefix) + 1)) {
+      if (!*q) {
 	  free(line);
-	  goto out_of_memory_error;
+	  return IMG_BADFORMAT;
       }
-
-      i = 0;
-      if (name - prefix > 1) {
-	  char *r;
-	  int after_colon = 0;
-	  name[-1] = ':';
-	  for (r = prefix; r != name; ++r) {
-	      int ch = *r;
-	      if (ch == ':') {
-		  if (after_colon) {
-		      pimg->label[i++] = ' ';
-		  }
-		  after_colon = 1;
-	      } else {
-		  after_colon = 0;
-	      }
-	      pimg->label[i++] = ch;
-	  }
-      }
-      memcpy(pimg->label + i, name, q - name - 1);
-      pimg->label_len = i + (q - name - 1);
-      pimg->label[pimg->label_len] = '\0';
 
       p->x = atof(q);
       q = strchr(q, '\t');
@@ -3342,7 +3541,7 @@ walls_lst_next_line:
       p->z = atof(q + 1);
       if (pimg->label_len == 5 && memcmp(pimg->label, "<REF>", 5) == 0 &&
 	  p->x == 0.0 && p->y == 0.0 && p->z == 0.0) {
-	  sflags = img_SFLAG_FIXED;
+	  previous_was_ref = 1;
 	  free(line);
 	  goto walls_lst_next_line;
       }
@@ -3351,40 +3550,37 @@ walls_lst_next_line:
 	  p->y *= METRES_PER_FOOT;
 	  p->z *= METRES_PER_FOOT;
       }
+      int sflags = 0;
       if (pimg->data) {
 	  /* If the line ends `-` or `->` this station connects to the station
-	   * on the previous line.  `->` means the export was restricted to the
-	   * current view and this leg goes off the view, which we flag as
-	   * "DUPLICATE" to allow such legs to be easily distinguished.
+	   * on the previous line.  That station may be to fake station `<REF>`
+	   * at (0,0,0) in which case we need to ignore this link.
 	   *
-	   * A fixed point in a georeferenced survey is represented as a leg
-	   * from pseudo-station `<REF>` like so:
-	   *
-	   *         <REF>   0.00    0.00    0.00
-	   *   Zwolinsk	0	425581.29	5455904.45	1290.09	OTWORY:450-
-	   *
-	   * We handle the first line above by setting sflags to
-	   * img_SFLAG_FIXED and reading the next line, so we need to ignore
-	   * the leg indicator character if sflags is non-zero.
+	   * `->` or '>' means the export was restricted to the current view
+	   * and this leg goes off the view, which we flag as "DUPLICATE" to
+	   * allow such legs to be easily distinguished.
 	   */
 	  char ch = q[strlen(q) - 1];
 	  int code = PENDING_LST_MOVE;
-	  if (sflags == 0) {
-	      switch (ch) {
-		case '-':
-		  code = PENDING_LST_LINE;
-		  break;
-		case '>':
+	  if (ch == '>') {
+	      if (!previous_was_ref && q[strlen(q) - 2] == '-') {
 		  code = PENDING_LST_LINEOFF;
-		  break;
+	      } else {
+		  /* FIXME: Just `>` (or `->` from ref) so should mark next leg
+		   * as "DUPLICATE".  Put a fake station flag in the hash to
+		   * handle this?
+		   */
 	      }
+	  } else if (ch == '-' && !previous_was_ref) {
+	      code = PENDING_LST_LINE;
 	  }
-	  int r = compass_plt_update_station(pimg, pimg->label, pimg->label_len, 0);
-	  if (r < 0) {
-	      free(line);
-	      goto out_of_memory_error;
-	  }
-	  if (r > 0) {
+
+	  sflags =
+	      walls_lst_get_station_flags(pimg, pimg->label, pimg->label_len);
+	  if (sflags < 0) {
+	      /* We've already reported img_LABEL for this station, so return
+	       * img_MOVE or img_LINE now rather than handling it as pending.
+	       */
 	      free(line);
 	      pimg->label[pimg->label_len] = '\0';
 	      pimg->flags = code >> PENDING_LST_SHIFT;
@@ -3393,7 +3589,7 @@ walls_lst_next_line:
 	  pimg->pending = code;
       }
       free(line);
-      /* No flag information in .LST so assume all stations underground. */
+      /* Assume all stations underground (no information on this in .LST). */
       pimg->flags = sflags | img_SFLAG_UNDERGROUND;
       return img_LABEL;
    } else {
