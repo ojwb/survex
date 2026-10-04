@@ -3490,7 +3490,7 @@ no_xsect:
       if (pimg->pending) {
 	  int pending = pimg->pending;
 	  pimg->pending = 0;
-	  pimg->label[pimg->label_len] = '\0';
+	  pimg->label[0] = '\0';
 	  pimg->flags = pending >> PENDING_LST_SHIFT;
 	  return pending & PENDING_LST_MASK;
       }
@@ -3582,7 +3582,7 @@ walls_lst_next_line:
 	       * img_MOVE or img_LINE now rather than handling it as pending.
 	       */
 	      free(line);
-	      pimg->label[pimg->label_len] = '\0';
+	      pimg->label[0] = '\0';
 	      pimg->flags = code >> PENDING_LST_SHIFT;
 	      return code & PENDING_LST_MASK;
 	  }
