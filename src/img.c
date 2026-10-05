@@ -416,11 +416,14 @@ static img_errcode img_errno = IMG_NONE;
  * + (pending << PENDING_LST_SHIFT) gives the flags
  */
 #define PENDING_LST_MASK    0x01
-#define PENDING_LST_SHIFT   2
-#define PENDING_LST_MOVE    (img_MOVE | 0x02)
+#define PENDING_LST_SHIFT   3
+#define PENDING_DUPLICATE   0x02
+/* `| 0x04` makes this non-zero. */
+#define PENDING_LST_MOVE    (img_MOVE | 0x04)
+#define PENDING_LST_MOVEOFF (PENDING_LST_MOVE | PENDING_DUPLICATE)
 #define PENDING_LST_LINE    img_LINE
 #define PENDING_LST_LINEOFF \
-    (img_LINE | (img_FLAG_DUPLICATE << PENDING_LST_SHIFT))
+    (img_LINE | PENDING_DUPLICATE | (img_FLAG_DUPLICATE << PENDING_LST_SHIFT))
 
 /* Days from start of 1900 to start of 1970. */
 #define DAYS_1900 25567
@@ -3487,9 +3490,9 @@ no_xsect:
       char *q;
       int previous_was_ref = 0;
 
-      if (pimg->pending) {
+      if (pimg->pending & ~PENDING_DUPLICATE) {
 	  int pending = pimg->pending;
-	  pimg->pending = 0;
+	  pimg->pending &= PENDING_DUPLICATE;
 	  pimg->label[0] = '\0';
 	  pimg->flags = pending >> PENDING_LST_SHIFT;
 	  return pending & PENDING_LST_MASK;
@@ -3543,6 +3546,8 @@ walls_lst_next_line:
 	  p->x == 0.0 && p->y == 0.0 && p->z == 0.0) {
 	  previous_was_ref = 1;
 	  free(line);
+	  // Clear PENDING_DUPLICATE if set.
+	  pimg->pending = 0;
 	  goto walls_lst_next_line;
       }
       if (pimg->version == IMG_VERSION_WALLS_LST_FEET) {
@@ -3553,26 +3558,40 @@ walls_lst_next_line:
       int sflags = 0;
       if (pimg->data) {
 	  /* If the line ends `-` or `->` this station connects to the station
-	   * on the previous line.  That station may be to fake station `<REF>`
+	   * on the previous line.  That station may be a fake station `<REF>`
 	   * at (0,0,0) in which case we need to ignore this link.
 	   *
-	   * `->` or '>' means the export was restricted to the current view
-	   * and this leg goes off the view, which we flag as "DUPLICATE" to
-	   * allow such legs to be easily distinguished.
+	   * `->` and `>` mean the export was restricted to the current view
+	   * and this station was outside the view but connected to a station
+	   * inside.  We flag such connecting legs as "DUPLICATE" to allow them
+	   * to be easily distinguished.
+	   *
+	   * `->` also indicates a connection to the station on the previous
+	   * line, while '>' means this station will connect on the next line
+	   * so we need to remember to flag that as img_FLAG_DUPLICATE, which
+	   * we do by via flag bit PENDING_DUPLICATE, which is included in
+	   * PENDING_LST_MOVEOFF and PENDING_LST_LINEOFF.  We need to include
+	   * it in the latter because an "off" station can link in both
+	   * directions to "on" stations.
 	   */
 	  char ch = q[strlen(q) - 1];
 	  int code = PENDING_LST_MOVE;
 	  if (ch == '>') {
 	      if (!previous_was_ref && q[strlen(q) - 2] == '-') {
 		  code = PENDING_LST_LINEOFF;
+		  if (pimg->pending) {
+		      // The previous station was outside the view.
+		      code |= img_FLAG_DUPLICATE << PENDING_LST_SHIFT;
+		  }
 	      } else {
-		  /* FIXME: Just `>` (or `->` from ref) so should mark next leg
-		   * as "DUPLICATE".  Put a fake station flag in the hash to
-		   * handle this?
-		   */
+		  code = PENDING_LST_MOVEOFF;
 	      }
 	  } else if (ch == '-' && !previous_was_ref) {
 	      code = PENDING_LST_LINE;
+	      if (pimg->pending) {
+		  // The previous station was outside the view.
+		  code |= img_FLAG_DUPLICATE << PENDING_LST_SHIFT;
+	      }
 	  }
 
 	  sflags =
@@ -3584,6 +3603,7 @@ walls_lst_next_line:
 	      free(line);
 	      pimg->label[0] = '\0';
 	      pimg->flags = code >> PENDING_LST_SHIFT;
+	      pimg->pending = code & PENDING_DUPLICATE;
 	      return code & PENDING_LST_MASK;
 	  }
 	  pimg->pending = code;

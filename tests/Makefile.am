@@ -232,6 +232,8 @@ cmapyyyy.sht cmapyyyy.dump\
 wallsgeoref.lst wallsgeoref.dump\
 wallsfeet.lst wallsfeet.dump\
 wallsmetric.lst wallsmetric.dump\
+wallsoff.lst wallsoff.dump\
+wallsoff2conn.lst wallsoff2conn.dump\
 wallsshots.lst wallsshots.dump\
 wallsshotsr.lst wallsshotsr.dump\
 wallsstns.lst wallsstns.dump\

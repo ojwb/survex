@@ -48,8 +48,8 @@ esac
 : ${TESTS=${*:-"dump3ddate.3d extendsurveyx.3d separator.3d \
 cmapstn.adj cmap.sht cmapyyyy.sht \
 filter.plt multisection.plt multisurvey.plt nzgd49.plt pre1970.plt \
-wallsfeet.lst wallsgeoref.lst wallsmetric.lst wallsshots.lst wallsshotsr.lst \
-wallsstns.lst"}}
+wallsfeet.lst wallsgeoref.lst wallsmetric.lst wallsoff.lst wallsoff2conn.lst \
+wallsshots.lst wallsshotsr.lst wallsstns.lst"}}
 
 # Suppress checking for leaks on exit if we're build with lsan - we don't
 # generally waste effort to free all allocations as the OS will reclaim

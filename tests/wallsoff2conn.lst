@@ -1,0 +1,26 @@
+DECLTEST
+Segment: /
+Vector total: 5  Report Date: 10/06/26 07:48
+Component 1 of 1 - Reference Station:  <REF>
+Length: 131.23 Feet
+High Pt: 3280.84 (A),  Low Pt: 3280.84 (A)
+UTM 16N Grid Conv: 0.549  Datum: NAD83
+Criteria for Listing: All vectors in current plan view.
+View Frame: 121.91 x 96.24 Feet, View Direction: 0.00 Deg
+Frame Center: 1345115.69 East, 1902856.08 North, 0.00 Up
+
+PREFIX	NAME	EAST	NORTH	UP	FILE:LINE
+
+	<REF>	0.00	0.00	0.00	w_decl:1>
+	A	1345144.40	1902887.20	3280.84	w_decl:1-
+	D	1345168.53	1902864.97	3280.84	w_decl:8-
+	C	1345190.76	1902889.10	3280.84	w_decl:7->
+	B	1345166.63	1902911.33	3280.84	w_decl:5>
+	A	1345144.40	1902887.20	3280.84	w_decl:5-
+
+Vectors Listed: 4  Length: 98.43 Feet
+Vectors Crossing Frame Boundary: 3
+Coordinate Ranges of Stations Inside Frame --
+East: 	1345144.40	1345168.53
+North:	1902864.97	1902887.20
+Elev: 	3280.84	3280.84
