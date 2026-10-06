@@ -265,10 +265,11 @@ features are likely to be handled while more obscure features may not be.
   + Floating the traverse containing a leg (with ``*``) currently just floats
     that leg (so it's the same as ``?``).
 
-- Walls ``#SEGMENT`` is apparently in practice commonly set to a set of Compass
-  "shot flags", so if a ``#SEGMENT`` value consists only of letters from the
-  set ``CLPSX`` with an optional leading ``/`` or ``\\`` then we map it to
-  Survex flags like so (since Survex 1.4.10):
+- Walls ``#SEGMENT`` directives often contain a set of Compass "shot flags".
+  The likely origin of this is that Walls creates such ``#SEGMENT`` directives
+  when you import data from Compass.  If a ``#SEGMENT`` value consists only of
+  letters from the set ``CLPSX`` with an optional leading ``/`` or ``\\`` then
+  we map it to Survex leg flags like so (since Survex 1.4.10):
 
   + ``C`` in Compass causes legs it is set on to not be affected by loop
     closure, but setting Compass flags in the Walls ``#SEGMENT`` is just a
