@@ -92,3 +92,5 @@ int match_tok(const sztok *tab, int tab_size);
 void update_separator_map_for_foreign_name(const char* name);
 void update_separator_map_for_foreign_format(const short *t);
 void update_output_separator(void);
+
+void start_passage(void);

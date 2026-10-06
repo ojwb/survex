@@ -5,10 +5,10 @@ Larry Fish's Compass
 Survex can read Compass survey data - it supports survey data files
 and project files (``.DAT`` and ``.MAK`` files), closed data files (``.CLP``),
 and processed survey data (``.PLT`` and ``.PLF`` files).  Survex 1.0.19 was
-the first to support this but we currently recommend using 1.4.6 or newer if
+the first to support this but we currently recommend using 1.4.18 or newer if
 you're working with Compass data as this version made significant improvements
-to this support.  If you're using Compass ``.MAK`` files, then Survex 1.4.18
-further improved parsing these.
+to this support.  1.4.23 notably added support for handling LRUD when
+processing survey data with cavern.
 
 --------------------
 Compass .MAK support
@@ -172,7 +172,9 @@ assumptions:
 - Survey date January 1st 1901 is treated as "no date specified",
   since this is the date Compass stores in this situation, and it
   seems very unlikely to occur in real data.
-- Passage dimensions are currently ignored.
+- Passage dimensions are turned into Survex ``*data passage`` tubes.
+  Currently each tube continues while the "to" station of one leg matches the
+  "from" station of the next.  (Since 1.4.23.)
 - Shot flag ``C`` in Compass causes flagged legs to not be subject to
   loop closure.  Survex currently sets the SDs of such legs to 1mm,
   so flagged legs can still move slightly during loop closure.

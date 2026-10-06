@@ -51,6 +51,7 @@
 # include <proj_experimental.h>
 #endif
 
+static int process_lrud(prefix *stn);
 static int process_nosurvey(prefix *fr, prefix *to, bool fToFirst);
 
 #define EPSILON (REAL_EPSILON * 1000)
@@ -73,6 +74,14 @@ static int process_nosurvey(prefix *fr, prefix *to, bool fToFirst);
  * well outside the valid range.
  */
 #define is_compass_NaN(x) (fabs(x) > (999.0 - 360.0))
+
+// Are Compass PLT LRUD measurements for the "From" station?
+static bool compass_lrud_on_from;
+
+// "To" for the previous leg, or NULL.
+//
+// Used to decide when to start a new passage tube for Compass PLT LRUD.
+static prefix * compass_lrud_previous_to;
 
 static int
 read_compass_date_as_days_since_1900(void)
@@ -239,7 +248,18 @@ show_line(int col, int width)
 
    /* Read the whole line and write it out. */
    PUTC(' ', STDERR);
+   int cl = col, w = width;
    while (1) {
+      if (--cl == 0) {
+	  fputs("\x1b[1m\x1b[3", STDERR);
+	  PUTC('3', STDERR); // 1 red 2 green 3 yellow
+	  PUTC('m', STDERR);
+      } else if (cl < 0) {
+	  if (w == 0) {
+	      fputs("\x1b[0m", STDERR);
+	  }
+	  --w;
+      }
       int c = GETC(file.fh);
       /* Note: isEol() is true for EOF */
       if (isEol(c)) break;
@@ -248,6 +268,7 @@ show_line(int col, int width)
       if (c == '\t') c = ' ';
       PUTC(c, STDERR);
    }
+   if (w >= 0) fputs("\x1b[0m", STDERR);
    fputnl(STDERR);
 
    /* If we have a location in the line for the error, indicate it. */
@@ -863,6 +884,7 @@ data_file_compass_dat_or_clp(bool is_clp)
 	}
 	get_token();
 	pcs->ordering = compass_order;
+	compass_lrud_on_from = true;
 	// "FORMAT" is optional.
 	if (S_EQ(&token, "FORMAT") && check_colon()) {
 	    /* This documents the format in the original survey notebook - we
@@ -884,7 +906,13 @@ data_file_compass_dat_or_clp(bool is_clp)
 		    /* We have backsights for compass and clino */
 		    pcs->ordering = compass_order_backsights;
 		}
+		if (token_len >= 13) {
+		    // 'F' for From, 'T' for To.
+		    char lrud_type = s_str(&token)[token_len >= 15 ? 14 : 12];
+		    compass_lrud_on_from = (lrud_type != 'T');
+		}
 	    }
+
 	    get_token();
 	}
 
@@ -922,6 +950,7 @@ data_file_compass_dat_or_clp(bool is_clp)
 	process_eol();
 	/* BLANK LINE */
 	process_eol();
+	compass_lrud_previous_to = NULL;
 	while (ch != EOF) {
 	    if (ch == '\x0c') {
 		nextch();
@@ -5343,6 +5372,7 @@ data_normal(void)
       skipblanks();
       switch (*ordering) {
        case Fr:
+	  process_lrud(compass_lrud_on_from ? fr : to);
 	  fr = read_prefix(PFX_STATION|PFX_ALLOW_ROOT|PFX_ANON);
 	  if (first_stn == End) first_stn = Fr;
 	  break;
@@ -5501,13 +5531,19 @@ data_normal(void)
        }
        case CompassDATLeft: case CompassDATRight:
        case CompassDATUp: case CompassDATDown: {
-	  /* FIXME: need to actually make use of these entries! */
 	  reading actual = Left + (*ordering - CompassDATLeft);
 	  read_reading(actual, false);
 	  if (VAL(actual) < 0) VAL(actual) = HUGE_REAL;
 	  break;
        }
        case CompassDATFlags:
+	  if (compass_lrud_previous_to != fr) start_passage();
+	  if (compass_lrud_on_from) {
+	      process_lrud(fr);
+	  } else {
+	      process_lrud(to);
+	  }
+	  compass_lrud_previous_to = to;
 	  if (ch == '#') {
 	     filepos fp;
 	     get_pos(&fp);

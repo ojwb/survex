@@ -1512,6 +1512,16 @@ cmd_export(void)
    } while (!isEol(ch) && !isComm(ch));
 }
 
+void
+start_passage(void)
+{
+    lrudlist * new_psg = osnew(lrudlist);
+    new_psg->tube = NULL;
+    new_psg->next = model;
+    model = new_psg;
+    next_lrud = &(new_psg->tube);
+}
+
 static void
 cmd_data(void)
 {
@@ -1945,13 +1955,8 @@ cmd_data(void)
    free(style_name);
 
 reinit_style:
-   if (style == STYLE_PASSAGE) {
-      lrudlist * new_psg = osnew(lrudlist);
-      new_psg->tube = NULL;
-      new_psg->next = model;
-      model = new_psg;
-      next_lrud = &(new_psg->tube);
-   }
+   if (style == STYLE_PASSAGE)
+       start_passage();
 }
 
 static void
