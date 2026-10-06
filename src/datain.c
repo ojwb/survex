@@ -3081,7 +3081,7 @@ next_line:
 		// Walls seems to ignore anything after the date so make this a
 		// warning not an error so we can process existing Walls
 		// datasets (e.g. the Mammoth dataset reportedly has `#Date
-		// 1978-07-01\`.
+		// 1978-07-01\`).
 		compile_diagnostic(DIAG_WARN|DIAG_SKIP|DIAG_TAIL,
 				   /*End of line not blank*/15);
 	    }

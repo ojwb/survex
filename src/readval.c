@@ -396,8 +396,8 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed, bool *p_new)
 
     skipblanks();
     if (anon_allowed && ch == '-') {
-	// - or -- is an anonymous wall point in a shot, but in #Fix they seem
-	// to just be treated as ordinary station names.
+	// - or -- is an anonymous wall point in a shot, but in #Fix and #note
+	// they seem to just be treated as ordinary station names.
 	// FIXME: Issue warning for such a useless station?
 	//
 	// Not yet checked, but you can presumably use - and -- as a prefix
@@ -1007,8 +1007,8 @@ read_walls_srv_date(int *py, int *pm, int *pd)
 
 	if (y < 100) {
 	    // Processing a one leg survey with `#date 09-09-00` with Walls,
-	    // exporting a Shapefile, and looking at the `DATE` attribute in
-	    // QGIS shows that 2 digit years are always 19xx.
+	    // exporting a vector Shapefile, and looking at the `DATE`
+	    // attribute in QGIS shows that 2 digit years are always 19xx.
 	    y += 1900;
 
 	    filepos fp_save;
