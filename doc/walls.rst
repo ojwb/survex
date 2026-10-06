@@ -11,23 +11,7 @@ Survex 1.4.23 added support for reading Walls ``.LST`` reports as processed
 survey data.  ``.LST`` is intended as a text report format, but contains enough
 information to usefully read as processed survey data, and doing so means
 tools such as ``diffpos`` can be used to compare the same dataset processed
-by Walls and by Survex.  Some details:
-
-- All stations are assumed to be underground and flagged as ``UNDERGROUND``.
-- Fixed stations are flagged as ``FIXED``.
-- Georeferencing is handled.
-- If *Connected vectors with file references* was selected when creating a
-  ``.LST`` file in Walls, the file includes links between stations which
-  is handled, so you can view a Walls-processed centre-line in ``aven`` by
-  exporting it as a ``.LST`` file.
-- If *Include only vectors or stations in current view frame* was selected
-  legs which cross to outside the exported area are flagged as ``DUPLICATE``
-  so they can be easily distinguished.
-- The ``.LST`` format uses ``<REF>`` as a fake station at ``(0,0,0)`` which
-  fixed points are connected to, but ``<REF>>`` is actually a valid station
-  name in Walls.  It's unlikely this name would be chosen in real-world data,
-  but if it is, has no prefix, and is at coordinates ``(0,0,0))`` it will be
-  assumed to be this fake station.
+by Walls and by Survex.  See the section below for details of this support.
 
 ---------------------------
 Walls .WPJ and .SRV support
@@ -503,3 +487,32 @@ incorrectly, and it is not already noted above, please let us know.
 If you can provide some data demonstrating the problem, that's really
 helpful.  It's also useful to know if there are things listed above
 that are problematic to help prioritise efforts.
+
+------------------
+Walls .LST support
+------------------
+
+All Survex programs which can read a ``.3d`` file can transparently read a
+Walls ``.LST`` file instead.  This is intended as a report format, but we
+can usefully treat it as a processed survey data format.
+
+In detail:
+
+- All stations are assumed to be underground and so flagged as ``UNDERGROUND``.
+- Fixed stations are flagged as ``FIXED``.
+- Georeferencing is handled for the same datum and UTM zone combinations that
+  are handled in Walls ``.WPJ`` files.  Other combinations in a ``.LST`` file
+  are quietly ignored, and the file loaded as if it wasn't georeferenced.
+  Please report unsupported combinations you would find useful.
+- If *Connected vectors with file references* was selected when creating a
+  ``.LST`` file in Walls, the file includes links between stations which
+  is handled, so you can view a Walls-processed centre-line in ``aven`` by
+  exporting it as a ``.LST`` file.
+- If *Include only vectors or stations in current view frame* was selected
+  legs which cross to outside the exported area are flagged as ``DUPLICATE``
+  so they can be easily distinguished.
+- The ``.LST`` format uses ``<REF>`` as a fake station at ``(0,0,0)`` which
+  fixed points are connected to, but ``<REF>`` is actually a valid station
+  name in Walls.  It's unlikely this name would be chosen in real-world data,
+  but if it is, has no prefix, and is at coordinates ``(0,0,0))`` then it
+  will be assumed to be this fake station.
