@@ -248,18 +248,7 @@ show_line(int col, int width)
 
    /* Read the whole line and write it out. */
    PUTC(' ', STDERR);
-   int cl = col, w = width;
    while (1) {
-      if (--cl == 0) {
-	  fputs("\x1b[1m\x1b[3", STDERR);
-	  PUTC('3', STDERR); // 1 red 2 green 3 yellow
-	  PUTC('m', STDERR);
-      } else if (cl < 0) {
-	  if (w == 0) {
-	      fputs("\x1b[0m", STDERR);
-	  }
-	  --w;
-      }
       int c = GETC(file.fh);
       /* Note: isEol() is true for EOF */
       if (isEol(c)) break;
@@ -268,7 +257,6 @@ show_line(int col, int width)
       if (c == '\t') c = ' ';
       PUTC(c, STDERR);
    }
-   if (w >= 0) fputs("\x1b[0m", STDERR);
    fputnl(STDERR);
 
    /* If we have a location in the line for the error, indicate it. */
@@ -5372,7 +5360,6 @@ data_normal(void)
       skipblanks();
       switch (*ordering) {
        case Fr:
-	  process_lrud(compass_lrud_on_from ? fr : to);
 	  fr = read_prefix(PFX_STATION|PFX_ALLOW_ROOT|PFX_ANON);
 	  if (first_stn == End) first_stn = Fr;
 	  break;
