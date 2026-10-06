@@ -314,10 +314,6 @@ features are likely to be handled while more obscure features may not be.
   in some of these datums.  This probably means they're not actually
   in current use.
 
-- We currently assume all two digit years are 19xx (Walls documents
-  it 'also accepts "some date formats common in the U.S. (``mm/dd/yy``,
-  ``mm-dd-yyyy``, etc.)' but doesn't say how it interprets ``yy``.
-
 - Walls checking of valid dates seems to assume all months have 31
   days as it quietly accepts invalid dates such as ``2025-09-31``,
   ``2024-02-30`` and ``2025-02-29``.  Survex warns about these cases.

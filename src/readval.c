@@ -1006,7 +1006,9 @@ read_walls_srv_date(int *py, int *pm, int *pd)
 	fp_month = fp_date;
 
 	if (y < 100) {
-	    // FIXME: Are all 2 digit years 19xx?
+	    // Processing a one leg survey with `#date 09-09-00` with Walls,
+	    // exporting a Shapefile, and looking at the `DATE` attribute in
+	    // QGIS shows that 2 digit years are always 19xx.
 	    y += 1900;
 
 	    filepos fp_save;
