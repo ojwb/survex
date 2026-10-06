@@ -429,10 +429,12 @@ features are likely to be handled while more obscure features may not be.
   and ``ORDER=ADV`` on a "wall shot" (leg to or from an anonymous station).
   Supported since Survex 1.4.10.
 
-- If a station is used with an explicit Walls prefix (e.g. ``PEP:A123``)
-  then it will will be flagged as "exported" in the ``.3d`` file.  This
-  is currently applied even if the explicit prefix is empty (e.g. ``:A123``).
-  Since Survex 1.4.10.
+- If a station is used with an explicit Walls prefix (e.g. ``PEP:A123`` or
+  ``:ZZ9ZA``) then it will will be flagged as "exported" in the ``.3d`` file,
+  which can then be used by programs reading that file.  For example, ``aven``
+  has an option to show blue blobs on stations flagged "exported" (and they
+  will get their name shown in preference when station names overlap and we
+  pick which to show).  Since Survex 1.4.10.
 
 - Walls allows a station with an explicit prefix to have an empty name,
   e.g. ``PEP:``.  The Walls documentation doesn't mention this, though it
