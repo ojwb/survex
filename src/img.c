@@ -3401,10 +3401,11 @@ bad_plt_date:
 			   }
 		       }
 		       if (!have_xsect) goto no_xsect;
+		       // NB: Order is LUDR!
 		       pimg->l = dim[0];
-		       pimg->r = dim[1];
-		       pimg->u = dim[2];
-		       pimg->d = dim[3];
+		       pimg->u = dim[1];
+		       pimg->d = dim[2];
+		       pimg->r = dim[3];
 		       pimg->pending |= PENDING_XSECT | PENDING_HAD_XSECT;
 		   } else {
 		       goto no_xsect;

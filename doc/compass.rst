@@ -7,8 +7,9 @@ and project files (``.DAT`` and ``.MAK`` files), closed data files (``.CLP``),
 and processed survey data (``.PLT`` and ``.PLF`` files).  Survex 1.0.19 was
 the first to support this but we currently recommend using 1.4.18 or newer if
 you're working with Compass data as this version made significant improvements
-to this support.  1.4.23 notably added support for handling LRUD when
-processing survey data with cavern.
+to this support.  1.4.23 notably improved support for passage dimensions
+(fixing a bug in interpreting them in ``.PLT`` files and adding support for
+them when processing ``.DAT`` files).
 
 --------------------
 Compass .MAK support
@@ -251,7 +252,9 @@ limitations and assumptions:
   seems very unlikely to occur in real data.
 
 - Passage dimensions are translated to passage tubes, but Survex
-  may interpret them differently from Compass.
+  may interpret them differently from Compass.  The order of the
+  dimensions was fixed in 1.4.23 to be (left,up,down,right) - before
+  that they were mishandled as (left,right,up,down).
 
 - Shot flag ``C`` is ignored.  It only seems to be useful in unprocessed survey
   data.
