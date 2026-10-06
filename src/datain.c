@@ -792,10 +792,16 @@ data_file_compass_dat_or_clp(bool is_clp)
 
     pcs->style = STYLE_NORMAL;
     pcs->units[Q_LENGTH] = METRES_PER_FOOT;
+    pcs->units[Q_LEFT] = METRES_PER_FOOT;
+    pcs->units[Q_RIGHT] = METRES_PER_FOOT;
+    pcs->units[Q_UP] = METRES_PER_FOOT;
+    pcs->units[Q_DOWN] = METRES_PER_FOOT;
+
     pcs->infer = BIT(INFER_EQUATES) |
 		 BIT(INFER_EQUATES_SELF_OK) |
 		 BIT(INFER_EXPORTS) |
 		 BIT(INFER_PLUMBS);
+
     /* We need to update separator_map so we don't pick a separator character
      * which occurs in a station name.  However Compass DAT allows everything
      * >= ASCII char 33 except 127 in station names so if we just added all
