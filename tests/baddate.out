@@ -10,19 +10,31 @@ baddate.srv:14:15: warning: Invalid day of the month
 baddate.srv:16:7: warning: Invalid year (< 1900 or > 2078)
  #date 2100-02-29
        ^~~~
-baddate.srv:28:12: error: Invalid month
+baddate.srv:20:7: warning: Invalid year (< 1900 or > 2078)
+ #date 1899-12-31
+       ^~~~
+baddate.srv:21:7: warning: Invalid year (< 1900 or > 2078)
+ #date 2079-01-01
+       ^~~~
+baddate.srv:22:13: warning: Invalid year (< 1900 or > 2078)
+ #date 12/31/1899
+             ^~~~
+baddate.srv:23:13: warning: Invalid year (< 1900 or > 2078)
+ #date 01/01/2079
+             ^~~~
+baddate.srv:35:12: error: Invalid month
  #date 2004-00-29
             ^~
-baddate.srv:30:12: error: Invalid month
+baddate.srv:37:12: error: Invalid month
  #date 2004-13-29
             ^~
-baddate.srv:32:15: error: Invalid day of the month
+baddate.srv:39:15: error: Invalid day of the month
  #date 2004-11-32
                ^~
-baddate.srv:34:12: error: Invalid month
+baddate.srv:41:12: error: Invalid month
  #date 2004-13-32
             ^~
-baddate.srv:36:1: info: Survey has no fixed points. Therefore I've fixed A at (0,0,0)
+baddate.srv:43:1: info: Survey has no fixed points. Therefore I've fixed A at (0,0,0)
 
 Removing trailing traverses...
 
@@ -47,4 +59,4 @@ Vertical range = 0.05m (from B at 0.05m to A at 0.00m)
 North-South range = 1.00m (from B at 1.00m to A at 0.00m)
 East-West range = 0.03m (from B at 0.03m to A at 0.00m)
 
-There were 4 warning(s) and 4 error(s) - no output files produced.
+There were 8 warning(s) and 4 error(s) - no output files produced.

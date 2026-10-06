@@ -1017,12 +1017,13 @@ read_walls_srv_date(int *py, int *pm, int *pd)
 	    set_pos(&fp_save);
 	}
     } else {
-	if (y < 1900 || y > 2078) {
-	    set_pos(&fp_date);
-	    compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Invalid year (< 1900 or > 2078)*/58);
-	    longjmp(jbSkipLine, 1);
-	}
 	fp_year = fp_date;
+    }
+
+    if (y < 1900 || y > 2078) {
+        set_pos(&fp_year);
+        compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Invalid year (< 1900 or > 2078)*/58);
+        longjmp(jbSkipLine, 1);
     }
 
     if (m < 1 || m > 12) {
