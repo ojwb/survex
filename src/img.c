@@ -82,11 +82,10 @@
 #else
 # define SNPRINTF my_snprintf
 static int my_snprintf(char *s, size_t size, const char *format, ...) {
-    int result;
     va_list ap;
     va_start(ap, format);
     (void)size; /* The buffer passed should always be large enough. */
-    result = vsprintf(s, format, ap);
+    int result = vsprintf(s, format, ap);
     va_end(ap);
     return result;
 }
@@ -101,9 +100,8 @@ static int my_snprintf(char *s, size_t size, const char *format, ...) {
 static char *
 my_strdup(const char *str)
 {
-   char *p;
    size_t len = strlen(str) + 1;
-   p = (char *)malloc(len);
+   char *p = (char *)malloc(len);
    if (p) memcpy(p, str, len);
    return p;
 }
@@ -227,21 +225,16 @@ using std::min;
 static char *
 baseleaf_from_fnm(const char *fnm)
 {
-   const char *p;
-   const char *q;
-   char * res;
-   size_t len;
-
-   p = fnm;
-   q = strrchr(p, '/');
+   const char *p = fnm;
+   const char *q = strrchr(p, '/');
    if (q) p = q + 1;
    q = strrchr(p, '\\');
    if (q) p = q + 1;
 
    q = strrchr(p, '.');
-   if (q) len = (const char *)q - p; else len = strlen(p);
+   size_t len = (q ? (size_t)(q - p) : strlen(p));
 
-   res = (char *)malloc(len + 1);
+   char *res = (char *)malloc(len + 1);
    if (!res) return NULL;
    memcpy(res, p, len);
    res[len] = '\0';
@@ -252,7 +245,6 @@ baseleaf_from_fnm(const char *fnm)
 static time_t
 mktime_with_tz(struct tm * tm, const char * tz)
 {
-    time_t r;
     char * old_tz = getenv("TZ");
 #ifdef _MSC_VER
     if (old_tz) {
@@ -275,17 +267,16 @@ mktime_with_tz(struct tm * tm, const char * tz)
 	return (time_t)-1;
     }
 #else
-    char * p;
     if (old_tz) {
 	size_t len = strlen(old_tz) + 1;
-	p = (char *)malloc(len + 3);
+	char * p = (char *)malloc(len + 3);
 	if (!p)
 	    return (time_t)-1;
 	memcpy(p, "TZ=", 3);
 	memcpy(p + 3, tz, len);
 	old_tz = p;
     }
-    p = (char *)malloc(strlen(tz) + 4);
+    char * p = (char *)malloc(strlen(tz) + 4);
     if (!p) {
 	free(old_tz);
 	return (time_t)-1;
@@ -300,7 +291,7 @@ mktime_with_tz(struct tm * tm, const char * tz)
 #define CLEANUP() free(p)
 #endif
     tzset();
-    r = mktime(tm);
+    time_t r = mktime(tm);
     if (r == (time_t)-1 && tm->tm_year < 70 &&
 	(sizeof(time_t) > 4 || tm->tm_year >= 1)) {
 	/* Microsoft's mktime() treats years before 1970 as an error, unlike
@@ -487,10 +478,10 @@ struct compass_station {
 static void*
 compass_plt_allocate_hash(void)
 {
-    struct compass_station** htab = malloc(HASH_BUCKETS * sizeof(struct compass_station*));
+    struct compass_station** htab =
+	malloc(HASH_BUCKETS * sizeof(struct compass_station*));
     if (htab) {
-	unsigned i;
-	for (i = 0; i < HASH_BUCKETS; ++i)
+	for (unsigned i = 0; i < HASH_BUCKETS; ++i)
 	    htab[i] = NULL;
     }
     return htab;
@@ -500,10 +491,9 @@ static int
 compass_plt_update_station(img *pimg, const char *name, int name_len,
 			   unsigned flags)
 {
-    struct compass_station *p;
     struct compass_station **htab = (struct compass_station**)pimg->data;
     htab += hash_data(name, name_len) & (HASH_BUCKETS - 1U);
-    for (p = *htab; p; p = p->next) {
+    for (struct compass_station *p = *htab; p; p = p->next) {
 	if (p->len == name_len) {
 	    if (memcmp(name, p->name, name_len) == 0) {
 		p->flags |= flags;
@@ -513,7 +503,9 @@ compass_plt_update_station(img *pimg, const char *name, int name_len,
 	    }
 	}
     }
-    p = malloc(offsetof(struct compass_station, name) + name_len);
+
+    struct compass_station *p =
+	malloc(offsetof(struct compass_station, name) + name_len);
     if (!p) return -1;
     p->flags = flags;
     p->len = name_len;
@@ -529,8 +521,7 @@ compass_plt_new_survey(img *pimg)
     struct compass_station **htab = (struct compass_station**)pimg->data;
     int i = HASH_BUCKETS;
     while (--i) {
-	struct compass_station *p;
-	for (p = *htab; p; p = p->next) {
+	for (struct compass_station *p = *htab; p; p = p->next) {
 	    p->flags |= COMPASS_SFLAG_DIFFERENT_SURVEY;
 	}
 	++htab;
@@ -558,10 +549,9 @@ compass_plt_free_data(img *pimg)
 static int
 compass_plt_get_station_flags(img *pimg, const char *name, int name_len)
 {
-    struct compass_station *p;
     struct compass_station **htab = (struct compass_station**)pimg->data;
     htab += hash_data(name, name_len) & (HASH_BUCKETS - 1U);
-    for (p = *htab; p; p = p->next) {
+    for (struct compass_station *p = *htab; p; p = p->next) {
 	if (p->len == name_len) {
 	    if (memcmp(name, p->name, name_len) == 0) {
 		if (p->flags & COMPASS_SFLAG_DIFFERENT_SURVEY) {
@@ -587,10 +577,9 @@ compass_plt_get_station_flags(img *pimg, const char *name, int name_len)
 static int
 walls_lst_get_station_flags(img *pimg, const char *name, int name_len)
 {
-    struct compass_station *p;
     struct compass_station **htab = (struct compass_station**)pimg->data;
     htab += hash_data(name, name_len) & (HASH_BUCKETS - 1U);
-    for (p = *htab; p; p = p->next) {
+    for (struct compass_station *p = *htab; p; p = p->next) {
 	if (p->len == name_len) {
 	    if (memcmp(name, p->name, name_len) == 0) {
 		int flags = p->flags;
@@ -600,7 +589,9 @@ walls_lst_get_station_flags(img *pimg, const char *name, int name_len)
 	    }
 	}
     }
-    p = malloc(offsetof(struct compass_station, name) + name_len);
+
+    struct compass_station *p =
+	malloc(offsetof(struct compass_station, name) + name_len);
     if (!p) return -1;
     p->flags = WALLS_SFLAG_REPORTED;
     p->len = name_len;
@@ -630,19 +621,17 @@ mask_station_flags(img *pimg, int mask)
 static char *
 getline_alloc_len(FILE *fh, size_t * p_len)
 {
-   int ch;
    size_t i = 0;
    size_t len = 16;
    char *buf = (char *)malloc(len);
    if (!buf) return NULL;
 
-   ch = GETC(fh);
+   int ch = GETC(fh);
    while (ch != '\n' && ch != '\r' && ch != EOF) {
       buf[i++] = ch;
       if (i == len - 1) {
-	 char *p;
 	 len += len;
-	 p = (char *)realloc(buf, len);
+	 char *p = (char *)realloc(buf, len);
 	 if (!p) {
 	    free(buf);
 	    return NULL;
@@ -742,7 +731,6 @@ initialise_survey_filter(img *pimg, const char* survey)
     size_t len = strlen(survey);
     if (survey[len - 1] == pimg->separator) len--;
     if (len) {
-	char *p;
 	pimg->survey = (char *)malloc(len + 2);
 	if (!pimg->survey) {
 	    return 0;
@@ -753,7 +741,7 @@ initialise_survey_filter(img *pimg, const char* survey)
 	 * got from the file already.
 	 */
 	pimg->survey[len] = '\0';
-	p = strrchr(pimg->survey, pimg->separator);
+	char *p = strrchr(pimg->survey, pimg->separator);
 	if (p) p++; else p = pimg->survey;
 	free(pimg->title);
 	pimg->title = STRDUP(p);
@@ -776,7 +764,6 @@ compass_plt_open(img *pimg, const char *survey)
      */
     int utm_zone = 0;
     int datum = img_DATUM_UNKNOWN;
-    long fpos;
     char *from = NULL;
     int from_len = 0;
 
@@ -865,7 +852,7 @@ compass_plt_open(img *pimg, const char *survey)
 	      size_t len;
 	      compass_plt_new_survey(pimg);
 	      if (pimg->start >= 0) break;
-	      fpos = ftell(pimg->fh) - 1;
+	      long fpos = ftell(pimg->fh) - 1;
 	      if (!pimg->survey) {
 		  /* We're not filtering by survey so just note down the file
 		   * offset for the first N command. */
@@ -3380,8 +3367,8 @@ bad_plt_date:
 	       while (*q && *q <= ' ') q++;
 	       if (*q == 'P') {
 		   double dim[4];
-		   int bytes_used;
 		   ++q;
+		   int bytes_used;
 		   if (sscanf(q, "%lf%lf%lf%lf%n",
 			      &dim[0], &dim[1], &dim[2], &dim[3],
 			      &bytes_used) != 4) {
@@ -3398,8 +3385,7 @@ bad_plt_date:
 		   /* No cross-sections for surface data. */
 		   if ((pimg->flags & img_SFLAG_UNDERGROUND)) {
 		       int have_xsect = 0;
-		       int i;
-		       for (i = 0; i < 4; ++i) {
+		       for (int i = 0; i < 4; ++i) {
 			   /* The PLT format specification says 'Values less
 			    * than zero are considered to be missing or
 			    * “Passage.”' but Compass has an (apparently
@@ -3506,8 +3492,6 @@ no_xsect:
    } else if (pimg->version == IMG_VERSION_WALLS_LST ||
               pimg->version == IMG_VERSION_WALLS_LST_FEET) {
       /* Walls LST file. */
-      char *line;
-      char *q;
       int previous_was_ref = 0;
 
       if (pimg->pending & ~PENDING_DUPLICATE) {
@@ -3519,7 +3503,7 @@ no_xsect:
       }
 
 walls_lst_next_line:
-      line = getline_alloc(pimg->fh);
+      char *line = getline_alloc(pimg->fh);
       if (!line) {
 	  return IMG_OUTOFMEMORY;
       }
@@ -3537,7 +3521,7 @@ walls_lst_next_line:
       // * shot: Empty for the start of a traverse; FILE:LINE- for continuing a
       //   traverse; FILE:LINE-> to indicate the traverse goes off the viewed
       //   area and the export was limited to the viewed area.
-      q = walls_lst_parse_prefix_and_name(pimg, line);
+      char *q = walls_lst_parse_prefix_and_name(pimg, line);
       if (!q) {
 	  free(line);
 	  return IMG_OUTOFMEMORY;
@@ -3635,8 +3619,6 @@ walls_lst_next_line:
    } else {
       /* CMAP XYZ file */
       char *line = NULL;
-      char *q;
-      size_t len;
 
       if (pimg->pending) {
 	 /* pending MOVE or LINE or LABEL or STOP */
@@ -3678,7 +3660,7 @@ out_of_memory_error:
       } while (line[0] == ' ' || line[0] == '\0');
       if (line[0] == '\x1a') return img_STOP;
 
-      len = strlen(line);
+      size_t len = strlen(line);
       if (pimg->version == IMG_VERSION_CMAP_STATION) {
 	 /* station variant */
 	 if (len < 37) {
@@ -3688,7 +3670,7 @@ out_of_memory_error:
 	 }
 	 /* Note: label_buf is at least 257 bytes. */
 	 memcpy(pimg->label, line, 6);
-	 q = (char *)memchr(pimg->label, ' ', 6);
+	 char *q = (char *)memchr(pimg->label, ' ', 6);
 	 if (!q) q = pimg->label + 6;
 	 *q = '\0';
 	 int label_len = q - pimg->label;
@@ -3715,7 +3697,7 @@ out_of_memory_error:
 	 }
 
 	 memcpy(old, line, 7);
-	 q = (char *)memchr(old, ' ', 7);
+	 char *q = (char *)memchr(old, ' ', 7);
 	 if (!q) q = old + 7;
 	 *q = '\0';
 	 size_t old_len = q - old;
@@ -3810,16 +3792,15 @@ write_coord(FILE *fh, double x, double y, double z)
 static int
 write_v3label(img *pimg, int opt, const char *s)
 {
-   size_t len, n, dot;
-
    /* find length of common prefix */
-   dot = 0;
+   size_t dot = 0;
+   size_t len;
    for (len = 0; s[len] == pimg->label_buf[len] && s[len] != '\0'; len++) {
       if (s[len] == '.') dot = len + 1;
    }
 
    SVX_ASSERT(len <= pimg->label_len);
-   n = pimg->label_len - len;
+   size_t n = pimg->label_len - len;
    if (len == 0) {
       if (pimg->label_len) PUTC(0, pimg->fh);
    } else if (n <= 16) {
@@ -3868,15 +3849,14 @@ static int
 write_v8label(img *pimg, int opt, int common_flag, size_t common_val,
 	      const char *s)
 {
-   size_t len, del, add;
-
    /* find length of common prefix */
+   size_t len;
    for (len = 0; s[len] == pimg->label_buf[len] && s[len] != '\0'; len++) {
    }
 
    SVX_ASSERT(len <= pimg->label_len);
-   del = pimg->label_len - len;
-   add = strlen(s + len);
+   size_t del = pimg->label_len - len;
+   size_t add = strlen(s + len);
 
    if (add == common_val && del == common_val) {
       PUTC(opt | common_flag, pimg->fh);
@@ -3916,20 +3896,19 @@ write_v8label(img *pimg, int opt, int common_flag, size_t common_val,
 static void
 img_write_item_date_new(img *pimg)
 {
-    int same, unset;
     /* Only write dates when they've changed. */
 #if IMG_API_VERSION == 0
     if (pimg->date1 == pimg->olddate1 && pimg->date2 == pimg->olddate2)
 	return;
 
-    same = (pimg->date1 == pimg->date2);
-    unset = (pimg->date1 == 0);
+    int same = (pimg->date1 == pimg->date2);
+    int unset = (pimg->date1 == 0);
 #else /* IMG_API_VERSION == 1 */
     if (pimg->days1 == pimg->olddays1 && pimg->days2 == pimg->olddays2)
 	return;
 
-    same = (pimg->days1 == pimg->days2);
-    unset = (pimg->days1 == -1);
+    int same = (pimg->days1 == pimg->days2);
+    int unset = (pimg->days1 == -1);
 #endif
 
     if (same) {
@@ -3980,20 +3959,19 @@ img_write_item_date_new(img *pimg)
 static void
 img_write_item_date(img *pimg)
 {
-    int same, unset;
     /* Only write dates when they've changed. */
 #if IMG_API_VERSION == 0
     if (pimg->date1 == pimg->olddate1 && pimg->date2 == pimg->olddate2)
 	return;
 
-    same = (pimg->date1 == pimg->date2);
-    unset = (pimg->date1 == 0);
+    int same = (pimg->date1 == pimg->date2);
+    int unset = (pimg->date1 == 0);
 #else /* IMG_API_VERSION == 1 */
     if (pimg->days1 == pimg->olddays1 && pimg->days2 == pimg->olddays2)
 	return;
 
-    same = (pimg->days1 == pimg->days2);
-    unset = (pimg->days1 == -1);
+    int same = (pimg->days1 == pimg->days2);
+    int unset = (pimg->days1 == -1);
 #endif
 
     if (same) {
@@ -4094,17 +4072,16 @@ img_write_item_new(img *pimg, int code, int flags, const char *s,
       write_v8label(pimg, 0x80 | flags, 0, -1, s);
       break;
     case img_XSECT: {
-      INT32_T l, r, u, d, max_dim;
       img_write_item_date_new(pimg);
-      l = (INT32_T)my_lround(pimg->l * 100.0);
-      r = (INT32_T)my_lround(pimg->r * 100.0);
-      u = (INT32_T)my_lround(pimg->u * 100.0);
-      d = (INT32_T)my_lround(pimg->d * 100.0);
+      INT32_T l = (INT32_T)my_lround(pimg->l * 100.0);
+      INT32_T r = (INT32_T)my_lround(pimg->r * 100.0);
+      INT32_T u = (INT32_T)my_lround(pimg->u * 100.0);
+      INT32_T d = (INT32_T)my_lround(pimg->d * 100.0);
       if (l < 0) l = -1;
       if (r < 0) r = -1;
       if (u < 0) u = -1;
       if (d < 0) d = -1;
-      max_dim = max(max(l, r), max(u, d));
+      INT32_T max_dim = max(max(l, r), max(u, d));
       flags = (flags & img_XFLAG_END) ? 1 : 0;
       if (max_dim >= 32768) flags |= 2;
       write_v8label(pimg, 0x30 | flags, 0, -1, s);
@@ -4156,19 +4133,18 @@ img_write_item_v3to7(img *pimg, int code, int flags, const char *s,
       write_v3label(pimg, 0x40 | flags, s);
       break;
     case img_XSECT: {
-      INT32_T l, r, u, d, max_dim;
       /* Need at least version 5 for img_XSECT. */
       if (pimg->version < 5) return;
       img_write_item_date(pimg);
-      l = (INT32_T)my_lround(pimg->l * 100.0);
-      r = (INT32_T)my_lround(pimg->r * 100.0);
-      u = (INT32_T)my_lround(pimg->u * 100.0);
-      d = (INT32_T)my_lround(pimg->d * 100.0);
+      INT32_T l = (INT32_T)my_lround(pimg->l * 100.0);
+      INT32_T r = (INT32_T)my_lround(pimg->r * 100.0);
+      INT32_T u = (INT32_T)my_lround(pimg->u * 100.0);
+      INT32_T d = (INT32_T)my_lround(pimg->d * 100.0);
       if (l < 0) l = -1;
       if (r < 0) r = -1;
       if (u < 0) u = -1;
       if (d < 0) d = -1;
-      max_dim = max(max(l, r), max(u, d));
+      INT32_T max_dim = max(max(l, r), max(u, d));
       flags = (flags & img_XFLAG_END) ? 1 : 0;
       if (max_dim >= 32768) flags |= 2;
       write_v3label(pimg, 0x30 | flags, s);
@@ -4205,11 +4181,10 @@ static void
 img_write_item_ancient(img *pimg, int code, int flags, const char *s,
 		       double x, double y, double z)
 {
-   size_t len;
    INT32_T opt = 0;
    SVX_ASSERT(pimg->version > 0);
    switch (code) {
-    case img_LABEL:
+    case img_LABEL: {
       if (pimg->version == 1) {
 	 /* put a move before each label */
 	 img_write_item_ancient(pimg, img_MOVE, 0, NULL, x, y, z);
@@ -4218,7 +4193,7 @@ img_write_item_ancient(img *pimg, int code, int flags, const char *s,
 	 PUTC('\n', pimg->fh);
 	 return;
       }
-      len = strlen(s);
+      size_t len = strlen(s);
       if (len > 255 || strchr(s, '\n')) {
 	 /* long label - not in early incarnations of v2 format, but few
 	  * 3d files will need these, so better not to force incompatibility
@@ -4234,6 +4209,7 @@ img_write_item_ancient(img *pimg, int code, int flags, const char *s,
       }
       opt = 0;
       break;
+    }
     case img_MOVE:
       opt = 4;
       break;
@@ -4384,13 +4360,14 @@ img_parse_datum_string(const char *s, size_t len)
 char *
 img_utm_proj_str(img_datum datum, int utm_zone)
 {
-    /* Map to an EPSG code where we can. */
-    int epsg_code = 0;
-    const char* proj4_datum = NULL;
-
+    // Reject invalid zones.  We support 61 and -61 to mean the UPS zones
+    // used in polar regions for compatibility with Walls.
     if (utm_zone < -61 || utm_zone > 61 || utm_zone == 0)
 	return NULL;
 
+    /* Map to an EPSG code where we can. */
+    int epsg_code = 0;
+    const char* proj4_datum = NULL;
     switch (datum) {
       case img_DATUM_UNKNOWN:
 	break;
@@ -4474,7 +4451,6 @@ img_utm_proj_str(img_datum datum, int utm_zone)
     }
 
     if (proj4_datum) {
-	char *proj_str;
 	size_t len = strlen(proj4_datum) + 52 + 2 + 1;
 	const char *south = "";
 	if (utm_zone < 0) {
@@ -4482,7 +4458,7 @@ img_utm_proj_str(img_datum datum, int utm_zone)
 	    south = "+south ";
 	    len += 7;
 	}
-	proj_str = malloc(len);
+	char *proj_str = malloc(len);
 	if (!proj_str) {
 	    img_errno = IMG_OUTOFMEMORY;
 	    return NULL;
