@@ -2420,8 +2420,8 @@ read_v8label(img *pimg, int common_flag, size_t common_val)
 static int img_read_item_new(img *pimg, img_point *p);
 static int img_read_item_v3to7(img *pimg, img_point *p);
 static int img_read_item_ancient(img *pimg, img_point *p);
-static int img_read_item_ascii_wrapper(img *pimg, img_point *p);
-static int img_read_item_ascii(img *pimg, img_point *p);
+static int img_read_item_text_wrapper(img *pimg, img_point *p);
+static int img_read_item_text(img *pimg, img_point *p);
 
 int
 img_read_item(img *pimg, img_point *p)
@@ -2435,7 +2435,7 @@ img_read_item(img *pimg, img_point *p)
    } else if (pimg->version >= 1) {
       return img_read_item_ancient(pimg, p);
    } else {
-      return img_read_item_ascii_wrapper(pimg, p);
+      return img_read_item_text_wrapper(pimg, p);
    }
 }
 
@@ -3003,25 +3003,25 @@ img_read_item_ancient(img *pimg, img_point *p)
 }
 
 static int
-img_read_item_ascii_wrapper(img *pimg, img_point *p)
+img_read_item_text_wrapper(img *pimg, img_point *p)
 {
    /* We need to set the default locale for fscanf() to work on
     * numbers with "." as decimal point. */
    int result;
    char * current_locale = STRDUP(setlocale(LC_NUMERIC, NULL));
    setlocale(LC_NUMERIC, "C");
-   result = img_read_item_ascii(pimg, p);
+   result = img_read_item_text(pimg, p);
    setlocale(LC_NUMERIC, current_locale);
    free(current_locale);
    return result;
 }
 
-// Survex .3d file v0 ("0.01 ascii").
+// Survex .3d file v0 ("0.01 text").
 static int
 survex_3dv0_read_item(img *pimg, img_point *p)
 {
     int result;
-ascii_again:
+v0_again:
     pimg->label[0] = '\0';
     if (FEOF(pimg->fh)) return img_STOP;
     if (pimg->pending) {
@@ -3044,7 +3044,7 @@ ascii_again:
 		img_errno = FEOF(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
 		return img_BAD;
 	    }
-	    goto ascii_again;
+	    goto v0_again;
 	} else if (strcmp(cmd, "name") == 0) {
 	    size_t off = 0;
 	    int ch = GETC(pimg->fh);
@@ -3083,7 +3083,7 @@ ascii_again:
     }
 
     if (result == img_LABEL && !stn_included(pimg)) {
-	goto ascii_again;
+	goto v0_again;
     }
 
     return result;
@@ -3790,9 +3790,9 @@ out_of_memory_error:
     }
 }
 
-/* Handle all ASCII formats. */
+/* Handle all textual formats. */
 static int
-img_read_item_ascii(img *pimg, img_point *p)
+img_read_item_text(img *pimg, img_point *p)
 {
    pimg->label = pimg->label_buf;
    if (pimg->version == 0) {

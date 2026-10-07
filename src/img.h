@@ -187,7 +187,7 @@ typedef struct {
    /* Version of file format.
     *
     * Positive values are .3d file format versions:
-    *   0 => 0.01 ascii
+    *   0 => 0.01 text
     *   1 => 0.01 binary,
     *   2 => byte actions and flags
     *   3 => prefixes for legs; compressed prefixes
