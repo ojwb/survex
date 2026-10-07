@@ -3850,7 +3850,7 @@ detached_or_not_srv:
 	    }
 	    s_free(&datum_str);
 
-	    if (datum && walls_ref.zone && abs(walls_ref.zone) <= 60) {
+	    if (datum && walls_ref.zone && abs(walls_ref.zone) <= 61) {
 		char *proj_str = img_utm_proj_str(datum, walls_ref.zone);
 		set_declination_location(walls_ref.x, walls_ref.y, walls_ref.z,
 					 proj_str, NULL);
@@ -3862,19 +3862,6 @@ detached_or_not_srv:
 		    pcs->input_convergence = HUGE_REAL;
 		} else {
 		    free(proj_str);
-		}
-	    } else if (datum == img_DATUM_WGS84 && abs(walls_ref.zone) == 61) {
-		// Polar UPS zones.
-		const char *proj_str =
-		    (walls_ref.zone > 0 ? "EPSG:5041" : "EPSG:5042");
-		set_declination_location(walls_ref.x, walls_ref.y, walls_ref.z,
-					 proj_str, NULL);
-		if (!pcs->proj_str) {
-		    pcs->proj_str = osstrdup(proj_str);
-		    if (!proj_str_out) {
-			proj_str_out = osstrdup(proj_str);
-		    }
-		    pcs->input_convergence = HUGE_REAL;
 		}
 	    }
 

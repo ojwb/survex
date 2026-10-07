@@ -143,6 +143,7 @@ wallsfsbsclino.wpj wallsfsbsclino.out wallsfsbsclino.pos w_fsbsc.srv\
 wallshtie.wpj wallshtie.dump wallshtie.out w_htie.srv\
 wallsihth.wpj wallsihth.dump wallsihth.out w_ihth.srv\
 wallsprefix.wpj wallsprefix.dump wallsprefix.out w_prefix.srv\
+wallsups.wpj wallsups.dump wallsups.out wallsups.srv\
 wallsvariance.wpj wallsvariance.dump wallsvariance.out w_varian.srv\
 wallsbadreadings.wpj wallsbadreadings.out wb_read.srv\
 baddate.srv baddate.out\
@@ -237,6 +238,7 @@ wallsoff2conn.lst wallsoff2conn.dump\
 wallsshots.lst wallsshots.dump\
 wallsshotsr.lst wallsshotsr.dump\
 wallsstns.lst wallsstns.dump\
+wallsupszone.lst wallsupszone.dump\
 filter.plt filter.dump\
 nzgd49.plt nzgd49.dump\
 multisection.plt multisection.dump\

@@ -1389,18 +1389,28 @@ walls_lst_open(img *pimg, const char *survey)
 	    continue;
 	}
 
-	if (!pimg->cs && strncmp(line, "UTM ", LITLEN("UTM ")) == 0) {
+	if (!pimg->cs && line[0] == 'U') {
 	    /* `UTM 34N Grid Conv: -0.819  Datum: WGS 1984`
+	     * `UPS S Grid Conv: 55.033  Datum: WGS 1984`
 	     *
 	     * Optional header line which is present if the data is
 	     * georeferenced.
 	     */
 	    char *q;
 	    int utm_zone;
-	    unsigned long v = strtoul(line + LITLEN("UTM "), &q, 10);
-	    if (v > 60 || v == 0) continue;
-		utm_zone = v;
-	    if (*q == 'S') utm_zone = -utm_zone;
+	    if (strncmp(line, "UTM ", LITLEN("UTM ")) == 0) {
+		/* UTM */
+		unsigned long v = strtoul(line + LITLEN("UTM "), &q, 10);
+		if (v > 60 || v == 0) continue;
+		    utm_zone = v;
+		if (*q == 'S') utm_zone = -utm_zone;
+	    } else if (strncmp(line, "UPS ", LITLEN("UPS ")) == 0) {
+		/* UPS */
+		q = line + LITLEN("UPS ");
+		utm_zone = (*q == 'S' ? -61 : 61);
+	    } else {
+		continue;
+	    }
 	    q = strstr(q, "Datum: ");
 	    if (!q) continue;
 	    q += LITLEN("Datum: ");
@@ -4369,7 +4379,7 @@ img_utm_proj_str(img_datum datum, int utm_zone)
     int epsg_code = 0;
     const char* proj4_datum = NULL;
 
-    if (utm_zone < -60 || utm_zone > 60 || utm_zone == 0)
+    if (utm_zone < -61 || utm_zone > 61 || utm_zone == 0)
 	return NULL;
 
     switch (datum) {
@@ -4436,10 +4446,11 @@ img_utm_proj_str(img_datum datum, int utm_zone)
 	    epsg_code = 32300 - utm_zone;
 	break;
       case img_DATUM_WGS84:
+	/* Handles zones 61 and -61 as Polar UPS zones for Walls. */
 	if (utm_zone > 0)
-	    epsg_code = 32600 + utm_zone;
+	    epsg_code = (utm_zone == 61 ? 5041 : 32600 + utm_zone);
 	else
-	    epsg_code = 32700 - utm_zone;
+	    epsg_code = (utm_zone == -61 ? 5042 : 32700 - utm_zone);
 	break;
     }
 

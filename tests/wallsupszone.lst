@@ -1,0 +1,14 @@
+UPS zone test Project
+Segment: /...
+Vector total: 2  Report Date: 10/08/26 08:31
+Component 1 of 1 - Reference Station:  <REF>
+Length: 1.000 Meters
+High Pt: 3724.000 (POLEINAC),  Low Pt: 3724.000 (POLEINAC)
+UPS S Grid Conv: 55.033  Datum: WGS 1984
+
+PREFIX	NAME	EAST	NORTH	UP	NOTE
+
+	POLEINAC	2353896.717	2247502.105	3724.000
+	X	2353895.898	2247502.678	3724.000
+
+Station total: 2

@@ -1,0 +1,10 @@
+;WALLS Project File
+; pos=dump warn=1 dummycrprotection=
+.BOOK	UPS zone test Project
+.NAME	UPSTEST
+.STATUS	2051
+.REF	2502689.421 1281217.685 -61 55.033 333 14 82 6 42.000 55 1 57.000 27 "WGS 1984"
+.SURVEY	Walls UPS Test
+.NAME	WALLSUPS
+.STATUS	8
+.ENDBOOK

@@ -488,7 +488,8 @@ img_datum img_parse_datum_string(const char *s, size_t len);
 /* Return a CRS string to pass to PROJ from an img_datum and UTM zone.
  *
  * utm_zone can be between -60 and -1 (Southern Hemisphere), or 1 and 60
- * (Northern Hemisphere).
+ * (Northern Hemisphere); 61 and -61 are interpreted as the Northern and
+ * Southern Polar UPS zones respectively (for compatibility with Walls).
  *
  * Where possible a string of the form "EPSG:1234" is returned.
  *
