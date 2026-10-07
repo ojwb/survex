@@ -145,6 +145,7 @@ wallsihth.wpj wallsihth.dump wallsihth.out w_ihth.srv\
 wallsprefix.wpj wallsprefix.dump wallsprefix.out w_prefix.srv\
 wallsups.wpj wallsups.dump wallsups.out wallsups.srv\
 wallsvariance.wpj wallsvariance.dump wallsvariance.out w_varian.srv\
+wallsbadoptions.wpj wallsbadoptions.out wb_opts.srv\
 wallsbadreadings.wpj wallsbadreadings.out wb_read.srv\
 baddate.srv baddate.out\
 badomit.srv badomit.out\

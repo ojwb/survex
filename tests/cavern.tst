@@ -128,6 +128,7 @@ TESTS_=
  wallsprefix.wpj\
  wallsups.wpj\
  wallsvariance.wpj\
+ wallsbadoptions.wpj\
  wallsbadreadings.wpj\
  passage hanging_lrud equatenosuchstn surveytypo\
  skipafterbadomit passagebad badreadingdotplus badcalibrate calibrate_clino\

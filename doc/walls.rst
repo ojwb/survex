@@ -328,7 +328,8 @@ features are likely to be handled while more obscure features may not be.
   Walls32.exe to determine exactly how this works (and if ``RESET`` is
   also special).
 
-- LRUD data is currently ignored.
+- Since Survex 1.4.23, the ``LRUD=`` option is checked for validity, but LRUD
+  data is currently ignored.
 
 - Since Survex 1.4.21, the ``TAPE=`` option is checked for validity, and
   the combination of ``TAPE=SS`` with ``ORDER=DA`` or ``ORDER=AD`` is mapped to

@@ -1,0 +1,29 @@
+In file included from wallsbadoptions.wpj:9:
+wb_opts.srv:2:13: error: Expecting "F", "FB", "T", or "TB"
+ #units lrud=BT:lrurd
+             ^~
+wb_opts.srv:2:19: error: Expecting "D"
+ #units lrud=BT:lrurd
+                   ^
+wb_opts.srv:3:19: error: Expecting "D"
+ #units lrud=TB:lrur
+                   ^
+wb_opts.srv:4:13: error: Expecting "F", "FB", "T", or "TB"
+ #units lrud=Q:QQQQ
+             ^
+wb_opts.srv:4:15: error: Expecting "L", "R", "U", or "D"
+ #units lrud=Q:QQQQ
+               ^
+wb_opts.srv:5:16: error: Expecting "R", "U", or "D"
+ #units lrud=T:lludr
+                ^
+wb_opts.srv:6:17: error: Expecting "U" or "D"
+ #units lrud=F:lrru
+                 ^
+wb_opts.srv:7:19: error: Expecting "U"
+ #units lrud=Fb:lrdd
+                   ^
+wb_opts.srv:8:19: error: Expecting ""
+ #units LRUD=F:LRUDU
+                   ^
+cavern: error: No survey data

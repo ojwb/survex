@@ -1,0 +1,9 @@
+;WALLS Project File
+; pos=fail dummycrprotection=
+.BOOK	Bad options test
+.NAME	BADOTEST
+.STATUS	3
+.SURVEY	Test bad options
+.NAME	wb_opts
+.STATUS	8
+.ENDBOOK

@@ -2700,14 +2700,80 @@ walls_parse_options(void)
 	    break;
 	  }
 	  case WALLS_UNITS_OPT_LRUD: {
-	    // Value is F, T, FB, TB or one of those followed by eg. :UDRL (no
-	    // spaces around :).  Default is F:LRUD.
-	    //
-	    // We currently ignore LRUD, so can also ignore the settings for
-	    // it.
-	    string val = S_INIT;
-	    read_string(&val);
-	    s_free(&val);
+	    // Value is `F`, `T`, `FB`, `TB` or one of those followed by `:`
+	    // and some permutation of `LRUD` (e.g. `TB:LUDR`).  No spaces
+	    // are allowed around the `:`.  Default is F:LRUD.
+	    static const sztok lrud_tab[] = {
+	         {"F",	1},
+	         {"FB",	1},
+	         {"T",	0},
+	         {"TB",	0},
+	         {NULL,	-1}
+	    };
+	    get_token();
+	    int lrud_setting = match_tok(lrud_tab, TABSIZE(lrud_tab));
+	    if (lrud_setting < 0) {
+		compile_diagnostic(DIAG_ERR|DIAG_TOKEN,
+				   /*Expecting “%s”, “%s”, “%s”, or “%s”*/189,
+				   "F", "FB", "T", "TB");
+	    } else {
+		compass_lrud_on_from = (lrud_setting != 0);
+	    }
+
+	    if (ch == ':') {
+		char lrud_togo[] = "LRUD";
+		nextch();
+		while (lrud_togo[0]) {
+		    if (isalpha((unsigned char)ch)) {
+			char ch_upper = toupper((unsigned char)ch);
+			char *q = strchr(lrud_togo, ch_upper); 
+			if (q) {
+			    memmove(q, q + 1, strlen(q));
+			    nextch();
+			    continue;
+			}
+		    }
+
+		    switch (strlen(lrud_togo)) {
+		      case 4:
+			compile_diagnostic(DIAG_ERR|DIAG_COL,
+					   /*Expecting “%s”, “%s”, “%s”, or “%s”*/189,
+					   "L", "R", "U", "D");
+			break;
+		      case 3: {
+			char arg0[2] = { lrud_togo[0], '\0' };
+			char arg1[2] = { lrud_togo[1], '\0' };
+			compile_diagnostic(DIAG_ERR|DIAG_COL,
+					   /*Expecting “%s”, “%s”, or “%s”*/188,
+					   arg0, arg1, lrud_togo + 2);
+			break;
+		      }
+		      case 2: {
+			char arg0[2] = { lrud_togo[0], '\0' };
+			compile_diagnostic(DIAG_ERR|DIAG_COL,
+					   /*Expecting “%s” or “%s”*/103,
+					   arg0, lrud_togo + 1);
+			break;
+		      }
+		      case 1:
+			compile_diagnostic(DIAG_ERR|DIAG_COL,
+					   /*Expecting “%s”*/497, lrud_togo);
+			break;
+		    }
+		    // Skip the rest of the token to avoid reporting multiple
+		    // errors for one problem.
+		    get_token_no_blanks();
+		    break;
+		}
+
+		if (isBlank(ch) || isEol(ch) || isComm(ch)) {
+		    break;
+		}
+
+		compile_diagnostic(DIAG_ERR|DIAG_COL,
+				   /*Expecting “%s”*/497, "");
+		get_token_no_blanks();
+	    }
 	    break;
 	  }
 	  case WALLS_UNITS_OPT_TAPE: {

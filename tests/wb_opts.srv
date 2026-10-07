@@ -1,0 +1,8 @@
+; Test cases where options in `#units` trigger warnings or errors.
+#units lrud=BT:lrurd
+#units lrud=TB:lrur
+#units lrud=Q:QQQQ
+#units lrud=T:lludr
+#units lrud=F:lrru
+#units lrud=Fb:lrdd
+#units LRUD=F:LRUDU
