@@ -33,6 +33,15 @@
 #ifndef IMG_H
 # define IMG_H
 
+/* We aim to keep this code compilable as C99 or C++98.  The C99 features we
+ * make use of are `//` comments, declarations after statements, and `for`
+ * loop initial declarations, so a C90 compiler which supports these as
+ * extensions will likely work too.
+ *
+ * If you find img doesn't work with a particular compiler you want to
+ * support, please let us know.
+ */
+
 /* Define IMG_API_VERSION if you want more recent versions of the img API.
  *
  * 0 (default)	The old API.  date1 and date2 give the survey date as time_t.

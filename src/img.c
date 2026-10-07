@@ -18,6 +18,15 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+/* We aim to keep this code compilable as C99 or C++98.  The C99 features we
+ * make use of are `//` comments, declarations after statements, and `for`
+ * loop initial declarations, so a C90 compiler which supports these as
+ * extensions will likely work too.
+ *
+ * If you find img doesn't work with a particular compiler you want to
+ * support, please let us know.
+ */
+
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
