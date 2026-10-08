@@ -1615,7 +1615,6 @@ msgstr ""
 #. syntax i5.5 or -i6, but the number must be strictly < 12.
 #: ../src/datain.c:1985
 #: n:585
-#, c-format
 msgid "Measurement in inches must be < 12"
 msgstr ""
 
