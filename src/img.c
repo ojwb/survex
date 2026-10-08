@@ -3513,7 +3513,7 @@ walls_lst_read_item(img *pimg, img_point *p)
 	return pending & PENDING_LST_MASK;
     }
 
-walls_lst_next_line:
+walls_lst_next_line: ;
     char *line = getline_alloc(pimg->fh);
     if (!line) {
 	return IMG_OUTOFMEMORY;
