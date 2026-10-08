@@ -59,6 +59,24 @@ w_fsbs.srv:86:19: warning: CLINO reading and BACKCLINO reading disagree by 5dg
 w_fsbs.srv:90:19: warning: CLINO reading and BACKCLINO reading disagree by 5dg
  :a1 e4b 10 90/270 0/+5
                    ^~~~
+w_fsbs.srv:94:19: warning: Ignoring "X"
+ #units TYPEAB=N,1,X TYPEVB=C,1,X
+                   ^
+w_fsbs.srv:94:32: warning: Ignoring "X"
+ #units TYPEAB=N,1,X TYPEVB=C,1,X
+                                ^
+w_fsbs.srv:95:19: warning: Ignoring "X"
+ #units TYPEAB=N,1,x TYPEVB=C,1,x
+                   ^
+w_fsbs.srv:95:32: warning: Ignoring "X"
+ #units TYPEAB=N,1,x TYPEVB=C,1,x
+                                ^
+w_fsbs.srv:97:11: warning: COMPASS reading and BACKCOMPASS reading disagree by 2dg
+ :a1 f2 10 91/269 +1/-1
+           ^~~~~~
+w_fsbs.srv:97:18: warning: CLINO reading and BACKCLINO reading disagree by 2dg
+ :a1 f2 10 91/269 +1/-1
+                  ^~~~~
 wallsfsbs.wpj:6: info: Declination: -4.8dg @ 2026-09-19, grid convergence: 0.6dg
  .REF 4113317.333 587658.557 16 0.596 329 6 37 9 43.761 86 0 45.793 19 "NAD83"
 
@@ -77,14 +95,14 @@ Calculating trailing traverses...
 Calculating statistics...
 
 Approximate full range of grid convergence: 0.6dg at a1 to 2.7dg at AA:S3
-Survey contains 38 survey stations, joined by 38 legs.
+Survey contains 39 survey stations, joined by 39 legs.
 There are 2 loops.
 Survey has 2 connected components.
-Total length of survey legs =  276.34m ( 276.34m adjusted)
-Total plan length of survey legs =  273.00m
+Total length of survey legs =  286.34m ( 286.34m adjusted)
+Total plan length of survey legs =  283.00m
 Total vertical length of survey legs =   30.19m
 Vertical range = 209.55m (from AA:S3 at 509.15m to VN:d3a at 299.60m)
 North-South range = 3512204.33m (from AC:c4a at 4112200.53m to AA:S2 at 599996.20m)
 East-West range = 3413328.59m (from AA:S2 at 4000028.59m to a1 at 586700.00m)
 
-There were 20 warning(s).
+There were 26 warning(s).

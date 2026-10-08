@@ -1,5 +1,5 @@
 ;WALLS Project File
-; pos=dump warn=20 dummycrprotection=
+; pos=dump warn=26 dummycrprotection=
 .BOOK	fs bs offset testing
 .NAME	fsbs
 .STATUS	2579

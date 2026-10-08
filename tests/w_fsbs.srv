@@ -88,3 +88,10 @@ Z1        Z2        10	      100/286		     -12/18
 #UNITS DECL=0 INCA=0 INCAB=0  INCV=+5  INCVB=-5
 :a1	e4a	10	90/270	-5/+5
 :a1	e4b	10	90/270	0/+5
+
+
+; Test handling of optional `,X`.  We currently warn and average as normal.
+#units TYPEAB=N,1,X TYPEVB=C,1,X
+#units TYPEAB=N,1,x TYPEVB=C,1,x
+#UNITS meters DECL=0 INCA=0 INCAB=0   INCV=0  INCVB=0
+:a1	f2	10	91/269	+1/-1

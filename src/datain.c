@@ -2760,8 +2760,10 @@ walls_parse_options(void)
 		if (ch == ',') {
 		    nextch();
 		    if (toupper(ch) == 'X') {
+			// FIXME: `X` means only use foresight (but check
+			// backsight), but we've not seen any real-world uses).
+			compile_diagnostic(DIAG_WARN|DIAG_COL, /*Ignoring “%s”*/506, "X");
 			nextch();
-			// FIXME: Only use foresight (but check backsight).
 		    }
 		}
 	    }
@@ -2795,8 +2797,10 @@ walls_parse_options(void)
 		if (ch == ',') {
 		    nextch();
 		    if (toupper(ch) == 'X') {
+			// FIXME: `X` means only use foresight (but check
+			// backsight), but we've not seen any real-world uses).
+			compile_diagnostic(DIAG_WARN|DIAG_COL, /*Ignoring “%s”*/506, "X");
 			nextch();
-			// FIXME: Only use foresight (but check backsight).
 		    }
 		}
 	    }

@@ -364,8 +364,9 @@ features are likely to be handled while more obscure features may not be.
   are mapped to compass and clino SDs such that only mismatches above the
   tolerance are warned about, with the default SDs set to match the default
   Walls tolerance of 5°.  The ``X`` flag (which means only use foresights but
-  still check backsights) is currently ignored so foresights and backsights
-  are always averaged.
+  still check backsights) is currently ignored (with a warning) so foresights
+  and backsights are always averaged.  We are not aware of any uses of ``X``
+  in real-world data.
 
 - ``UV=``, ``UVH=`` and ``UVV=`` are supported since Survex 1.4.23.
 

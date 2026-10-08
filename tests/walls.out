@@ -46,6 +46,9 @@ walls.srv:72:25: warning: Expecting "LOWER", "UPPER", or "MIXED"
 walls.srv:73:18: warning: Ignoring "Q)"
  #units typeab=n,4Q),X case=x
                   ^~
+walls.srv:73:21: warning: Ignoring "X"
+ #units typeab=n,4Q),X case=x
+                     ^
 walls.srv:73:28: warning: Expecting "LOWER", "UPPER", or "MIXED"
  #units typeab=n,4Q),X case=x
                             ^
@@ -134,4 +137,4 @@ Vertical range = 83.48m (from U12b at 51.00m to Z11 at -32.48m)
 North-South range = 53.08m (from U12b at 40.00m to 12#4 at -13.08m)
 East-West range = 31.49m (from U12a at 30.00m to U1 at -1.49m)
 
-There were 37 warning(s).
+There were 38 warning(s).
