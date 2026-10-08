@@ -75,8 +75,8 @@ static int process_nosurvey(prefix *fr, prefix *to, bool fToFirst);
  */
 #define is_compass_NaN(x) (fabs(x) > (999.0 - 360.0))
 
-// Are Compass PLT LRUD measurements for the "From" station?
-static bool compass_lrud_on_from;
+// Are Compass PLT LRUD measurements for the "To" station?
+static bool compass_lrud_on_to;
 
 // "To" for the previous leg, or NULL.
 //
@@ -878,7 +878,7 @@ data_file_compass_dat_or_clp(bool is_clp)
 	}
 	get_token();
 	pcs->ordering = compass_order;
-	compass_lrud_on_from = true;
+	compass_lrud_on_to = false;
 	// "FORMAT" is optional.
 	if (S_EQ(&token, "FORMAT") && check_colon()) {
 	    /* This documents the format in the original survey notebook - we
@@ -903,7 +903,7 @@ data_file_compass_dat_or_clp(bool is_clp)
 		if (token_len >= 13) {
 		    // 'F' for From, 'T' for To.
 		    char lrud_type = s_str(&token)[token_len >= 15 ? 14 : 12];
-		    compass_lrud_on_from = (lrud_type != 'T');
+		    compass_lrud_on_to = (lrud_type == 'T');
 		}
 	    }
 
@@ -1576,6 +1576,8 @@ static const sztok walls_tape_tab[] = {
     {NULL,	-1}
 };
 
+#define WALLS_LRUD(R1,R2,R3,R4) ((R1) | ((R2) << 8) | ((R3) << 16) | ((R4) << 24))
+
 // In #FLAG Walls seems to only document `/` but based on real-world use also
 // allows `\`.  FIXME: Are there other places that allow `\`?
 static inline bool isWallsSlash(int c) { return c == '/' || c == '\\'; }
@@ -1599,6 +1601,9 @@ typedef struct walls_options {
     // TYPEAB=C,... in effect?
     bool typeab_c;
 
+    // LRUD=T or LRUD=TB in effect?
+    bool lrud_on_to;
+
     // Flags to apply to stations in #FIX.
     int fix_station_flags;
 
@@ -1613,6 +1618,9 @@ typedef struct walls_options {
 
     // Current ORDER= setting for RECT data.
     int order_rect;
+
+    // Current LRUD= ordering.
+    int lrud_order;
 
     // Current INCH= setting (extra DZ for each leg, not inch the length unit).
     real inch;
@@ -1660,6 +1668,9 @@ static const walls_options walls_options_default = {
     // typeab_c
     false,
 
+    // lrud_on_to
+    false,
+
     // fix_station_flags
     0,
 
@@ -1674,6 +1685,9 @@ static const walls_options walls_options_default = {
 
     // order_rect
     WALLS_ORDER_CT(Dx, Dy, Dz) & ((1 << 24) - 1),
+
+    // lrud_order
+    WALLS_LRUD(Left, Right, Up, Down),
 
     // inch
     0.0,
@@ -2704,10 +2718,10 @@ walls_parse_options(void)
 	    // and some permutation of `LRUD` (e.g. `TB:LUDR`).  No spaces
 	    // are allowed around the `:`.  Default is F:LRUD.
 	    static const sztok lrud_tab[] = {
-	         {"F",	1},
-	         {"FB",	1},
-	         {"T",	0},
-	         {"TB",	0},
+	         {"F",	0},
+	         {"FB",	0},
+	         {"T",	1},
+	         {"TB",	1},
 	         {NULL,	-1}
 	    };
 	    get_token();
@@ -2717,19 +2731,29 @@ walls_parse_options(void)
 				   /*Expecting “%s”, “%s”, “%s”, or “%s”*/189,
 				   "F", "FB", "T", "TB");
 	    } else {
-		compass_lrud_on_from = (lrud_setting != 0);
+		p_walls_options->lrud_on_to = (lrud_setting != 0);
 	    }
 
 	    if (ch == ':') {
 		char lrud_togo[] = "LRUD";
 		nextch();
+		int lrud_order = 0;
 		while (lrud_togo[0]) {
 		    if (isalpha((unsigned char)ch)) {
 			char ch_upper = toupper((unsigned char)ch);
-			char *q = strchr(lrud_togo, ch_upper); 
+			char *q = strchr(lrud_togo, ch_upper);
 			if (q) {
 			    memmove(q, q + 1, strlen(q));
 			    nextch();
+			    reading r = Left;
+			    if (ch_upper != 'L') {
+				// Maps 'R'->Right, 'U'->Up, 'D'->Down.
+				static_assert(Down - ('R' & 11) == Right);
+				static_assert(Down - ('U' & 11) == Up);
+				static_assert(Down - ('D' & 11) == Down);
+				r = (reading)(Down - (ch_upper & 11));
+			    }
+			    lrud_order = (lrud_order >> 8) | ((int)r << 24);
 			    continue;
 			}
 		    }
@@ -2767,6 +2791,7 @@ walls_parse_options(void)
 		}
 
 		if (isBlank(ch) || isEol(ch) || isComm(ch)) {
+		    p_walls_options->lrud_order = lrud_order;
 		    break;
 		}
 
@@ -5588,10 +5613,10 @@ data_normal(void)
        }
        case CompassDATFlags:
 	  if (compass_lrud_previous_to != fr) start_passage();
-	  if (compass_lrud_on_from) {
-	      process_lrud(fr);
-	  } else {
+	  if (compass_lrud_on_to) {
 	      process_lrud(to);
+	  } else {
+	      process_lrud(fr);
 	  }
 	  compass_lrud_previous_to = to;
 	  if (ch == '#') {
