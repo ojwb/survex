@@ -28,11 +28,13 @@ incorrect, while the WPJ format seems to be largely undocumented.  Sadly
 David is no longer around to ask, but we can at least test actual behaviour
 of ``Walls32.exe`` on example data.
 
-As of 1.4.10, some large Walls datasets can be successfully processed
-(e.g. Mammoth Cave, the Thailand dataset from https://cave-registry.org.uk/,
-the Tatra Cave Registry from
-https://github.com/dlubom/Jaskiniowy-Kataster-Tatr-Zachodnich
-and Big Bat Cave).
+As of 1.4.23, some large Walls datasets can be successfully processed:
+
+- Mammoth Cave
+- the Thailand dataset from https://cave-registry.org.uk/
+- the Tatra Cave Registry from https://github.com/dlubom/Jaskiniowy-Kataster-Tatr-Zachodnich
+- the Slovenian Cave Survey from https://github.com/anzeabram/SiCS
+- Big Bat Cave
 
 Behaviour is not identical and station positions after loop closure will
 inevitably be different, but we encourage processing your Walls dataset with
