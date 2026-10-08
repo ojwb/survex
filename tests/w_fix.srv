@@ -40,3 +40,7 @@ dummy9 quiet9 <--,--,--,--,0>
 #fix seg7   420007 590007 1107 /see #q # s blah
 #fix seg8   420008 590008 1108 /#x # seg blah blah
 #fix seg9   420009 590009 1109 /## segment blah blah blah
+
+; Test warnings for stations referred to only in `#flag` or `#note`.
+#flag onlyflg1 quiet8 onlyflg2 /something
+#note onlynote no other references

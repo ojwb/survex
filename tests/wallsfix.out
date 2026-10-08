@@ -29,5 +29,8 @@ Survey has 19 connected components.
 Total length of survey legs =    0.00m (   0.00m adjusted)
 Total plan length of survey legs =    0.00m
 Total vertical length of survey legs =    0.00m
+w_fix.srv:45: warning: Station "onlyflg1" referred to by #flag but never used
+w_fix.srv:45: warning: Station "onlyflg2" referred to by #flag but never used
+w_fix.srv:46: warning: Station "onlynote" referred to by #note but never used
 
-There were 10 warning(s).
+There were 13 warning(s).

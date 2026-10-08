@@ -1,5 +1,5 @@
 ;WALLS Project File
-; pos=dump warn=10 dummycrprotection=
+; pos=dump warn=13 dummycrprotection=
 .BOOK	FIX directive Test Project
 .NAME	FIX
 .STATUS	3

@@ -3466,7 +3466,7 @@ read_flagged_stations:
 						  false, NULL);
 		name->sflags |= station_flags;
 		// Suppress "unused fixed point" warnings for stations in #flag.
-		name->sflags |= BIT(SFLAGS_USED);
+                name->sflags |= BIT(SFLAGS_USED) | BIT(SFLAGS_WALLS_FLAG);
 
 		skipblanks();
 	    }
@@ -3500,7 +3500,7 @@ read_flagged_stations:
 	    // note.
 	    prefix *name = read_walls_station(p_walls_options->prefix,
 					      false, NULL);
-	    name->sflags |= BIT(SFLAGS_USED);
+	    name->sflags |= BIT(SFLAGS_USED) | BIT(SFLAGS_WALLS_NOTE);
 	    skipblanks();
 	    if (isComm(ch) || isEol(ch)) {
 		// Walls gives an error for an empty note.

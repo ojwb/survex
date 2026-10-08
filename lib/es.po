@@ -1613,17 +1613,19 @@ msgstr ""
 #. syntax i5.5 or -i6, but the number must be strictly < 12.
 #: ../src/datain.c:1985
 #: n:585
-#, c-format
 msgid "Measurement in inches must be < 12"
 msgstr ""
 
 #. TRANSLATORS: The first %s is replaced by a station name,
-#. the second %s by "entrance" or "export".
-#: ../src/listpos.c:95
-#: ../src/listpos.c:103
+#. the second %s by "*entrance" or "*export" (or in Walls
+#. data, by "#flag" or "#note").
+#: ../src/listpos.c:96
+#: ../src/listpos.c:104
+#: ../src/listpos.c:113
+#: ../src/listpos.c:122
 #: n:190
 #, c-format
-msgid "Station “%s” referred to by *%s but never used"
+msgid "Station “%s” referred to by %s but never used"
 msgstr "La estación “%s” ha sido referenciada por *%s pero no se ha usado nunca"
 
 #. TRANSLATORS: %s is replaced with e.g. BEGIN or .BOOK or #[

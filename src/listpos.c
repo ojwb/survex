@@ -87,22 +87,42 @@ check_node(prefix *p)
 	 * a station, but only in a line of data which was rejected
 	 * because of an error.
 	 */
-	if (TSTBIT(p->sflags, SFLAGS_ENTRANCE)) {
-	    /* TRANSLATORS: The first %s is replaced by a station name,
-	     * the second %s by "entrance" or "export".
-	     */
-	    warning_in_file(p->filename, p->line,
-			    /*Station “%s” referred to by *%s but never used*/190,
-			    sprint_prefix(p), "entrance");
-	}
-	if (p->max_export) {
-	    /* TRANSLATORS: The first %s is replaced by a station name,
-	     * the second %s by "entrance" or "export".
-	     */
-	    warning_in_file(p->filename, p->line,
-			    /*Station “%s” referred to by *%s but never used*/190,
-			    sprint_prefix(p), "export");
-	}
+	if (TSTBIT(p->sflags, SFLAGS_WALLS_NOTE)) {
+            /* TRANSLATORS: The first %s is replaced by a station name,
+             * the second %s by "*entrance" or "*export" (or in Walls
+             * data, by "#flag" or "#note").
+             */
+            warning_in_file(p->filename, p->line,
+                            /*Station “%s” referred to by %s but never used*/190,
+                            sprint_prefix(p), "#note");
+        } else if (TSTBIT(p->sflags, SFLAGS_WALLS_FLAG)) {
+            /* TRANSLATORS: The first %s is replaced by a station name,
+             * the second %s by "*entrance" or "*export" (or in Walls
+             * data, by "#flag" or "#note").
+             */
+            warning_in_file(p->filename, p->line,
+                            /*Station “%s” referred to by %s but never used*/190,
+                            sprint_prefix(p), "#flag");
+        } else {
+            if (TSTBIT(p->sflags, SFLAGS_ENTRANCE)) {
+                /* TRANSLATORS: The first %s is replaced by a station name,
+                 * the second %s by "*entrance" or "*export" (or in Walls
+                 * data, by "#flag" or "#note").
+                 */
+                warning_in_file(p->filename, p->line,
+                                /*Station “%s” referred to by %s but never used*/190,
+                                sprint_prefix(p), "*entrance");
+            }
+            if (p->max_export) {
+                /* TRANSLATORS: The first %s is replaced by a station name,
+                 * the second %s by "*entrance" or "*export" (or in Walls
+                 * data, by "#flag" or "#note").
+                 */
+                warning_in_file(p->filename, p->line,
+                                /*Station “%s” referred to by %s but never used*/190,
+                                sprint_prefix(p), "*export");
+            }
+        }
    } else {
        /* Do we need to worry about export violations in hanging surveys? */
        if (fExportUsed) {
