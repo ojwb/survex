@@ -1610,6 +1610,14 @@ msgstr "«%s», «%s», «%s» oder «%s» erwartet"
 msgid "Expecting quadrant bearing, found “%s”"
 msgstr ""
 
+#. TRANSLATORS: Walls allows explicit units of inches with the
+#. syntax i5.5 or -i6, but the number must be strictly < 12.
+#: ../src/datain.c:1985
+#: n:585
+#, c-format
+msgid "Measurement in inches must be < 12"
+msgstr ""
+
 #. TRANSLATORS: The first %s is replaced by a station name,
 #. the second %s by "entrance" or "export".
 #: ../src/listpos.c:95
@@ -3014,6 +3022,18 @@ msgstr "′"
 msgid "″"
 msgstr "″"
 
+#. TRANSLATORS: This is describing the number of Standard Deviations,
+#. e.g. 3σ for 3 standard deviations.  It's used in aven for the key
+#. when colouring by error.
+#.
+#. If there should be a space between the number and this, include
+#. one in the translation.
+#: ../src/gfxcore.cc:1177
+#: n:584
+#, c-format
+msgid "σ"
+msgstr ""
+
 #. TRANSLATORS: Menu item which turns off the "north arrow" in aven.
 #: ../src/gfxcore.cc:4402
 #: n:387
@@ -3807,7 +3827,23 @@ msgstr ""
 #: ../src/datain.c:5748
 #: n:581
 #, c-format
-msgid "Instrument and target heights currently ignored with Walls option combination TAPE=%s ORDER=%s"
+msgid "Instrument and target heights currently ignored with Walls option combination “TAPE=%s” and “ORDER=%s”"
+msgstr ""
+
+#. TRANSLATORS: "Walls" is David McKenzie's cave surveying package,
+#. so should not be translated.
+#: ../src/datain.c:2500
+#: n:582
+#, c-format
+msgid "Ignoring unsupported Walls option “%s”"
+msgstr ""
+
+#. TRANSLATORS: "Walls" is David McKenzie's cave surveying package,
+#. so should not be translated.
+#: ../src/datain.c:2694
+#: n:583
+#, c-format
+msgid "Value can not be negative"
 msgstr ""
 
 #: ../src/gdalexport.cc:47
