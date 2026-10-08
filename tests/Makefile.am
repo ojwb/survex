@@ -155,7 +155,8 @@ complexhanging.svx complexhanging.out\
 inventedhanging.svx inventedhanging.out\
 nosurveyhanging.svx nosurveyhanging.out\
 nosurveyhanging2.svx nosurveyhanging2.dump nosurveyhanging2.out\
-cmd_solve_hanging.svx passage.svx hanging_lrud.svx\
+passage.svx hanging_lrud.svx\
+cmd_solve_hanging.svx cmd_solve_hanging.dump cmd_solve_hanging.out\
 cmd_solve_nothing.svx\
 cmd_solve_nothing_implicit.svx cmd_solve_nothing_implicit.out\
 cmd_date.dump cmd_date.svx cmd_date.out\
