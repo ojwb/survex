@@ -542,6 +542,13 @@ public:
     }
     void ToggleHitTestDebug() {
 	ToggleFlag(&m_HitTestDebug);
+	const wxChar * msg;
+	if (m_HitTestDebug) {
+	    msg = wxT("HitTest debug on (F3 to toggle)");
+	} else {
+	    msg = wxT("HitTest debug off (F3 to toggle)");
+	}
+	wxMessageBox(msg, wxT("Aven Debug"), wxOK | wxICON_INFORMATION);
     }
     void ToggleRenderStats() {
 	ToggleFlag(&m_RenderStats);

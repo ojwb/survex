@@ -1355,9 +1355,9 @@ void GUIControl::OnKeyPress(wxKeyEvent &e)
 		else
 		    wxSetDefaultAssertHandler();
 		if (wxTheAssertHandler)
-		    msg = wxT("Assertions enabled");
+		    msg = wxT("wxWidgets assertions on (F4 to toggle)");
 		else
-		    msg = wxT("Assertions disabled");
+		    msg = wxT("wxWidgets assertions off (F4 to toggle)");
 #else
 		msg = wxT("wxWidgets was built without assertions");
 #endif

@@ -2528,10 +2528,10 @@ void GfxCore::ToggleFatFinger()
 {
     if (sqrd_measure_threshold == sqrd(MEASURE_THRESHOLD)) {
 	sqrd_measure_threshold = sqrd(5 * MEASURE_THRESHOLD);
-	wxMessageBox(wxT("Fat finger enabled"), wxT("Aven Debug"), wxOK | wxICON_INFORMATION);
+	wxMessageBox(wxT("Fat finger on (F2 to toggle)"), wxT("Aven Debug"), wxOK | wxICON_INFORMATION);
     } else {
 	sqrd_measure_threshold = sqrd(MEASURE_THRESHOLD);
-	wxMessageBox(wxT("Fat finger disabled"), wxT("Aven Debug"), wxOK | wxICON_INFORMATION);
+	wxMessageBox(wxT("Fat finger off (F2 to toggle)"), wxT("Aven Debug"), wxOK | wxICON_INFORMATION);
     }
 }
 
