@@ -1,74 +1,4 @@
-up to: a27fc835f397cea13277259ed32747573307ef6f
-
-
-    Reword re setting "exported" for Walls empty prefix
-    I was unsure if "exported" made sense for an explicit empty prefix
-    but Joe Walko confirms it does.   See #159.
-
-    Confirm that 2 digit years in `#date` are 19xx
-
-    Check year in Walls `#date` mm/dd/yyyy format
-    Survex currently only handles dates from 1900 to 2078 so we should
-    warn about years outside this range, but this warning was missing
-    for dates in mm/dd/yyyy format.
-
-    walls.rst: Adjust text about Compass shot flags
-    Thanks to Joe Walko for providing background on where this convention
-    comes from.
-
-
-
-    Stop squashing empty Walls prefix levels
-    We were treating `X::1` as being the same as `X:1`, but now we map
-    it to `X: :1`.  Walls doesn't allow a space in a prefix name so this
-    can't collide.
-    Fixes #163, reported by Joe Walko.
-
-    Store test parameters in .wpj testcases
-    For .svx and .srv testcases we put these in a comment in the first
-    line.  That doesn't work for .wpj files as the first line is a
-    magic comment with a fixed value, but we can add our own comment
-    as a second line and Walls can still read and process the file.
-    This means we no longer need to store these parameters in cavern.tst.
-    Saving from Walls does not preserve our special comment, but that seems
-    a minor problem.
-
-    Improve when we warn for compass on plumbed legs
-    We already suppressed the warning for some cases, but now we take
-    the simple approach of not warning for an explicit compass or
-    backcompass value of either 0° or 180° on an inferred plumb.
-    Fixes unhelpful warnings in some real-world Walls datasets, reported
-    by Joe Walko in #158.
-
-    Fix minor doc typos
-
-    Improve parsing of Walls LRUD
-    Handle "to" starting "<" or "*" in the same way Walls does when there
-    is LRUD later in the line.
-    We currently skip over the LRUD readings, but now we check for a
-    comment character as we skip, so this now errors in both Walls and
-    Survex:
-      1 2 3 64 5 <1,2,3,4;>
-
-manual:    Fix Walls example to match warning message shown
-
-
-
-    cavern: Handle quoted values in Walls options
-    Reported by Andy Edwards.
-
-
-    cavern: Fix parse loop on invalid Walls .srv
-
-    If we found an empty token in Walls options, we reported an error
-    but didn't advance the parse position so we'd report the same error
-    again and again until we hit the limit on the number of errors.
-
-    The handling of some of these invalid cases doesn't currently match
-    Walls, but at least we no longer repeat the same error.
-
-    Problem found by an example from Andy Edwards of strange syntax
-    which Walls quietly accepts.
+up to: b430c651b304a33b43f82286df3d6ede09514e11
 
 Changes in 1.4.23 (UNRELEASED):
 
@@ -104,6 +34,12 @@ Changes in 1.4.23 (UNRELEASED):
     correct, but the location shown within the line was the first character of
     the token after the SD value.
 
+  + Improve when we warn for compass readings on plumbed legs.  We already
+    suppressed the warning for some cases, but now we take the simple approach
+    of not warning for an explicit compass or backcompass value of either 0° or
+    180° on an inferred plumb.  Fixes unhelpful warnings in some real-world
+    Walls datasets, reported by Joe Walko in #158.
+
   + Passage dimensions (LRUD) in Compass DAT data are now turned into Survex
     `*data passage` tubes.  Currently each tube continues while the "to"
     station of one leg matches the "from" station of the next.  This results
@@ -129,10 +65,17 @@ Changes in 1.4.23 (UNRELEASED):
     clino SDs such that backsight mismatches are warned about for the same
     cases which Walls warns about.  Fixes #158, reported by Joe Walko.
 
+  + Warn that we ignore `,X` if we see it in Walls `TYPEAB=` or `TYPEVB=`.
+
   + Walls `RESET` option would lead to a segmentation fault if used in a
     `#UNITS` directive in a `.srv` file.
 
   + Walls `UV=`, `UVH=` and `UVV=` options are now supported.
+
+  + Walls `LRUD=` options are now parsed and the current settings are tracked
+    internally.  LRUD readings are still ignored, but we hope to support
+    parsing them in the future.  Walls handling of LRUD seems to be especially
+    quirky, so this will need careful testing.
 
   + Support Walls instrument and/or target heights with `TAPE=IT`.  Fixes the
     most important cases of #160, reported by Joe Walko.
@@ -142,6 +85,12 @@ Changes in 1.4.23 (UNRELEASED):
   + Warn about unsupported values of Walls `TAPE=` option with non-zero
     heights.  Addresses the remaining cases of #160, reported by Joe Walko.
 
+  + Warn when a station name is referenced in a Walls `#flag` or `#note`
+    directives, but never otherwise used.  Previously we only warned in
+    instances of these which resulted in the Survex "entrance" and/or
+    "exported" flags being set, and those warnings confusingly referred to
+    "*entrance" and "*export" commands.
+
   + Improve diagnostics for bad Walls quadrant bearings.
 
   + We now emit an error for Walls distances with explicit units of inches
@@ -149,6 +98,12 @@ Changes in 1.4.23 (UNRELEASED):
 
   + We now warn "Ignoring unsupported Walls option" instead of "Unknown
     command" for Walls `GRID=` option.
+
+  + Empty Walls prefix levels are now replaced by a space rather than being
+    squashed away, since squashing can result in conflating different stations
+    (e.g. `X::1` was squashed to `X:1`).  Survex doesn't allow a prefix level
+    to be empty, so we now map `X::1` to `X: :1`.  Walls doesn't allow a space
+    in a prefix name so this can't collide.  Fixes #163, reported by Joe Walko.
 
   + Warn about suspicious use of `,` in Walls data.  In Europe a comma is
     customarily used for the decimal point.  Walls ``.svy`` format treats a
@@ -194,6 +149,30 @@ Changes in 1.4.23 (UNRELEASED):
   + Walls emits an error for a `#NOTE` where the note is empty, so we now do
     as well.
 
+  + Warn about unhandled year values for Walls `#date` in mm/dd/yyyy format.
+    Survex currently only handles dates from 1900 to 2078 inclusive so we
+    should warn about years outside this range.  We already did for Walls
+    `#date` in some cases, but this warning was missing for dates in mm/dd/yyyy
+    format.
+
+  + Fix parse loop on invalid Walls `.srv`.  If we found an empty token in
+    Walls options, we reported an error but didn't advance the parse position
+    so we'd report the same error over and over until we hit the limit on the
+    number of errors.  Problem found by an example from Andy Edwards of strange
+    syntax which Walls quietly accepts.
+
+  + Handle undocumented syntax of quoted values in Walls options.  Reported by
+    Andy Edwards.
+
+  + Adjust parsing of Walls LRUD data when the "to" station name starts with
+    "<" or "*" and there is LRUD data later in the line, to match how Walls
+    handles this.
+
+  + We still don't actually parse Walls LRUD readings, but now we check for a
+    comment character as we skip, so this now errors in both Walls and Survex:
+
+      1 2 3 64 5 <1,2,3,4;>
+
 * aven:
 
   + Work around macOS 27 bug when the user's locale uses `,` as the decimal
@@ -207,6 +186,11 @@ Changes in 1.4.23 (UNRELEASED):
     Standard Deviations.  The numbers are now shown as integers if the labels
     are 0, 1, 2, 3, etc, which is the case in currently aven.  Inspired by a
     question from Wookey.
+
+  + Show key to press to toggle debug modes back off, which is helpful if a
+    user accidentally hits one of the F-keys which turns on a debug mode; even
+    if they guess they need to press the same key again to turn it off, they
+    may not know which key that was.  Highlighted by Eric C. Landgraf.
 
 * aven/survexport:
 
@@ -233,7 +217,23 @@ Changes in 1.4.23 (UNRELEASED):
     (Walls definitely gives an error; I'm not sure what the other software
     mentioned here actually does.)
 
-  + Note Tatra Cave Registry in Walls docs.
+  + Walls chapter:
+
+    + Note Tatra Cave Registry and SiCS datasets as examples that successfully
+      process.
+
+    + Adjust a Walls example of a warning so the context of the warning matches
+      the `.srv` content shown.
+
+    + Reword section on inferring "exported" flag.  I was unsure if inferring
+      "exported" made sense for an explicit empty prefix but Joe Walko confirms
+      it does.  See #159.
+
+    + Testing with Walls32.exe confirms that 2 digit years in `#date` are
+      always handled as 19xx.
+
+    + Adjust text about Compass shot flags in `#segment`.  Thanks to Joe Walko
+      for providing background on where this convention comes from.
 
 * img library:
 
@@ -299,7 +299,7 @@ Changes in 1.4.23 (UNRELEASED):
 
 * Test suite:
 
-  + Actually run cmd_solve_hanging.svx testcases.  It needed updating because
+  + Actually run cmd_solve_hanging.svx testcase.  It needed updating because
     dangling surveys are now a warning rather than an error, but was OK aside
     from that.
 
@@ -314,6 +314,13 @@ Changes in 1.4.23 (UNRELEASED):
     them in Walls32.exe to compare results.
 
   + Test Walls `typevb=C` (without a number).
+
+  + Store test parameters in `.wpj` testcase files.  For `.svx` and `.srv`
+    testcases we put these in a comment in the first line.  The first line of
+    a `.wpj` file has to be a magic comment with a fixed value, but we can
+    put the parameters in our own comment as a second line and Walls can still
+    read and process the file.  Loading the `.wpj` into Walls32.exe and saving
+    it strips our comment, but that seems a minor problem.
 
 * Portability:
 
