@@ -2748,9 +2748,12 @@ walls_parse_options(void)
 			    reading r = Left;
 			    if (ch_upper != 'L') {
 				// Maps 'R'->Right, 'U'->Up, 'D'->Down.
-				static_assert(Down - ('R' & 11) == Right);
-				static_assert(Down - ('U' & 11) == Up);
-				static_assert(Down - ('D' & 11) == Down);
+				static_assert(Down - ('R' & 11) == Right,
+					      "Right value not as expected");
+				static_assert(Down - ('U' & 11) == Up,
+					      "Up value not as expected");
+				static_assert(Down - ('D' & 11) == Down,
+					      "Down value not as expected");
 				r = (reading)(Down - (ch_upper & 11));
 			    }
 			    lrud_order = (lrud_order >> 8) | ((int)r << 24);
