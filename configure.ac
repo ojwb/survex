@@ -118,6 +118,7 @@ case $host_cpu in
 	AC_MSG_RESULT([yes (configure with --disable-sse to disable)])
 	dnl We can unconditionally use -mtune=generic as it was added in GCC
 	dnl 4.2, and supported at least as far back as clang 3.0.
+	AM_CFLAGS="$AM_CFLAGS -mfpmath=sse -m$enable_sse -mtune=generic"
 	AM_CXXFLAGS="$AM_CXXFLAGS -mfpmath=sse -m$enable_sse -mtune=generic"
       else
 	AC_MSG_RESULT([don't know how to for compiler $CXX])
