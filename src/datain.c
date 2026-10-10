@@ -2985,7 +2985,8 @@ walls_parse_options(void)
 	    walls_reset();
 	    break;
 	  case WALLS_UNITS_OPT_RESTORE: {
-	    // FIXME: Should this be processed before other arguments?
+	    // FIXME: This should be processed before other arguments (not
+	    // documented as such, but experimentation shows it is).
 	    if (!p_walls_options->explicit) {
 		/* TRANSLATORS: %s is replaced with e.g. BEGIN or .BOOK or #[ */
 		compile_diagnostic(DIAG_ERR|DIAG_QTOKEN, /*No matching %s*/192, "SAVE");
