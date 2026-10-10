@@ -51,9 +51,7 @@ couple of ways to compare the results:
 
     diffpos SURVEY.LST SURVEY.3d 0.5
 
-  Note that ``diffpos`` doesn't compare connectivity (and currently the
-  Survex ``.LST`` parsing doesn't report survey legs even if they are present
-  in the file).
+  Note that ``diffpos`` doesn't compare connectivity.
 
   The way to export ``.LST`` is a bit hidden - after processing select the
   `Segments` tab, make sure the whole project is selected, and click the
