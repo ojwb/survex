@@ -33,3 +33,13 @@
 *calibrate backclino 0 -1
 *data normal from to tape compass backcompass clino backclino
 1 6a 10.00 90 90 10 10
+; This seems to give bogus error:
+; back2.svx:38:16: error: Plumbed CLINO and BACKCLINO readings can't be in the same direction
+; 1 x 5 - - down down
+;           ^~~~
+; Also could extend context to cover both readings
+
+*data normal from to tape compass clino
+; create a single south-most point to avoid platform-dependent test output.
+1 southmost 5 180 00
+1 lowest 5 -down
