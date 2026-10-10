@@ -1,4 +1,16 @@
-up to: b430c651b304a33b43f82286df3d6ede09514e11
+up to: 2a28649bb4fa865bb96029b20df683c0b3ab786e
+
+    Tweak back2 to pass on x86
+
+    Use SSE for C code too on 32-bit x86
+
+    More/improved Walls warnings
+    Warn about more the places where Walls only checks the first letter of
+    an option setting.  In these places Walls documents the setting and that
+    it can be abbreviated to just the first letter, so we warn if it's anything
+    else.  Applies to options `D=`, `A=`, `AB=`, `V=`, `VB=`, `S=`, `TYPEAB=`
+    and `TYPEVB=`.
+    FIXME: Add test coverage for all of these and check the tests with Walls.
 
 Changes in 1.4.23 (UNRELEASED):
 
@@ -65,7 +77,8 @@ Changes in 1.4.23 (UNRELEASED):
     clino SDs such that backsight mismatches are warned about for the same
     cases which Walls warns about.  Fixes #158, reported by Joe Walko.
 
-  + Warn that we ignore `,X` if we see it in Walls `TYPEAB=` or `TYPEVB=`.
+  + Warn that `,X` in Walls options `TYPEAB=` or `TYPEVB=` is ignored as
+    unsupported.
 
   + Walls `RESET` option would lead to a segmentation fault if used in a
     `#UNITS` directive in a `.srv` file.
