@@ -46,7 +46,7 @@ walls.srv:72:25: warning: Expecting "LOWER", "UPPER", or "MIXED"
 walls.srv:73:18: warning: Ignoring "Q)"
  #units typeab=n,4Q),X case=x
                   ^~
-walls.srv:73:21: warning: Ignoring "X"
+walls.srv:73:21: warning: Ignoring unsupported Walls option "X"
  #units typeab=n,4Q),X case=x
                      ^
 walls.srv:73:28: warning: Expecting "LOWER", "UPPER", or "MIXED"

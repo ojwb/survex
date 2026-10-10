@@ -59,16 +59,16 @@ w_fsbs.srv:86:19: warning: CLINO reading and BACKCLINO reading disagree by 5dg
 w_fsbs.srv:90:19: warning: CLINO reading and BACKCLINO reading disagree by 5dg
  :a1 e4b 10 90/270 0/+5
                    ^~~~
-w_fsbs.srv:94:19: warning: Ignoring "X"
+w_fsbs.srv:94:19: warning: Ignoring unsupported Walls option "X"
  #units TYPEAB=N,1,X TYPEVB=C,1,X
                    ^
-w_fsbs.srv:94:32: warning: Ignoring "X"
+w_fsbs.srv:94:32: warning: Ignoring unsupported Walls option "X"
  #units TYPEAB=N,1,X TYPEVB=C,1,X
                                 ^
-w_fsbs.srv:95:19: warning: Ignoring "X"
+w_fsbs.srv:95:19: warning: Ignoring unsupported Walls option "X"
  #units TYPEAB=N,1,x TYPEVB=C,1,x
                    ^
-w_fsbs.srv:95:32: warning: Ignoring "X"
+w_fsbs.srv:95:32: warning: Ignoring unsupported Walls option "X"
  #units TYPEAB=N,1,x TYPEVB=C,1,x
                                 ^
 w_fsbs.srv:97:11: warning: COMPASS reading and BACKCOMPASS reading disagree by 2dg

@@ -2456,8 +2456,16 @@ walls_parse_options(void)
 	    // "M", "METERS", "METRES", "F", "FEET" and even "FISH" are accepted,
 	    // but "X" gives an error.
 	    if (s_str(&uctoken)[0] == 'M') {
+		if (s_str(&uctoken)[1] && !S_EQ(&uctoken, "METERS")) {
+		    compile_diagnostic(DIAG_WARN|DIAG_TOKEN,
+				       /*Expecting “%s”*/497, "METERS");
+		}
 		pcs->units[Q_LENGTH] = 1.0;
 	    } else if (s_str(&uctoken)[0] == 'F') {
+		if (s_str(&uctoken)[1] && !S_EQ(&uctoken, "FEET")) {
+		    compile_diagnostic(DIAG_WARN|DIAG_TOKEN,
+				       /*Expecting “%s”*/497, "FEET");
+		}
 		pcs->units[Q_LENGTH] = METRES_PER_FOOT;
 	    } else {
 		filepos fp;
@@ -2469,17 +2477,32 @@ walls_parse_options(void)
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_A:
+	  case WALLS_UNITS_OPT_AB: {
+	    q_quantity q =
+		(opt == WALLS_UNITS_OPT_A ? Q_BEARING : Q_BACKBEARING);
 	    walls_get_option_token();
 	    // It seems Walls only checks the initial letter.
 	    if (s_str(&uctoken)[0] == 'D') {
 		// Degrees.
-		pcs->units[Q_BEARING] = M_PI / 180.0;
+		if (s_str(&uctoken)[1] && !S_EQ(&uctoken, "DEGREES")) {
+		    compile_diagnostic(DIAG_WARN|DIAG_TOKEN,
+				       /*Expecting “%s”*/497, "DEGREES");
+		}
+		pcs->units[q] = M_PI / 180.0;
 	    } else if (s_str(&uctoken)[0] == 'G') {
 		// Grads.
-		pcs->units[Q_BEARING] = M_PI / 200.0;
+		if (s_str(&uctoken)[1] && !S_EQ(&uctoken, "GRADS")) {
+		    compile_diagnostic(DIAG_WARN|DIAG_TOKEN,
+				       /*Expecting “%s”*/497, "GRADS");
+		}
+		pcs->units[q] = M_PI / 200.0;
 	    } else if (s_str(&uctoken)[0] == 'M') {
 		// Mils.
-		pcs->units[Q_BEARING] = M_PI / 3200.0;
+		if (s_str(&uctoken)[1] && !S_EQ(&uctoken, "MILS")) {
+		    compile_diagnostic(DIAG_WARN|DIAG_TOKEN,
+				       /*Expecting “%s”*/497, "MILS");
+		}
+		pcs->units[q] = M_PI / 3200.0;
 	    } else {
 		filepos fp;
 		get_pos(&fp);
@@ -2491,45 +2514,45 @@ walls_parse_options(void)
 		set_pos(&fp);
 	    }
 	    break;
-	  case WALLS_UNITS_OPT_AB:
-	    walls_get_option_token();
-	    // It seems Walls only checks the initial letter.
-	    if (s_str(&uctoken)[0] == 'D') {
-		// Degrees.
-		pcs->units[Q_BACKBEARING] = M_PI / 180.0;
-	    } else if (s_str(&uctoken)[0] == 'G') {
-		// Grads.
-		pcs->units[Q_BACKBEARING] = M_PI / 200.0;
-	    } else if (s_str(&uctoken)[0] == 'M') {
-		// Mils.
-		pcs->units[Q_BACKBEARING] = M_PI / 3200.0;
-	    } else {
-		filepos fp;
-		get_pos(&fp);
-		set_pos(&fp_option);
-		(void)nextch(); // Skip the `=`.
-		compile_diagnostic(DIAG_ERR|DIAG_COL,
-				   /*Expecting “%s”, “%s”, or “%s”*/188,
-				   "D", "G", "M");
-		set_pos(&fp);
-	    }
-	    break;
+	  }
 	  case WALLS_UNITS_OPT_V:
+	  case WALLS_UNITS_OPT_VB: {
+	    q_quantity q =
+		(opt == WALLS_UNITS_OPT_V ? Q_GRADIENT : Q_BACKGRADIENT);
+	    bool *clino_percent_ptr =
+		(opt == WALLS_UNITS_OPT_V ? &pcs->f_clino_percent
+		                          : &pcs->f_backclino_percent);
 	    walls_get_option_token();
-	    pcs->f_clino_percent = false;
+	    *clino_percent_ptr = false;
 	    // It seems Walls only checks the initial letter.
 	    if (s_str(&uctoken)[0] == 'D') {
 		// Degrees.
-		pcs->units[Q_GRADIENT] = M_PI / 180.0;
+		if (s_str(&uctoken)[1] && !S_EQ(&uctoken, "DEGREES")) {
+		    compile_diagnostic(DIAG_WARN|DIAG_TOKEN,
+				       /*Expecting “%s”*/497, "DEGREES");
+		}
+		pcs->units[q] = M_PI / 180.0;
 	    } else if (s_str(&uctoken)[0] == 'G') {
 		// Grads.
-		pcs->units[Q_GRADIENT] = M_PI / 200.0;
+		if (s_str(&uctoken)[1] && !S_EQ(&uctoken, "GRADS")) {
+		    compile_diagnostic(DIAG_WARN|DIAG_TOKEN,
+				       /*Expecting “%s”*/497, "GRADS");
+		}
+		pcs->units[q] = M_PI / 200.0;
 	    } else if (s_str(&uctoken)[0] == 'M') {
 		// Mils.
-		pcs->units[Q_GRADIENT] = M_PI / 3200.0;
+		if (s_str(&uctoken)[1] && !S_EQ(&uctoken, "MILS")) {
+		    compile_diagnostic(DIAG_WARN|DIAG_TOKEN,
+				       /*Expecting “%s”*/497, "MILS");
+		}
+		pcs->units[q] = M_PI / 3200.0;
 	    } else if (s_str(&uctoken)[0] == 'P') {
-		pcs->units[Q_GRADIENT] = 0.01;
-		pcs->f_clino_percent = true;
+		if (s_str(&uctoken)[1] && !S_EQ(&uctoken, "PERCENT")) {
+		    compile_diagnostic(DIAG_WARN|DIAG_TOKEN,
+				       /*Expecting “%s”*/497, "PERCENT");
+		}
+		pcs->units[q] = 0.01;
+		*clino_percent_ptr = true;
 	    } else {
 		filepos fp;
 		get_pos(&fp);
@@ -2541,43 +2564,25 @@ walls_parse_options(void)
 		set_pos(&fp);
 	    }
 	    break;
-	  case WALLS_UNITS_OPT_VB:
-	    walls_get_option_token();
-	    pcs->f_backclino_percent = false;
-	    // It seems Walls only checks the initial letter.
-	    if (s_str(&uctoken)[0] == 'D') {
-		// Degrees.
-		pcs->units[Q_BACKGRADIENT] = M_PI / 180.0;
-	    } else if (s_str(&uctoken)[0] == 'G') {
-		// Grads.
-		pcs->units[Q_BACKGRADIENT] = M_PI / 200.0;
-	    } else if (s_str(&uctoken)[0] == 'M') {
-		// Mils.
-		pcs->units[Q_BACKGRADIENT] = M_PI / 3200.0;
-	    } else if (s_str(&uctoken)[0] == 'P') {
-		pcs->units[Q_BACKGRADIENT] = 0.01;
-		pcs->f_backclino_percent = true;
-	    } else {
-		filepos fp;
-		get_pos(&fp);
-		set_pos(&fp_option);
-		(void)nextch(); // Skip the `=`.
-		compile_diagnostic(DIAG_ERR|DIAG_COL,
-				   /*Expecting “%s”, “%s”, “%s”, or “%s”*/189,
-				   "D", "G", "M", "P");
-		set_pos(&fp);
-	    }
-	    break;
+	  }
 	  case WALLS_UNITS_OPT_S:
 	    walls_get_option_token();
 	    // From testing it seems Walls only checks the initial letter - e.g.
 	    // "M", "METERS", "METRES", "F", "FEET" and even "FISH" are accepted,
 	    // but "X" gives an error.
 	    if (s_str(&uctoken)[0] == 'M') {
+		if (s_str(&uctoken)[1] && !S_EQ(&uctoken, "METERS")) {
+		    compile_diagnostic(DIAG_WARN|DIAG_TOKEN,
+				       /*Expecting “%s”*/497, "METERS");
+		}
 		pcs->units[Q_DX] =
 		pcs->units[Q_DY] =
 		pcs->units[Q_DZ] = 1.0;
 	    } else if (s_str(&uctoken)[0] == 'F') {
+		if (s_str(&uctoken)[1] && !S_EQ(&uctoken, "FEET")) {
+		    compile_diagnostic(DIAG_WARN|DIAG_TOKEN,
+				       /*Expecting “%s”*/497, "FEET");
+		}
 		pcs->units[Q_DX] =
 		pcs->units[Q_DY] =
 		pcs->units[Q_DZ] = METRES_PER_FOOT;
@@ -2821,11 +2826,19 @@ walls_parse_options(void)
 	  case WALLS_UNITS_OPT_TYPEAB:
 	    walls_get_option_token();
 	    if (s_str(&uctoken)[0] == 'N') {
+		if (s_str(&uctoken)[1] && !S_EQ(&uctoken, "NORMAL")) {
+		    compile_diagnostic(DIAG_WARN|DIAG_TOKEN,
+				       /*Expecting “%s”*/497, "NORMAL");
+		}
 		if (p_walls_options->typeab_c) {
 		    p_walls_options->typeab_c = false;
 		    update_backcomp_calibration = true;
 		}
 	    } else if (s_str(&uctoken)[0] == 'C') {
+		if (s_str(&uctoken)[1] && !S_EQ(&uctoken, "CORRECTED")) {
+		    compile_diagnostic(DIAG_WARN|DIAG_TOKEN,
+				       /*Expecting “%s”*/497, "CORRECTED");
+		}
 		if (!p_walls_options->typeab_c) {
 		    p_walls_options->typeab_c = true;
 		    update_backcomp_calibration = true;
@@ -2856,7 +2869,7 @@ walls_parse_options(void)
 		    if (toupper(ch) == 'X') {
 			// FIXME: `X` means only use foresight (but check
 			// backsight), but we've not seen any real-world uses).
-			compile_diagnostic(DIAG_WARN|DIAG_COL, /*Ignoring “%s”*/506, "X");
+			compile_diagnostic(DIAG_WARN|DIAG_COL, /*Ignoring unsupported Walls option “%s”*/582, "X");
 			nextch();
 		    }
 		}
@@ -2865,8 +2878,16 @@ walls_parse_options(void)
 	  case WALLS_UNITS_OPT_TYPEVB:
 	    walls_get_option_token();
 	    if (s_str(&uctoken)[0] == 'N') {
+		if (s_str(&uctoken)[1] && !S_EQ(&uctoken, "NORMAL")) {
+		    compile_diagnostic(DIAG_WARN|DIAG_TOKEN,
+				       /*Expecting “%s”*/497, "NORMAL");
+		}
 		pcs->sc[Q_BACKGRADIENT] = 1.0;
 	    } else if (s_str(&uctoken)[0] == 'C') {
+		if (s_str(&uctoken)[1] && !S_EQ(&uctoken, "CORRECTED")) {
+		    compile_diagnostic(DIAG_WARN|DIAG_TOKEN,
+				       /*Expecting “%s”*/497, "CORRECTED");
+		}
 		pcs->sc[Q_BACKGRADIENT] = -1.0;
 	    } else {
 		filepos fp;
@@ -2893,7 +2914,7 @@ walls_parse_options(void)
 		    if (toupper(ch) == 'X') {
 			// FIXME: `X` means only use foresight (but check
 			// backsight), but we've not seen any real-world uses).
-			compile_diagnostic(DIAG_WARN|DIAG_COL, /*Ignoring “%s”*/506, "X");
+			compile_diagnostic(DIAG_WARN|DIAG_COL, /*Ignoring unsupported Walls option “%s”*/582, "X");
 			nextch();
 		    }
 		}
