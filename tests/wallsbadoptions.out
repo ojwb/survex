@@ -26,4 +26,31 @@ wb_opts.srv:7:19: error: Expecting "U"
 wb_opts.srv:8:19: error: Expecting ""
  #units LRUD=F:LRUDU
                    ^
+wb_opts.srv:10:10: warning: Expecting "METERS"
+ #units D=MOTORS A=DEGREEZ AB=GRADE V=PERHAPS VB=GRIDS S=FEAT
+          ^~~~~~
+wb_opts.srv:10:19: warning: Expecting "DEGREES"
+ #units D=MOTORS A=DEGREEZ AB=GRADE V=PERHAPS VB=GRIDS S=FEAT
+                   ^~~~~~~
+wb_opts.srv:10:30: warning: Expecting "GRADS"
+ #units D=MOTORS A=DEGREEZ AB=GRADE V=PERHAPS VB=GRIDS S=FEAT
+                              ^~~~~
+wb_opts.srv:10:38: warning: Expecting "PERCENT"
+ #units D=MOTORS A=DEGREEZ AB=GRADE V=PERHAPS VB=GRIDS S=FEAT
+                                      ^~~~~~~
+wb_opts.srv:10:49: warning: Expecting "GRADS"
+ #units D=MOTORS A=DEGREEZ AB=GRADE V=PERHAPS VB=GRIDS S=FEAT
+                                                 ^~~~~
+wb_opts.srv:10:57: warning: Expecting "FEET"
+ #units D=MOTORS A=DEGREEZ AB=GRADE V=PERHAPS VB=GRIDS S=FEAT
+                                                         ^~~~
+wb_opts.srv:11:15: warning: Expecting "NORMAL"
+ #units TYPEAB=NORMEL,3,X TYPEVB=CORECTED,5
+               ^~~~~~
+wb_opts.srv:11:24: warning: Ignoring unsupported Walls option "X"
+ #units TYPEAB=NORMEL,3,X TYPEVB=CORECTED,5
+                        ^
+wb_opts.srv:11:33: warning: Expecting "CORRECTED"
+ #units TYPEAB=NORMEL,3,X TYPEVB=CORECTED,5
+                                 ^~~~~~~~
 cavern: error: No survey data

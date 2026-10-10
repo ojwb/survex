@@ -6,3 +6,6 @@
 #units lrud=F:lrru
 #units lrud=Fb:lrdd
 #units LRUD=F:LRUDU
+
+#units D=MOTORS A=DEGREEZ AB=GRADE V=PERHAPS VB=GRIDS S=FEAT
+#units TYPEAB=NORMEL,3,X TYPEVB=CORECTED,5

@@ -10,7 +10,7 @@ up to: 2a28649bb4fa865bb96029b20df683c0b3ab786e
     it can be abbreviated to just the first letter, so we warn if it's anything
     else.  Applies to options `D=`, `A=`, `AB=`, `V=`, `VB=`, `S=`, `TYPEAB=`
     and `TYPEVB=`.
-    FIXME: Add test coverage for all of these and check the tests with Walls.
+    FIXME: Check tests for these process with Walls.
 
 Changes in 1.4.23 (UNRELEASED):
 
