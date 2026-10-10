@@ -315,12 +315,6 @@ features are likely to be handled while more obscure features may not be.
   in some of these datums.  This probably means they're not actually
   in current use.
 
-- Walls checking of valid dates seems to assume all months have 31
-  days as it quietly accepts invalid dates such as ``2025-09-31``,
-  ``2024-02-30`` and ``2025-02-29``.  Survex warns about these cases.
-  Survex issues an error for invalid dates which Walls issues an error for,
-  such as month < 1 or > 12, or day < 1 or > 31.
-
 - The documentation specifies that the ``SAVE`` and ``RESTORE`` options
   should be processed before other options.  Currently Survex just
   processes all options in the order specified, which makes no

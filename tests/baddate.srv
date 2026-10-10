@@ -1,10 +1,10 @@
-; pos=fail err=4 warn=8 dummycrprotection=
+; pos=fail err=7 warn=5 dummycrprotection=
 
-; Walls only seems to check month is 1 to 12 and day is 1 to 31.
-; Survex aims to error for dates which Walls rejects, and to warn for invalid
-; dates which Walls accepts.
+; Walls used to only check the day of the month was between 1 to 31
+; (inclusive), but Walls v2.2.4 fixed this to be an error, and we've
+; followed that lead.
 
-; Warnings:
+; Were warnings, now errors:
 
 ; "30 days hath September"
 #date 2003-09-31
@@ -12,8 +12,6 @@
 #date 2003-02-29
 ; 1900 not a leap year
 #date 1900-02-29
-; 2100 not a leap year; we actually warn: "Invalid year (< 1900 or > 2078)"
-#date 2100-02-29
 
 ; Survex can currently only represent dates between 1900 and 2078, so these
 ; should warn "Invalid year (< 1900 or > 2078)".
@@ -21,6 +19,8 @@
 #date 2079-01-01
 #date 12/31/1899
 #date 01/01/2079
+; 2100 not a leap year; we actually warn: "Invalid year (< 1900 or > 2078)"
+#date 2100-02-29
 
 ; Valid:
 
