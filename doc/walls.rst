@@ -39,17 +39,21 @@ As of 1.4.23, some large Walls datasets can be successfully processed:
 - Big Bat Cave
 
 Behaviour is not identical and station positions after loop closure will
-inevitably be different, but we encourage processing your Walls dataset with
-both Walls and Survex and comparing the result.  Please report large or
-apparently systematic errors, or anything that seems suspect.  We suggest a
-couple of ways to compare the results:
+inevitably be slightly different, but we encourage processing your Walls
+dataset with both Walls and Survex and comparing the result.  Please report
+large or apparently systematic errors, or anything that seems suspect.  We
+suggest a couple of ways to compare the results:
 
-- Survex tools can read Walls ``.LST`` reports as processed survey data.
-  This allows using ``diffpos SURVEY.LST SURVEY.3d``
-  to compare station positions.  By default ``diffpos`` ignores a difference
-  along any axis of 0.01 metres (about 0.4 inches), but you can specify a
-  larger threshold; for example, to report stations whose positions are
-  different by more than 0.5m::
+- You can export a ``.LST`` report with the results of processing from Walls,
+  and then compare it to the ``.3d`` file from processing the same dataset
+  using::
+
+    diffpos SURVEY.LST SURVEY.3d
+
+  This will report stations which are only present in one file, or whose
+  position differs by more than a specifiable threshold along any axis.
+  The default threshold is 0.01m (about 0.4 inches).  For example, to
+  report stations whose positions are different by more than 0.5m::
 
     diffpos SURVEY.LST SURVEY.3d 0.5
 
@@ -62,13 +66,14 @@ couple of ways to compare the results:
   select `Connected vectors with file references`.
 
 - A more visual way to compare is to export a Shapefile from ``Walls32.exe``
-  and overlay it in ``aven``.  The way to export is a bit hidden - after
-  processing select the `Segments` tab, make sure the whole project is
-  selected, and click the `Details / Rpts...` button which is towards
-  the upper right.  Click the `Shapefile...` button in the new dialog box, and
-  select what you want to output (e.g. `Vectors`).  Due to limitations in the
-  Shapefile format each `Shape Type` selected here exports a separate
-  Shapefile.
+  and overlay it in ``aven``.
+
+  The way to export from Walls is a bit hidden - after processing select the
+  `Segments` tab, make sure the whole project is selected, and click the
+  `Details / Rpts...` button which is towards the upper right.  Click the
+  `Shapefile...` button in the new dialog box, and select what you want to
+  output (e.g. `Vectors`).  Due to limitations in the Shapefile format each
+  `Shape Type` selected here exports a separate Shapefile.
 
   To overlay a Shapefile in ``aven`` use `File->Overlay Geodata...`.
 
