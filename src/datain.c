@@ -978,9 +978,9 @@ data_file_compass_mak(void)
     // https://fountainware.com/compass/HTML_Help/Project_Manager/projectfileformat.htm
     initialise_common_compass_settings();
     short *t = pcs->Translate;
-    // In a Compass MAK file a station name can't contain these three
+    // In a Compass MAK file a station name can't contain these four
     // characters due to how the syntax works.
-    t['['] = t[','] = t[';'] = 0;
+    t['['] = t[','] = t[';'] = t['/'] = 0;
 
     if (setjmp(jbSkipLine)) {
 	// Recover from errors in nested functions by longjmp() to here.

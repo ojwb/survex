@@ -9,8 +9,8 @@ the first to support this but we currently recommend using 1.4.18 or newer if
 you're working with Compass data as this version made significant improvements
 to this support.  1.4.23 notably improved support for passage dimensions
 (fixing a bug in interpreting them in ``.PLT`` files and adding support for
-them when processing ``.DAT`` files) and fixed the interpretation of folders
-in ``.MAK`` files.
+them when processing ``.DAT`` files) and improved handling of ``.MAK`` files
+(probably most notably fixing the interpretation of folders).
 
 --------------------
 Compass .MAK support
@@ -105,10 +105,18 @@ limitations and assumptions:
   It can also help detect typos in data entry.
 
 - ``.MAK`` files can contain comments, which last from a ``/`` to the
-  next ``/`` or end of the line.  Survex 1.4.18 added support for these
-  (older Survex versions quietly ignored the ``/`` characters as unknown, but
+  next ``/`` or end of the line.  Survex 1.4.18 added support for these,
+  but currently they aren't handled inside a station name, so Survex won't
+  handle this artificial example like Compass does::
+
+    #TEST1.DAT,A/this is a comment/1[F,10.1,20.2,30.3];
+
+  It seems highly unlikely people would put comments in the middle of their
+  station names in real-world data, but it could be supported if necessary.
+
+  (Older Survex versions quietly ignored the ``/`` characters as unknown, but
   that meant they would still interpret any commented out ``.MAK`` file
-  commands).
+  commands.)
 
 - ``.MAK`` files can contain a hierarchical folder structure, which Survex
   correctly handles since 1.4.23.  Compass documents that "every left angle
