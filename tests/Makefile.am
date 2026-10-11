@@ -128,7 +128,7 @@ depthguage.dat depthguage.dump\
 karstcompat.dat karstcompat.dump\
 flags.dat flags.dump flags.out lrud.dat lrud.out lrud.pos\
 nomeasure.dat nomeasure.out nomeasure.pos noteam.dat noteam.out noteam.pos\
-badmak.mak badmak.out\
+badmak.mak badmak.dump badmak.out\
 fixfeet.mak fixfeet.pos\
 folder.mak folder.dump folder.out subdir/cave1a.dat subdir/cave1b.dat subdir/subsubdir/cave2.dat\
 utm.mak utm.out utm.dump\

@@ -1058,10 +1058,11 @@ data_file_compass_mak(void)
 	      s_free(&dat_fnm);
 	      while (ch != ';' && ch != EOF) {
 		  nextch_mak();
-		  filepos fp_name;
-		  get_pos(&fp_name);
+		  long name_offset = ftell(file.fh);
 		  prefix *name = read_prefix(PFX_STATION|PFX_OPT);
 		  if (name) {
+		      filepos fp_name_end;
+		      get_pos(&fp_name_end);
 		      update_separator_map_for_foreign_name(prefix_ident(name));
 		      skipblanks_mak();
 		      if (ch == '[') {
@@ -1080,7 +1081,8 @@ data_file_compass_mak(void)
 			  } else if (ch == 'M' || ch == 'm') {
 			      nextch_mak();
 			  } else {
-			      compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “%s” or “%s”*/103, "F", "M");
+			      // Compass doesn't complain about this, so make it a warning.
+			      compile_diagnostic(DIAG_WARN|DIAG_COL, /*Expecting “%s” or “%s”*/103, "F", "M");
 			  }
 			  while (!isdigit(ch) && ch != '+' && ch != '-' &&
 				 ch != '.' && ch != ']' && ch != EOF) {
@@ -1102,18 +1104,22 @@ data_file_compass_mak(void)
 			      coords[1] *= METRES_PER_FOOT;
 			      coords[2] *= METRES_PER_FOOT;
 			  }
-			  int fix_result = fix_station(name, coords, fp_name.offset);
+			  int fix_result = fix_station(name, coords, name_offset);
 			  if (fix_result) {
 			      filepos fp;
 			      get_pos(&fp);
-			      set_pos(&fp_name);
+			      set_pos(&fp_name_end);
+			      int name_len = fp_name_end.offset - name_offset;
 			      if (fix_result < 0) {
-				  compile_diagnostic(DIAG_ERR|DIAG_WORD, /*Station already fixed or equated to a fixed point*/46);
+				  // Compass quietly allows this so make it a warning not an error.
+				  compile_diagnostic(DIAG_WARN|DIAG_WIDTH(name_len),
+						     /*Station already fixed or equated to a fixed point*/46);
 			      } else {
-				  compile_diagnostic(DIAG_WARN|DIAG_WORD, /*Station already fixed at the same coordinates*/55);
+				  compile_diagnostic(DIAG_WARN|DIAG_WIDTH(name_len),
+						     /*Station already fixed at the same coordinates*/55);
 			      }
-			      set_pos(&fp);
 			      compile_diagnostic_pfx(DIAG_INFO, name, /*Previously fixed or equated here*/493);
+			      set_pos(&fp);
 			  }
 			  while (ch != ']' && ch != EOF) nextch_mak();
 			  if (ch == ']') {
