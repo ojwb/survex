@@ -1,16 +1,4 @@
-up to: 2a28649bb4fa865bb96029b20df683c0b3ab786e
-
-    Tweak back2 to pass on x86
-
-    Use SSE for C code too on 32-bit x86
-
-    More/improved Walls warnings
-    Warn about more the places where Walls only checks the first letter of
-    an option setting.  In these places Walls documents the setting and that
-    it can be abbreviated to just the first letter, so we warn if it's anything
-    else.  Applies to options `D=`, `A=`, `AB=`, `V=`, `VB=`, `S=`, `TYPEAB=`
-    and `TYPEVB=`.
-    FIXME: Check tests for these process with Walls.
+up to: 69c131ae228e7bb4cc85da25f6c43cd6150c8df9
 
 Changes in 1.4.23 (UNRELEASED):
 
@@ -51,6 +39,9 @@ Changes in 1.4.23 (UNRELEASED):
     of not warning for an explicit compass or backcompass value of either 0° or
     180° on an inferred plumb.  Fixes unhelpful warnings in some real-world
     Walls datasets, reported by Joe Walko in #158.
+
+  + Enable SSE2 by default on 32-bit x86 for C code (in 1.4.16 we enabled it
+    but unintentionally only for C++ code).
 
   + Passage dimensions (LRUD) in Compass DAT data are now turned into Survex
     `*data passage` tubes.  Currently each tube continues while the "to"
@@ -186,6 +177,12 @@ Changes in 1.4.23 (UNRELEASED):
 
       1 2 3 64 5 <1,2,3,4;>
 
+  + For many options in `#units` Walls documents that the value can be
+    abbreviated to just the first letter, but actually it only checks the
+    first letter.  Survex now warns for all of these when the value given
+    is not the full documented value nor just its first letter.  Applies to
+    options `D=`, `A=`, `AB=`, `V=`, `VB=`, `S=`, `TYPEAB=` and `TYPEVB=`.
+
 * aven:
 
   + Work around macOS 27 bug when the user's locale uses `,` as the decimal
@@ -247,6 +244,17 @@ Changes in 1.4.23 (UNRELEASED):
 
     + Adjust text about Compass shot flags in `#segment`.  Thanks to Joe Walko
       for providing background on where this convention comes from.
+
+    + Improve section on comparing results of processing with Survex and Walls.
+
+    + Simplify by assuming baseline of 1.4.23
+    Strongly advise users to use 1.4.23 and then describes the Walls
+    support as of that version, which makes this chapter simpler and
+    easier to follow for what the vast majority of users will actually
+    want to know.
+    Users wanting to know how support has evolved are now directed to the
+    NEWS file.
+    Partly addresses #159, reported by Joe Walko.
 
 * img library:
 
