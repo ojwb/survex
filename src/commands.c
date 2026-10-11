@@ -1045,7 +1045,7 @@ cmd_end(void)
 	 compile_diagnostic(DIAG_ERR|DIAG_SKIP, /*No matching %s*/192, "BEGIN");
       } else {
 	 /* TRANSLATORS: %s and %s are replaced with e.g. BEGIN and END
-	  * or END and BEGIN or #[ and #] */
+	  * or END and BEGIN or #[ and #] or [ and ] or ] and [ */
 	 compile_diagnostic(DIAG_ERR|DIAG_SKIP,
 			    /*%s with no matching %s in this file*/23, "END", "BEGIN");
       }

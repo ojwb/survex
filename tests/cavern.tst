@@ -111,7 +111,7 @@ TESTS_=
  backread.dat corrections.dat depthguage.dat flags.dat karstcompat.dat\
  lrud.dat nomeasure.dat noteam.dat\
  badmak.mak\
- fixfeet.mak utm.mak\
+ fixfeet.mak folder.mak utm.mak\
  clptest.dat clptest.clp\
  walls.srv\
  baddate.srv badomit.srv badopts.srv\

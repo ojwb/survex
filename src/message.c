@@ -1205,6 +1205,15 @@ diag_in_file(int severity, const char *fnm, int line, int en, ...)
    va_end(ap);
 }
 
+void
+diag_in_file_col(int severity, const char *fnm, int line, int col, int en, ...)
+{
+   va_list ap;
+   va_start(ap, en);
+   v_report(severity, fnm, line, col, en, ap);
+   va_end(ap);
+}
+
 /* Code to support switching character set at runtime (e.g. for a printer
  * driver to support different character sets on screen and on the printer)
  */

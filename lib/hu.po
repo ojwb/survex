@@ -299,7 +299,7 @@ msgid "Compass reading given on plumbed leg"
 msgstr "Irányszög értelmezhetetlen (polygonszakasz függőleges, pl. függőón)"
 
 #. TRANSLATORS: %s and %s are replaced with e.g. BEGIN and END
-#. or END and BEGIN or #[ and #]
+#. or END and BEGIN or #[ and #] or [ and ] or ] and [
 #: ../src/commands.c:1068
 #: ../src/datain.c:2455
 #: ../src/datain.c:3424

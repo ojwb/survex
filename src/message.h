@@ -80,6 +80,13 @@ void diag_in_file(int severity, const char *fnm, int line, int en, ...);
 #define error_in_file(...) diag_in_file(DIAG_ERR, __VA_ARGS__)
 #define fatalerror_in_file(...) diag_in_file(DIAG_FATAL, __VA_ARGS__)
 
+void diag_in_file_col(int severity, const char *fnm, int line, int col, int en, ...);
+
+#define information_in_file_col(...) diag_in_file_col(DIAG_INFO, __VA_ARGS__)
+#define warning_in_file_col(...) diag_in_file_col(DIAG_WARN, __VA_ARGS__)
+#define error_in_file_col(...) diag_in_file_col(DIAG_ERR, __VA_ARGS__)
+#define fatalerror_in_file_col(...) diag_in_file_col(DIAG_FATAL, __VA_ARGS__)
+
 int select_charset(int charset_code);
 
 #ifdef __cplusplus

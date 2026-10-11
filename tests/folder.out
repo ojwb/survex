@@ -1,0 +1,30 @@
+folder.mak:2:1: warning: ] with no matching [ in this file
+ ];
+ ^
+folder.mak:3:1: warning: [subfolder with no matching ] in this file
+subdir/cave1a.dat:10:6: info: Survey has no fixed points. Therefore I've fixed AA1 at (0,0,0)
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 4 survey stations, joined by 3 legs.
+There are 0 loops.
+Total length of survey legs =    9.14m (   9.14m adjusted)
+Total plan length of survey legs =    9.14m
+Total vertical length of survey legs =    0.00m
+Vertical range = 0.00m (from AA4 at 0.00m to AA4 at 0.00m)
+North-South range = 3.05m (from AA2 at 0.00m to AA4 at -3.05m)
+East-West range = 3.05m (from AA3 at 3.05m to AA1 at 0.00m)
+
+There were 2 warning(s).

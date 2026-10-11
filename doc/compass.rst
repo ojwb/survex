@@ -9,7 +9,8 @@ the first to support this but we currently recommend using 1.4.18 or newer if
 you're working with Compass data as this version made significant improvements
 to this support.  1.4.23 notably improved support for passage dimensions
 (fixing a bug in interpreting them in ``.PLT`` files and adding support for
-them when processing ``.DAT`` files).
+them when processing ``.DAT`` files) and fixed the interpretation of folders
+in ``.MAK`` files.
 
 --------------------
 Compass .MAK support
@@ -108,6 +109,13 @@ limitations and assumptions:
   (older Survex versions quietly ignored the ``/`` characters as unknown, but
   that meant they would still interpret any commented out ``.MAK`` file
   commands).
+
+- ``.MAK`` files can contain a hierarchical folder structure, which Survex
+  correctly handles since 1.4.23.  Compass documents that "every left angle
+  bracket must eventually be matched with a right angle bracket" (by angle
+  brackets it means ``[`` and ``]``) but it quietly allows unclosed folders and
+  doesn't complain if you close a folder when one is not open.  Survex warns
+  for both of these situations.
 
 --------------------
 Compass .DAT support

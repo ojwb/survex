@@ -1,8 +1,8 @@
-/ pos=dump warn=0
-[subdir;
-#cave1a.dat;
-[subsubdir;
-#cave2.dat;
+/ pos=dump warn=2 dummycrprotection=
 ];
-#cave1b.dat;
+[subfolder;
+#subdir\cave1a.dat;
+[subsub;
+#subdir\subsubdir\cave2.dat;
 ];
+#subdir\cave1b.dat;

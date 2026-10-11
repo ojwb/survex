@@ -994,11 +994,12 @@ data_file_compass_mak(void)
     int base_utm_zone = 0;
     unsigned int base_line = 0;
     long base_lpos = 0;
-    string path = S_INIT;
-    s_donate(&path, path_from_fnm(file.filename));
+    char* path = path_from_fnm(file.filename);
     struct mak_folder {
 	struct mak_folder *next;
-	int len;
+	char* name;
+	int line;
+	int column;
     } *folder_stack = NULL;
 
     skipblanks_mak();
@@ -1051,7 +1052,7 @@ data_file_compass_mak(void)
 		      }
 		  }
 		  ch_store = ch;
-		  data_file(s_str(&path), s_str(&dat_fnm));
+		  data_file(path, s_str(&dat_fnm));
 		  ch = ch_store;
 	      }
 	      s_free(&dat_fnm);
@@ -1173,34 +1174,47 @@ update_proj_str:
 	      goto update_proj_str;
 	  }
 	  case '[': {
-	      // Enter subdirectory.
+	      // Enter folder.
 	      struct mak_folder *p = folder_stack;
 	      folder_stack = osnew(struct mak_folder);
 	      folder_stack->next = p;
-	      folder_stack->len = s_len(&path);
-	      if (!s_empty(&path))
-		  s_appendch(&path, FNM_SEP_LEV);
+	      folder_stack->line = file.line;
+	      folder_stack->column = ftell(file.fh) - file.lpos;
+	      string name = S_INIT;
+	      s_clear(&name);
 	      nextch_mak();
 	      while (ch != ';' && !isEol(ch)) {
-		  if (ch == '\\') {
-		      ch = FNM_SEP_LEV;
-		  }
-		  s_appendch(&path, (char)ch);
+		  s_appendch(&name, (char)ch);
 		  nextch_mak();
 	      }
+	      folder_stack->name = s_steal(&name);
 	      if (ch == ';') nextch_mak();
 	      break;
 	  }
 	  case ']': {
-	      // Leave subdirectory.
-	      struct mak_folder *p = folder_stack;
+	      // Leave folder.
 	      if (folder_stack == NULL) {
-		  // FIXME: Error?  Check what Compass does.
-		  break;
+		  // Leaving a folder is something that it's useful to alert the
+		  // user about.
+		  //
+		  // https://www.fountainware.com/compass//HTML_Help/Project_Manager/format_folders.htm
+		  // does not actually seem to explicitly say that you can't
+		  // close a folder you haven't opened, and Compass quietly
+		  // allows it, so we make this a warning since we don't want to
+		  // fail to process files which Compass accepts without
+		  // complaint.
+
+		  /* TRANSLATORS: %s and %s are replaced with e.g. BEGIN and END
+		   * or END and BEGIN or #[ and #] or [ and ] or ] and [ */
+		  compile_diagnostic(DIAG_WARN|DIAG_COL,
+				      /*%s with no matching %s in this file*/23,
+				      "]", "[");
+	      } else {
+		  free(folder_stack->name);
+		  struct mak_folder *p = folder_stack;
+		  folder_stack = folder_stack->next;
+		  free(p);
 	      }
-	      s_truncate(&path, folder_stack->len);
-	      folder_stack = folder_stack->next;
-	      free(p);
 	      nextch_mak();
 	      if (ch == ';') nextch_mak();
 	      break;
@@ -1296,14 +1310,29 @@ update_proj_str:
     }
 
     while (folder_stack) {
-	// FIXME: Error?  Check what Compass does.
+	// https://www.fountainware.com/compass//HTML_Help/Project_Manager/format_folders.htm
+	// documents "every left angle bracket must eventually be matched with
+	// a right angle bracket", but Compass quietly accepts it so we make
+	// this a warning since we don't want to fail to process files which
+	// Compass accepts without complaint.
+	string open = S_INIT;
+	s_appendch(&open, '[');
+	s_append(&open, folder_stack->name);
+	/* TRANSLATORS: %s and %s are replaced with e.g. BEGIN and END
+	 * or END and BEGIN or #[ and #] or [ and ] or ] and [ */
+	warning_in_file_col(file.filename,
+			    folder_stack->line, folder_stack->column,
+			    /*%s with no matching %s in this file*/23,
+			    s_str(&open), "]");
+	s_free(&open);
+	free(folder_stack->name);
 	struct mak_folder *next = folder_stack->next;
 	free(folder_stack);
 	folder_stack = next;
     }
 
     pop_settings();
-    s_free(&path);
+    free(path);
 }
 
 // The current Walls reference point and CRS details.
@@ -3098,7 +3127,7 @@ next_line:
 	    }
 	    if (depth) {
 		/* TRANSLATORS: %s and %s are replaced with e.g. BEGIN and END
-		 * or END and BEGIN or #[ and #] */
+		 * or END and BEGIN or #[ and #] or [ and ] or ] and [ */
 		error_in_file(file.filename, start_lineno,
 			      /*%s with no matching %s in this file*/23,
 			      "#[", "#]");
@@ -4082,7 +4111,7 @@ data_file_survex(void)
 
     if (pcs->begin_lineno) {
 	/* TRANSLATORS: %s and %s are replaced with e.g. BEGIN and END
-	 * or END and BEGIN or #[ and #] */
+	 * or END and BEGIN or #[ and #] or [ and ] or ] and [ */
 	error_in_file(file.filename, pcs->begin_lineno,
 		      /*%s with no matching %s in this file*/23,
 		      "BEGIN", "END");
