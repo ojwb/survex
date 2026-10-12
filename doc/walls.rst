@@ -191,6 +191,25 @@ which are problematic for your use to help prioritise efforts.
   + A factor of ``0`` is currently replaced by ``0.000001``.
   + A factor of more than ``9999`` is replaced by ``9999``.
 
+- Walls supports up to 3 prefix levels, which we map into Survex's hierarchical
+  prefixes.  One difference is that Walls allows an empty prefix but Survex
+  does not.  Leading empty prefix levels are handled by just omitting them
+  (as Walls does when showing prefixed station names) so this mismatch can only
+  affect projects which use more than one prefix level - in practice only very
+  large projects seem to do do.
+
+  To handle this case, Survex replaces such empty prefix levels with a single
+  space - a Walls prefix can't contain a space, so this can't collide.  For
+  example, ``PEP::1`` in Walls becomes ``PEP: :1`` in Survex; it can even
+  happen twice in the same name - e.g. ``X:::1`` becomes ``X: : :1``.
+
+  If you are processing output from Survex then simply stripping any spaces
+  from station names should undo this and make them match Walls (unless you
+  have stations with empty names - in that case you'll need to first check for
+  ``:empty name`` at the end of the name and replace with ``:`` if present,
+  and then strip any remaining spaces, so e.g. ``X: : :empty name`` becomes
+  ``X:::``).
+
 - Walls ``#SEGMENT`` directives often contain a set of Compass "shot flags".
   The likely origin of this is that Walls creates such ``#SEGMENT`` directives
   when you import data from Compass.  If a ``#SEGMENT`` value consists only of
