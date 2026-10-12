@@ -3337,7 +3337,7 @@ next_line:
 		//
 		// Walls handling of `#` is subtle here - e.g. `#15` is
 		// part of the note; `#s`/`#seg`/`#segment` ends the
-		// note and set the segment; `#` followed by another
+		// note and sets the segment; `#` followed by another
 		// letter (note: blanks are allowed in between) gives the
 		// weirdly confused error "Use only #SEG on vector lines".
 		//
