@@ -44,3 +44,11 @@ dummy9 quiet9 <--,--,--,--,0>
 ; Test warnings for stations referred to only in `#flag` or `#note`.
 #flag onlyflg1 quiet8 onlyflg2 /something
 #note onlynote no other references
+
+; Test floated fixes
+#fix floath   415001 585001 1001 (?,)
+#fix floatv   415002 585002 1002 (,?)
+#fix floatvh  415003 585003 1003 (?)
+; Test that a floated fix is beaten by an exact fix
+#fix floatvhx 415099 585099 1099 (?,?)
+#fix floatvhx 415004 585004 1004

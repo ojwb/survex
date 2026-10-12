@@ -3438,11 +3438,6 @@ next_line:
 		break;
 	    }
 
-	    if (var_xy == HUGE_REAL && var_z == HUGE_REAL) {
-		// We've been asked to not fix horizontally or vertically!
-		break;
-	    }
-
 	    // If only one variance is exact, make it 1mm instead.  FIXME
 	    if (var_xy == 0.0) var_xy = 1e-6;
 	    if (var_z == 0.0) var_z = 1e-6;
