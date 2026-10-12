@@ -879,7 +879,10 @@ Description
       CYLPOLAR
          A ``CYLPOLAR`` style survey is very similar to a diving survey, except
          that the tape is always measured horizontally rather than along the
-         slope of the leg.
+         slope of the leg.  Names sometimes used for this style include
+         "flat tape surveys" and "delta height surveys" (Survex's name comes
+         from "cylindrical polar", which is the name of a mathematical
+         coordinate system which matches this style).
 
          ::
 
