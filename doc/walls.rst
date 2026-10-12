@@ -312,6 +312,21 @@ Known differences and limitations which are unlikely to matter in practice
   ``#FLAG``).  We aim to support this too, but it doesn't seem to be documented
   so may not currently be supported in the correct places.
 
+- Walls prefixes are mapped to Survex prefixes, with a corner case we don't
+  currently attempt to address.  If you have stations with full names ``:::X1``
+  and ``::X1:A1``, then omitting leading empty prefixes (as Walls normally does
+  and which Survex follows) these becomes ``X1`` and ``X1:A1``.  This means
+  that ``X1`` names both a station and a survey in Survex, which is not
+  allowed (Survex naming works like your computer's filing system in this
+  regard - you can't have a folder and a file with the same full name).
+
+  Survex tools won't explicitly error if they see such data, but for example
+  aven's survey tree view can't correctly show a name as both.
+
+  We haven't yet found a good solution to this.  It's probably very rare in
+  practice, so renaming needs to be restricted to cases where there's actually
+  a collision.
+
 - Walls allows a station with an explicit prefix to have an empty name,
   e.g. ``PEP:``.  The Walls documentation doesn't mention this, though it
   also doesn't explicitly say the name can't be empty.  This quirk seems
