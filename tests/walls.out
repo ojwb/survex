@@ -127,10 +127,9 @@ Calculating trailing traverses...
 
 Calculating statistics...
 
-Survey contains 70 survey stations, joined by 68 legs.
+Survey contains 70 survey stations, joined by 69 legs.
 There are 0 loops.
-Survey has 2 connected components.
-Total length of survey legs =  447.38m ( 447.38m adjusted)
+Total length of survey legs =  447.38m ( 448.79m adjusted)
 Total plan length of survey legs =  214.77m
 Total vertical length of survey legs =  312.89m
 Vertical range = 83.48m (from U12b at 51.00m to Z11 at -32.48m)

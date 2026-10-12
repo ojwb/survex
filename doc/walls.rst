@@ -178,11 +178,9 @@ which are problematic for your use to help prioritise efforts.
   limitations:
 
   + An SD of 0 is currently treated as 1mm (approximately 0.04 inches).
-  + Floating a leg both horizontally and vertically (with ``?``) replaces it
-    with a "nosurvey" leg, which is effectively the same provided both ends
-    of the leg are attached to fixed points.
-  + Floating a leg either horizontally or vertically (with ``?``) uses an SD of
-    1000m in that direction instead of actually decoupling the connection.
+  + Floating a leg horizontally, vertically, or both (with ``?``) uses an SD of
+    1000m in the floated direction(s) instead of using an actually infinite
+    SD.
   + Floating the traverse containing a leg (with ``*``) currently just floats
     that leg (so it's the same as ``?``).
 

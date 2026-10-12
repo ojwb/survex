@@ -5115,11 +5115,8 @@ read_walls_extras(unsigned long* p_compass_dat_flags)
 	    if (var_z == 0.0) var_z = 1e-6;
 	    // FIXME: We don't currently support legs which only connect in
 	    // some dimensions so give them a high variance for now.
-	    if (var_xy == HUGE_REAL && var_z != HUGE_REAL) {
-		var_xy = 1e6;
-	    } else if (var_z == HUGE_REAL && var_xy != HUGE_REAL) {
-		var_z = 1e6;
-	    }
+	    if (var_xy == HUGE_REAL) var_xy = 1e6;
+	    if (var_z == HUGE_REAL) var_z = 1e6;
 	    VAR(Dx) = var_xy;
 	    VAR(Dy) = var_xy;
 	    VAR(Dz) = var_z;
@@ -5348,14 +5345,6 @@ data_cartesian(void)
 	 /* fall through */
        case End:
 	 if (!fMulti) {
-	     if (VAR(Dx) == HUGE_REAL &&
-		 VAR(Dy) == HUGE_REAL &&
-		 VAR(Dz) == HUGE_REAL) {
-		 // Walls variance override of `(?)` or equivalent turns the leg
-		 // into a "nosurvey" leg.
-		 (void)process_nosurvey(fr, to, (first_stn == To));
-		 return;
-	     }
 	     int implicit_splay = TSTBIT(pcs->flags, FLAGS_IMPLICIT_SPLAY);
 	     pcs->flags &= ~(BIT(FLAGS_ANON_ONE_END) | BIT(FLAGS_IMPLICIT_SPLAY));
 	     int save_flags = pcs->flags;
@@ -6357,14 +6346,6 @@ data_normal(void)
 		process_eol();
 		return;
 	     }
-	     if (VAR(Dx) == HUGE_REAL &&
-		 VAR(Dy) == HUGE_REAL &&
-		 VAR(Dz) == HUGE_REAL) {
-		 // Walls variance override of `(?)` or equivalent turns the leg
-		 // into a "nosurvey" leg.
-		 (void)process_nosurvey(fr, to, (first_stn == To));
-		 return;
-	     }
 	     if (fRev) {
 		prefix *t = fr;
 		fr = to;
@@ -6381,7 +6362,8 @@ data_normal(void)
 	     if (TSTBIT(pcs->infer, INFER_EQUATES) &&
 		 (VAL(Tape) == (real)0.0 || VAL(Tape) == HUGE_REAL) &&
 		 (VAL(BackTape) == (real)0.0 || VAL(BackTape) == HUGE_REAL) &&
-		 VAL(FrDepth) == VAL(ToDepth)) {
+		 VAL(FrDepth) == VAL(ToDepth) &&
+		 VAR(Dx) < 1e6 && VAR(Dy) < 1e6 && VAR(Dz) < 1e6) {
 		if (!TSTBIT(pcs->infer, INFER_EQUATES_SELF_OK) || fr != to)
 		   process_equate(fr, to);
 		process_eol();
