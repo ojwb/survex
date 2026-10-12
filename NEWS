@@ -1,4 +1,4 @@
-up to: 69c131ae228e7bb4cc85da25f6c43cd6150c8df9
+up to: 7125d94bedcb12fe0812d3a0cd593ce403659ee2
 
 Changes in 1.4.23 (UNRELEASED):
 
@@ -37,8 +37,9 @@ Changes in 1.4.23 (UNRELEASED):
   + Improve when we warn for compass readings on plumbed legs.  We already
     suppressed the warning for some cases, but now we take the simple approach
     of not warning for an explicit compass or backcompass value of either 0° or
-    180° on an inferred plumb.  Fixes unhelpful warnings in some real-world
-    Walls datasets, reported by Joe Walko in #158.
+    180° on an inferred plumb.  The fix applies to all data formats, but was
+    motivated by some unhelpful warnings in some real-world Walls datasets,
+    reported by Joe Walko in #158.
 
   + Enable SSE2 by default on 32-bit x86 for C code (in 1.4.16 we enabled it
     but unintentionally only for C++ code).
@@ -52,6 +53,27 @@ Changes in 1.4.23 (UNRELEASED):
     mapping LRUD to splay shots offers a better approach to passage modelling,
     but mapping to passage tubes is more helpful until aven supports rendering
     3D passages based on splays.
+
+  + The folder structure in Compass MAK files is now handled correctly.  We
+    We were incorrectly handling the folders as filing system directories,
+    but testing in Compass shows they're actually independent of the filing
+    system.
+
+  + Fixed an infinite parse loop if a Compass MAK folder was closed when none
+    was open.  We now warn and advance past it.
+
+  + Warn about any Compass MAK folders which are unclosed when we reach the
+    end of the file.
+
+  + Compass doesn't complain about invalid units for a fixed point in a .MAK
+    file, so this is now a warning instead of an error in Survex.
+
+  + Compass doesn't complain if you fix an already fixed station at different
+    coordinates, so this is now a warning instead of an error in Survex.
+
+  + A comment right after a station name in a Compass MAK file is now handled
+    correctly (previously the `/` was incorrectly treated as a station name
+    character in this context).
 
   + Walls `INCH=` option is now supported.
 
@@ -229,6 +251,15 @@ Changes in 1.4.23 (UNRELEASED):
 
   + Walls chapter:
 
+    + Simplify by assuming baseline of 1.4.23
+    Strongly advise users to use 1.4.23 and then describes the Walls
+    support as of that version, which makes this chapter simpler and
+    easier to follow for what the vast majority of users will actually
+    want to know.
+    Users wanting to know how support has evolved are now directed to the
+    NEWS file.
+    Partly addresses #159, reported by Joe Walko.
+
     + Note Tatra Cave Registry and SiCS datasets as examples that successfully
       process.
 
@@ -246,15 +277,6 @@ Changes in 1.4.23 (UNRELEASED):
       for providing background on where this convention comes from.
 
     + Improve section on comparing results of processing with Survex and Walls.
-
-    + Simplify by assuming baseline of 1.4.23
-    Strongly advise users to use 1.4.23 and then describes the Walls
-    support as of that version, which makes this chapter simpler and
-    easier to follow for what the vast majority of users will actually
-    want to know.
-    Users wanting to know how support has evolved are now directed to the
-    NEWS file.
-    Partly addresses #159, reported by Joe Walko.
 
 * img library:
 
@@ -325,6 +347,10 @@ Changes in 1.4.23 (UNRELEASED):
     from that.
 
   + Add test coverage for measuring back instruments forwards in `.svx` data.
+
+  + Convert all Compass .mak and .dat testdata to CR+LF line endings.
+
+  + Adjust testcase fixfeet.mak so it processes with Compass.
 
   + Add test coverage for Walls `#flag` entrance handling.
 
