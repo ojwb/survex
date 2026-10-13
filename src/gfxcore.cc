@@ -1186,7 +1186,7 @@ void GfxCore::DrawErrorKey()
 	//
 	// If there should be a space between the number and this, include
 	// one in the translation.
-	wxString units = wmsg(/*σ*/584);
+	wxString units = wmsg(/*σ*/544);
 	num_bands = GetNumColourBands();
 	for (int band = 0; band < num_bands; ++band) {
 	    if (MAX_ERROR == num_bands - 1) {

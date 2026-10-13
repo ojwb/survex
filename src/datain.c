@@ -2058,7 +2058,7 @@ read_walls_distance(bool f_optional, real default_units, bool comma_ok)
 	    // syntax i5.5 or -i6, but the number must be strictly < 12.
 	    set_pos(&fp);
 	    compile_diagnostic(DIAG_ERR|DIAG_WORD,
-			       /*Measurement in inches must be < 12*/585);
+			       /*Measurement in inches must be < 12*/545);
 	}
 	if (negative) inches = -inches;
 	return inches * (METRES_PER_FOOT / 12.0);
@@ -2678,7 +2678,7 @@ walls_parse_options(void)
 	    set_pos(&fp_option);
 	    // TRANSLATORS: "Walls" is David McKenzie's cave surveying package,
 	    // so should not be translated.
-	    compile_diagnostic(DIAG_WARN|DIAG_QTOKEN, /*Ignoring unsupported Walls option “%s”*/582, s_str(&token));
+	    compile_diagnostic(DIAG_WARN|DIAG_QTOKEN, /*Ignoring unsupported Walls option “%s”*/542, s_str(&token));
 	    set_pos(&fp);
 	    (void)read_walls_angle(M_PI / 180.0);
 	    break;
@@ -2904,7 +2904,7 @@ walls_parse_options(void)
 		    if (toupper(ch) == 'X') {
 			// FIXME: `X` means only use foresight (but check
 			// backsight), but we've not seen any real-world uses).
-			compile_diagnostic(DIAG_WARN|DIAG_COL, /*Ignoring unsupported Walls option “%s”*/582, "X");
+			compile_diagnostic(DIAG_WARN|DIAG_COL, /*Ignoring unsupported Walls option “%s”*/542, "X");
 			nextch();
 		    }
 		}
@@ -2949,7 +2949,7 @@ walls_parse_options(void)
 		    if (toupper(ch) == 'X') {
 			// FIXME: `X` means only use foresight (but check
 			// backsight), but we've not seen any real-world uses).
-			compile_diagnostic(DIAG_WARN|DIAG_COL, /*Ignoring unsupported Walls option “%s”*/582, "X");
+			compile_diagnostic(DIAG_WARN|DIAG_COL, /*Ignoring unsupported Walls option “%s”*/542, "X");
 			nextch();
 		    }
 		}
@@ -2979,7 +2979,7 @@ walls_parse_options(void)
 		set_pos(&fp_arg);
 		// TRANSLATORS: "Walls" is David McKenzie's cave surveying package,
 		// so should not be translated.
-		compile_diagnostic(DIAG_ERR|DIAG_NUM, /*Value can not be negative*/583);
+		compile_diagnostic(DIAG_ERR|DIAG_NUM, /*Value can not be negative*/543);
 	    } else if (opt == WALLS_UNITS_OPT_UV) {
 		p_walls_options->uvh = scale_factor;
 		p_walls_options->uvv = scale_factor;
@@ -6199,7 +6199,7 @@ data_normal(void)
 	  // TRANSLATORS: "Walls" is David McKenzie's cave surveying package,
 	  // so should not be translated.
 	  compile_diagnostic(DIAG_WARN|DIAG_FROM(fp_ih),
-			     /*Instrument and target heights currently ignored with Walls option combination “TAPE=%s” and “ORDER=%s”*/581,
+			     /*Instrument and target heights currently ignored with Walls option combination “TAPE=%s” and “ORDER=%s”*/541,
 			     tape_method, order);
 	  break;
        }

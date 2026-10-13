@@ -1614,7 +1614,7 @@ msgstr ""
 #. TRANSLATORS: Walls allows explicit units of inches with the
 #. syntax i5.5 or -i6, but the number must be strictly < 12.
 #: ../src/datain.c:1985
-#: n:585
+#: n:545
 msgid "Measurement in inches must be < 12"
 msgstr ""
 
@@ -3022,7 +3022,7 @@ msgstr ""
 #. If there should be a space between the number and this, include
 #. one in the translation.
 #: ../src/gfxcore.cc:1177
-#: n:584
+#: n:544
 #, c-format
 msgid "σ"
 msgstr ""
@@ -3816,7 +3816,7 @@ msgstr ""
 #. TRANSLATORS: "Walls" is David McKenzie's cave surveying package,
 #. so should not be translated.
 #: ../src/datain.c:5748
-#: n:581
+#: n:541
 #, c-format
 msgid "Instrument and target heights currently ignored with Walls option combination “TAPE=%s” and “ORDER=%s”"
 msgstr ""
@@ -3824,7 +3824,7 @@ msgstr ""
 #. TRANSLATORS: "Walls" is David McKenzie's cave surveying package,
 #. so should not be translated.
 #: ../src/datain.c:2500
-#: n:582
+#: n:542
 #, c-format
 msgid "Ignoring unsupported Walls option “%s”"
 msgstr ""
@@ -3832,7 +3832,7 @@ msgstr ""
 #. TRANSLATORS: "Walls" is David McKenzie's cave surveying package,
 #. so should not be translated.
 #: ../src/datain.c:2694
-#: n:583
+#: n:543
 #, c-format
 msgid "Value can not be negative"
 msgstr ""
