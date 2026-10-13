@@ -1,4 +1,4 @@
-up to: 7125d94bedcb12fe0812d3a0cd593ce403659ee2
+up to: 7cabe12b85ced353d98bbafdbc690354dc77704d
 
 Changes in 1.4.23 (UNRELEASED):
 
@@ -205,6 +205,20 @@ Changes in 1.4.23 (UNRELEASED):
     is not the full documented value nor just its first letter.  Applies to
     options `D=`, `A=`, `AB=`, `V=`, `VB=`, `S=`, `TYPEAB=` and `TYPEVB=`.
 
+  + A Walls variance override such as `(?)` on a leg was being mapped to a
+    "nosurvey" leg in Survex, but that works differently if this leg is the
+    only connection for some data - a "nosurvey" leg doesn't actually
+    connect the data but a floated Walls leg still does.  We now handle
+    this case by setting large SDs, which is how we handle the case of a
+    leg floated only horizontally `(?,)` or only vertically `(,?)`.  Fixes
+    #157, reported by Joe Walko.
+
+  + A Walls `#fix` floated iwth `(?)` or similar was being ignored by Survex
+    but Walls interpretation is that this still fixes the station but is
+    dominated if it is connected to another fixed point (which isn't floating).
+    We now fix with large SDs, which is how we handle the case of a `#fix`
+    floated only horizontally `(?,)` or only vertically `(,?)`.
+
 * aven:
 
   + Work around macOS 27 bug when the user's locale uses `,` as the decimal
@@ -249,34 +263,37 @@ Changes in 1.4.23 (UNRELEASED):
     (Walls definitely gives an error; I'm not sure what the other software
     mentioned here actually does.)
 
+  + Note that the "cylpolar" data style is sometimes called "flat taping" or
+    "delta height" so that people searching for how to handle these can more
+    easily find it.
+
   + Walls chapter:
 
-    + Simplify by assuming baseline of 1.4.23
-    Strongly advise users to use 1.4.23 and then describes the Walls
-    support as of that version, which makes this chapter simpler and
-    easier to follow for what the vast majority of users will actually
-    want to know.
-    Users wanting to know how support has evolved are now directed to the
-    NEWS file.
-    Partly addresses #159, reported by Joe Walko.
+    - This chapter has had a major structural overhaul to address points
+      raised by Joe Walko.  Fixes #159.
 
-    + Note Tatra Cave Registry and SiCS datasets as examples that successfully
-      process.
+    - This chapter has been simplified and made easier to follow by stating up
+      front that we strongly advise users to use 1.4.23 or newer and then
+      assuming they are for the rest of the chapter.  Users wanting to know how
+      support has evolved are now directed to the NEWS file.
 
-    + Adjust a Walls example of a warning so the context of the warning matches
+    - Add Tatra Cave Registry and SiCS datasets as additional examples that
+      successfully process.
+
+    - Adjust a Walls example of a warning so the context of the warning matches
       the `.srv` content shown.
 
-    + Reword section on inferring "exported" flag.  I was unsure if inferring
+    - Reword section on inferring "exported" flag.  I was unsure if inferring
       "exported" made sense for an explicit empty prefix but Joe Walko confirms
       it does.  See #159.
 
-    + Testing with Walls32.exe confirms that 2 digit years in `#date` are
+    - Testing with Walls32.exe confirms that 2 digit years in `#date` are
       always handled as 19xx.
 
-    + Adjust text about Compass shot flags in `#segment`.  Thanks to Joe Walko
+    - Adjust text about Compass shot flags in `#segment`.  Thanks to Joe Walko
       for providing background on where this convention comes from.
 
-    + Improve section on comparing results of processing with Survex and Walls.
+    - Improve section on comparing results of processing with Survex and Walls.
 
 * img library:
 
