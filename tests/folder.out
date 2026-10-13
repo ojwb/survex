@@ -2,7 +2,6 @@ folder.mak:2:1: warning: ] with no matching [ in this file
  ];
  ^
 folder.mak:3:1: warning: [subfolder with no matching ] in this file
-subdir/cave1a.dat:10:6: info: Survey has no fixed points. Therefore I've fixed AA1 at (0,0,0)
 
 Removing trailing traverses...
 
