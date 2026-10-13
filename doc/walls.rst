@@ -45,10 +45,12 @@ behaviour of ``Walls32.exe`` on example data.
 As of 1.4.23, some large Walls datasets can be successfully processed:
 
 - Mammoth Cave
-- the Thailand dataset from https://cave-registry.org.uk/
+- the Thailand dataset from https://www.cave-registry.org.uk/svn/Thailand/
 - the Tatra Cave Registry from https://github.com/dlubom/Jaskiniowy-Kataster-Tatr-Zachodnich
 - the Slovenian Cave Survey from https://github.com/anzeabram/SiCS
 - Big Bat Cave
+
+.. FIXME: Link Thailand to https://cave-registry.org.uk/ once that's updated.
 
 Behaviour is not 100% identical and station positions after loop closure will
 inevitably be slightly different, but we encourage processing your Walls
