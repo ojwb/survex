@@ -142,7 +142,7 @@ wallsfsbs.wpj wallsfsbs.dump wallsfsbs.out w_fsbs.srv\
 wallsfsbsclino.wpj wallsfsbsclino.out wallsfsbsclino.pos w_fsbsc.srv\
 wallshtie.wpj wallshtie.dump wallshtie.out w_htie.srv\
 wallsihth.wpj wallsihth.dump wallsihth.out w_ihth.srv\
-wallsmissingsrv.wpj wallsmissingsrv.out\
+wallsmissingsrv.wpj wallsmissingsrv.altout wallsmissingsrv.out\
 wallsprefix.wpj wallsprefix.dump wallsprefix.out w_prefix.srv\
 wallsups.wpj wallsups.dump wallsups.out wallsups.srv\
 wallsvariance.wpj wallsvariance.dump wallsvariance.out w_varian.srv\
