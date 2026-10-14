@@ -9,3 +9,5 @@
 
 #units D=MOTORS A=DEGREEZ AB=GRADE V=PERHAPS VB=GRIDS S=FEAT
 #units TYPEAB=NORMEL,3,X TYPEVB=CORECTED,5
+; "DEG" is commonly used in real-world data so we don't warn about it.
+#units A=DEG AB=DEG V=DEG VB=DEG

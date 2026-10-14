@@ -2520,7 +2520,9 @@ walls_parse_options(void)
 	    // It seems Walls only checks the initial letter.
 	    if (s_str(&uctoken)[0] == 'D') {
 		// Degrees.
-		if (s_str(&uctoken)[1] && !S_EQ(&uctoken, "DEGREES")) {
+		if (s_str(&uctoken)[1] &&
+		    !S_EQ(&uctoken, "DEGREES") &&
+		    !S_EQ(&uctoken, "DEG")) {
 		    compile_diagnostic(DIAG_WARN|DIAG_TOKEN,
 				       /*Expecting “%s”*/497, "DEGREES");
 		}
@@ -2563,7 +2565,9 @@ walls_parse_options(void)
 	    // It seems Walls only checks the initial letter.
 	    if (s_str(&uctoken)[0] == 'D') {
 		// Degrees.
-		if (s_str(&uctoken)[1] && !S_EQ(&uctoken, "DEGREES")) {
+		if (s_str(&uctoken)[1] &&
+		    !S_EQ(&uctoken, "DEGREES") &&
+		    !S_EQ(&uctoken, "DEG")) {
 		    compile_diagnostic(DIAG_WARN|DIAG_TOKEN,
 				       /*Expecting “%s”*/497, "DEGREES");
 		}

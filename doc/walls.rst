@@ -557,8 +557,9 @@ warnings (which also work in Walls):
   values.  Walls documents that these values can be abbreviated to just their
   first letter, but in fact it only checks the first letter, so for example
   ``D=FEAT`` is quietly accepted.  Survex warns when the value isn't one of
-  those documented or a single letter abbreviation, then handles as Walls
-  does.  Fix this warning by correcting the value.
+  those documented or a single letter abbreviation or ``DEG`` for ``DEGREES``
+  (since that's commonly used), then handles as Walls does.  Fix this warning
+  by correcting the value.
 
 - The option ``CASE=`` is documented as `CASE = Upper / Lower /
   Mixed`.  Only the first character of the value is actually checked (as with
