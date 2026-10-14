@@ -1,7 +1,9 @@
 #!/bin/sh
 set -e
 
-inkscape --version > /dev/null || { echo "Error: Inkscape needed to generate macos iconset files"; exit 1; }
+# This test seems to fail on macOS 27 - the CI log shows:
+# ./svg2iconsetzip: line 4: 30836 Abort trap: 6           inkscape --version > /dev/null
+#inkscape --version > /dev/null || { echo "Error: Inkscape needed to generate macos iconset files"; exit 1; }
 
 case $1 in
   -*) in=./$1 ;;
