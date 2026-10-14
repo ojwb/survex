@@ -457,6 +457,31 @@ warnings (which also work in Walls):
   processed (either in the project tree, or by commenting out part of a survey
   with ``#[`` and ``#]``), or just tolerating the warning for a short time.
 
+- Walls processes a missing ``.srv`` file without complaint (but does report an
+  error if it exists but isn't readable, for example due to file permissions).
+
+  There is an indication in the Walls UI (the icon is a blank page instead of a
+  page with writing), but we've seen surveys accidentally not included in a
+  real world dataset because the path wasn't set - this feature meant this was
+  missed until the dataset was processed with Survex.
+
+  Since 1.4.24, Survex warns about missing files (and errors for unreadable
+  files):
+
+  ::
+
+    wallsmissingsrv.wpj:7:7: warning: Couldn't open file "WX_MISS.srv"
+     .NAME WX_MISS
+           ^~~~~~~
+
+  If the file should exist, check that ``Name:`` is spelled correctly, and that
+  ``Path:`` is set suitably in the item's properties.
+
+  If the file is a place-holder to be filled in later, we suggest either
+  creating an empty file, or changing its ``Type`` to ``Other`` in the item's
+  properties (and then back to ``Survey file`` when you later actually create
+  it).
+
 - If an isolated LRUD (LRUD not on a leg, e.g. specified for the start or end
   station of a traverse) is missing its closing delimiter, Walls will parse
   the line as a data leg where the "to" station starts with ``*`` or ``<``,

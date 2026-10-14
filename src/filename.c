@@ -23,6 +23,7 @@
 #include "osalloc.h"
 
 #include <ctype.h>
+#include <errno.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -359,8 +360,12 @@ fopen_portable(const char *pth, const char *fnm, const char *ext,
 	       const char *mode, char **fnmUsed)
 {
    FILE *fh = fopenWithPthAndExt(pth, fnm, ext, mode, fnmUsed);
-   if (fh == NULL) {
 #ifndef _WIN32
+   if (fh == NULL) {
+      // Only try variants while the ones we try are missing.  If we hit one
+      // which isn't readable, fail on it.
+      if (errno != ENOENT) return NULL;
+
       bool changed = false;
       char *fnm_trans = osstrdup(fnm);
       for (char *p = fnm_trans; *p; p++) {
@@ -378,6 +383,10 @@ fopen_portable(const char *pth, const char *fnm, const char *ext,
        * filing system, try lowercasing the filename if not found.
        */
       if (fh == NULL) {
+	 // Only try variants while the ones we try are missing.  If we hit one
+	 // which isn't readable, fail on it.
+	 if (errno != ENOENT) goto not_readable;
+
 	 bool had_lower = false;
 	 changed = false;
 	 for (char *p = fnm_trans; *p; p++) {
@@ -394,6 +403,10 @@ fopen_portable(const char *pth, const char *fnm, const char *ext,
 
 	 /* If that fails, try upper casing the initial character of the leaf. */
 	 if (fh == NULL) {
+	    // Only try variants while the ones we try are missing.  If we hit
+	    // one which isn't readable, fail on it.
+	    if (errno != ENOENT) goto not_readable;
+
 	    char *leaf = strrchr(fnm_trans, '/');
 	    leaf = (leaf ? leaf + 1 : fnm_trans);
 	    if (islower((unsigned char)*leaf)) {
@@ -401,6 +414,10 @@ fopen_portable(const char *pth, const char *fnm, const char *ext,
 	       fh = fopenWithPthAndExt(pth, fnm_trans, ext, mode, fnmUsed);
 	    }
 	    if (fh == NULL && had_lower) {
+	       // Only try variants while the ones we try are missing.  If we
+	       // hit one which isn't readable, fail on it.
+	       if (errno != ENOENT) goto not_readable;
+
 	       /* Finally, try upper casing the filename if it wasn't all
 		* upper case to start with. */
 	       for (char *p = fnm_trans; *p; p++) {
@@ -410,9 +427,10 @@ fopen_portable(const char *pth, const char *fnm, const char *ext,
 	    }
 	 }
       }
+not_readable:
       free(fnm_trans);
-#endif
    }
+#endif
    return fh;
 }
 

@@ -20,6 +20,7 @@
 
 #include <config.h>
 
+#include <errno.h>
 #include <limits.h>
 #include <stdarg.h>
 
@@ -3818,13 +3819,24 @@ process_entry:
 		   p_walls_options->prefix[2] ? p_walls_options->prefix[2] : "");
 #endif
 	    char *filename;
+	    const char* ext = "srv";
 	    FILE *fh = fopen_portable(s_str(&p_walls_options->path),
-				      s_str(&name), "srv", "rb", &filename);
-	    if (fh == NULL)
+				      s_str(&name), ext, "rb", &filename);
+	    if (fh == NULL && errno == ENOENT) {
+		ext = "SRV";
 		fh = fopen_portable(s_str(&p_walls_options->path),
-				    s_str(&name), "SRV", "rb", &filename);
+				    s_str(&name), ext, "rb", &filename);
+		if (errno == ENOENT) {
+		    // If neither exist, report the warning for `.srv` (but if
+		    // the `.srv` doesn't exist and the `.SRV` is not readable
+		    // report the error for the `.SRV` as Walls will error in
+		    // that case).
+		    ext = "srv";
+		}
+	    }
 
 	    if (fh == NULL) {
+		bool not_found = (errno == ENOENT);
 		// Report the diagnostic at the location of the ".NAME".
 		unsigned save_line = file.line;
 		long save_lpos = file.lpos;
@@ -3840,14 +3852,18 @@ process_entry:
 		string full_file = S_INIT;
 		s_appends(&full_file, &p_walls_options->path);
 		s_appends(&full_file, &name);
-		s_append(&full_file, ".SRV");
-		if (!fDirectory(s_str(&p_walls_options->path))) {
-		    // Walls appears to quietly ignore file if the
-		    // directory does not exist, but it seems worth
-		    // warning about at least.
+		s_appendch(&full_file, '.');
+		s_append(&full_file, ext);
+		if (not_found) {
+		    // Walls quietly ignores a `.srv` file if it doesn't exist
+		    // (but does report an error if it exists but isn't
+		    // readable).
 		    //
-		    // FIXME: This should take case into account like
-		    // opening the file does.
+		    // There is an indication in the UI (the icon is a blank
+		    // page instead of a page with writing), but we've seen
+		    // surveys not actually included into a real world dataset
+		    // because the path wasn't set and this feature meant it
+		    // was missed until the dataset was processed with Survex.
 		    compile_diagnostic(DIAG_WARN|DIAG_TAIL, /*Couldn’t open file “%s”*/1, s_str(&full_file));
 		} else {
 		    compile_diagnostic(DIAG_ERR|DIAG_TAIL, /*Couldn’t open file “%s”*/1, s_str(&full_file));

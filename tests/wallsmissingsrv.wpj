@@ -1,0 +1,20 @@
+;WALLS Project File
+; pos=no warn=3 dummycrprotection=
+.BOOK	Test handling of missing SRV files
+.NAME	PROJECT
+.STATUS	3
+.SURVEY	Missing
+.NAME	WX_MISS
+.STATUS	196616
+.SURVEY	Missing directory
+.NAME	WX_MISSD
+.PATH	no_such_directory
+.STATUS	8
+.SURVEY	Missing in subdir
+.NAME	WX_MISSS
+.PATH	subdir
+.STATUS	8
+.SURVEY	Working SRV
+.NAME	w_cylpol
+.STATUS	8
+.ENDBOOK
