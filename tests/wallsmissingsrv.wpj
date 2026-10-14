@@ -5,7 +5,7 @@
 .STATUS	3
 .SURVEY	Missing
 .NAME	WX_MISS
-.STATUS	196616
+.STATUS	8
 .SURVEY	Missing directory
 .NAME	WX_MISSD
 .PATH	no_such_directory
@@ -14,6 +14,9 @@
 .NAME	WX_MISSS
 .PATH	subdir
 .STATUS	8
+.SURVEY	Missing other
+.NAME	NoSuchFile.pdf
+.STATUS	65544
 .SURVEY	Working SRV
 .NAME	w_cylpol
 .STATUS	8
