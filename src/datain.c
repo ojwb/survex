@@ -52,6 +52,7 @@
 # include <proj_experimental.h>
 #endif
 
+static real get_convergence(void);
 static int process_lrud(prefix *stn);
 static int process_nosurvey(prefix *fr, prefix *to, bool fToFirst);
 
@@ -2654,6 +2655,9 @@ walls_parse_options(void)
 	  }
 	  case WALLS_UNITS_OPT_DECL:
 	    pcs->z[Q_DECLINATION] = -read_walls_angle(M_PI / 180.0);
+	    if (proj_str_out) {
+		pcs->z[Q_DECLINATION] += get_convergence();
+	    }
 	    break;
 	  case WALLS_UNITS_OPT_INCA:
 	    pcs->z[Q_BEARING] = -read_walls_angle(pcs->units[Q_BEARING]);
