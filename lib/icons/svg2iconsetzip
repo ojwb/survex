@@ -1,9 +1,7 @@
 #!/bin/sh
 set -e
 
-# This test seems to fail on macOS 27 - the CI log shows:
-# ./svg2iconsetzip: line 4: 30836 Abort trap: 6           inkscape --version > /dev/null
-#inkscape --version > /dev/null || { echo "Error: Inkscape needed to generate macos iconset files"; exit 1; }
+rsvg-convert --version > /dev/null || { echo "Error: rsvg-convert needed to generate macos iconset files"; exit 1; }
 
 case $1 in
   -*) in=./$1 ;;
@@ -18,7 +16,7 @@ tmp=`echo "$out"|sed 's/\.zip$//'`
 rm -rf "$tmp"
 mkdir "$tmp"
 for r in 16 32 128 256 512 ; do
-  inkscape -w "$r" -h "$r" --export-filename="$tmp/icon_${r}x${r}.png" "$in"
+  rsvg-convert --width="$r" --height="$r" "$in" > "$tmp/icon_${r}x${r}.png"
 done
 for r in 16 128 256 ; do
   d=`expr $r + $r`
@@ -26,7 +24,7 @@ for r in 16 128 256 ; do
 done
 for r in 32 512 ; do
   d=`expr $r + $r`
-  inkscape -w "$d" -h "$d" --export-filename="$tmp/icon_${r}x${r}@2x.png" "$in"
+  rsvg-convert --width="$d" --height="$d" "$in" > "$tmp/icon_${r}x${r}@2x.png"
 done
 rm -f "$out"
 zip --move -r "$out" "$tmp"

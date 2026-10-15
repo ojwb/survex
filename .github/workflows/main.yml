@@ -44,7 +44,7 @@ jobs:
             libgdal-dev \
             libproj-dev \
             libswscale-dev \
-            inkscape \
+            librsvg2-bin \
             netpbm \
             liblocale-po-perl \
             unifont \
