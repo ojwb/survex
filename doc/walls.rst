@@ -52,11 +52,17 @@ As of 1.4.24, some large Walls datasets can be successfully processed:
 
 .. FIXME: Link Thailand to https://cave-registry.org.uk/ once that's updated.
 
-Behaviour is not 100% identical and station positions after loop closure will
-inevitably be slightly different, but we encourage processing your Walls
-dataset with both Walls and Survex and comparing the result.  Please report
-significant or apparently systematic errors, or anything that seems suspect.
-If you can provide some data demonstrating the problem, that's really helpful.
+We encourage processing your Walls dataset with both Walls and Survex and
+comparing the result.  If there are loop closures, station positions will
+inevitably not be identical as Walls and Survex model errors differently.
+Walls documents that the SDs are purely proportional to the leg length, and
+appears to solve in X, Y and Z independently.  Survex calculates a variance
+matrix for each leg based on its geometry and the instrument SDs (and this
+matrix includes covariances, so doesn't assume X, Y and Z are independent).
+The differences should small except in cases where there are large misclosures
+due to blunders.  Please report significant or apparently systematic errors, or
+anything that seems suspect.  If you can provide some data demonstrating the
+problem, that's really helpful.
 
 We suggest a couple of ways to compare the results:
 

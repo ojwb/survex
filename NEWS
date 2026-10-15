@@ -1,4 +1,4 @@
-up to: e2caa2203804a22aaad1f8759cb6cff661397c0d
+up to: d4528bc64264932904bdf2fa1d93a5c69410b4ca
 
 Changes in 1.4.24 (UNRELEASED):
 
@@ -34,12 +34,33 @@ Changes in 1.4.24 (UNRELEASED):
     quietly failing to actually process such `.srv` files, or using incorrect
     flags for them.  Fixes #167, reported by Joe Walko.
 
+  + Fix variances of plumbs in Walls data.
+
+    1.4.23 added support for the backsight tolerances in `TYPEAB=` and
+    `TYPEVB=`, which is done by setting the compass and clino variances
+    appropriately.  The default variances in Walls data were adjusted so the
+    default tolerance of 5° is also supported.
+
+    I intended to scale all the default variances by the same amount which
+    would give the same positions after loop closure, so your example
+    shouldn't have changed, but I accidentally scaled the variances for
+    plumbs and level legs wrongly compared to the others (the SDs for these
+    are half those for clino readings, but that means the variance needs to
+    be 1/4 and I scaled by 1/2).
+
+    With this change, loop closure for plumbed legs works as in 1.4.22
+    again.
+
+    Reported by Darek Lubomski.
+
 * Manual:
 
   + Walls chapter:
 
     - Raise the recommended minimum Survex version for processing Walls data to
       1.4.24.
+
+    - Make handling of .LST legs clearer.  Highlighted be Eric C. Landgraf.
 
 * Build system:
 
