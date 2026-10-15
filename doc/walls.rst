@@ -4,8 +4,8 @@ David McKenzie's Walls
 
 Survex can read Walls unprocessed survey data files and project files (``.SRV``
 and ``.WPJ`` files).  The first release with any support was Survex 1.4.9, but
-the support has evolved and improved since then.  Survex 1.4.23 improved
-support significantly so we strongly advise using 1.4.23 or newer, and this
+the support has evolved and improved since then.  Survex 1.4.24 improved
+support significantly so we strongly advise using 1.4.24 or newer, and this
 chapter will assume you are.  If you really want to know when support for
 something was added, see the NEWS file.
 
@@ -42,7 +42,7 @@ sometimes incorrect, while the WPJ format seems to be largely undocumented.
 Sadly David is no longer around to ask, but we can at least test actual
 behaviour of ``Walls32.exe`` on example data.
 
-As of 1.4.23, some large Walls datasets can be successfully processed:
+As of 1.4.24, some large Walls datasets can be successfully processed:
 
 - Mammoth Cave
 - the Thailand dataset from https://www.cave-registry.org.uk/svn/Thailand/
@@ -465,8 +465,7 @@ warnings (which also work in Walls):
   real world dataset because the path wasn't set - this feature meant this was
   missed until the dataset was processed with Survex.
 
-  Since 1.4.24, Survex warns about missing files (and errors for unreadable
-  files):
+  Survex warns about missing files (and errors for unreadable files):
 
   ::
 
