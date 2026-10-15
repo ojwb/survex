@@ -3745,7 +3745,7 @@ data_file_walls_wpj(void)
 	process_eol();
     }
 
-    int status = -1;
+    int status = 0;
     long name_lpos = -1;
     unsigned name_lineno = 0;
     filepos fp_name;
@@ -3916,7 +3916,7 @@ process_entry:
 	    }
 
 srv_not_found:
-	    status = -1;
+	    status = 0;
 	    s_clear(&name);
 	    //s_clear(&path);
 	    walls_ref.x = walls_ref.y = walls_ref.z = HUGE_VAL;
