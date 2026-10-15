@@ -1,0 +1,5 @@
+#units meters order=DAV A=D V=D decl=0
+#fix 0 0 0 0
+#fix 2 10.2 0 10
+0 1 10 -- 90
+1 2 10 90 0

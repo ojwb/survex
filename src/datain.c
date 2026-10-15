@@ -1883,8 +1883,8 @@ walls_initialise_settings(void)
     pcs->Var[Q_GRADIENT] = angle_variance;
     pcs->Var[Q_BACKBEARING] = angle_variance;
     pcs->Var[Q_BACKGRADIENT] = angle_variance;
-    pcs->Var[Q_PLUMB] = angle_variance * 0.5;
-    pcs->Var[Q_LEVEL] = angle_variance * 0.5;
+    pcs->Var[Q_PLUMB] = angle_variance * 0.25;
+    pcs->Var[Q_LEVEL] = angle_variance * 0.25;
     pcs->Var[Q_DEPTH] = distance_variance;
 }
 
