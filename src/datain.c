@@ -3937,6 +3937,9 @@ detached_or_not_srv:
 	    break;
 	  case WALLS_WPJ_CMD_SURVEY:
 	    push_walls_options(); // FIXME: Eliminate redundant push and pop inside data_file_walls_srv()
+	    // Walls omits `.STATUS` if its value would be zero, so set that as
+	    // the default for each `.SURVEY`.
+	    status = 0;
 	    in_survey = true;
 	    skipline();
 	    break;

@@ -1,5 +1,5 @@
 ;WALLS Project File
-; pos=no warn=3 dummycrprotection=
+; pos=no warn=4 dummycrprotection=
 .BOOK	Test handling of missing SRV files
 .NAME	PROJECT
 .STATUS	3
@@ -14,6 +14,8 @@
 .NAME	WX_MISSS
 .PATH	subdir
 .STATUS	8
+.SURVEY	Missing with STATUS 0
+.NAME	WX_MISS0
 .SURVEY	Missing other
 .NAME	NoSuchFile.pdf
 .STATUS	65544

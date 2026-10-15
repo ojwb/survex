@@ -5,5 +5,4 @@
 .STATUS	3
 .SURVEY	FIX directive tests
 .NAME	w_fix
-.STATUS	8
 .ENDBOOK
