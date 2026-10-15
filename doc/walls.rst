@@ -605,16 +605,16 @@ can usefully treat it as a processed survey data format.
 
 In detail:
 
+- Survey legs are handled (so for example, you can view a Walls-processed
+  centreline in ``aven`` by exporting it as a ``.LST`` file).  This requires
+  that *Connected vectors with file references* was selected in Walls when
+  creating the ``.LST`` file.
 - All stations are assumed to be underground and so flagged as ``UNDERGROUND``.
 - Fixed stations are flagged as ``FIXED``.
 - Georeferencing is handled for the same datum and UTM zone combinations that
   are handled in Walls ``.WPJ`` files.  Other combinations in a ``.LST`` file
   are quietly ignored, and the file loaded as if it wasn't georeferenced.
   Please report unsupported combinations you would find useful.
-- If *Connected vectors with file references* was selected when creating a
-  ``.LST`` file in Walls, the file includes links between stations which
-  is handled, so you can view a Walls-processed centre-line in ``aven`` by
-  exporting it as a ``.LST`` file.
 - If *Include only vectors or stations in current view frame* was selected
   legs which cross to outside the exported area are flagged as ``DUPLICATE``
   so they can be easily distinguished.
