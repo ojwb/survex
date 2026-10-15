@@ -1,3 +1,52 @@
+up to: e2caa2203804a22aaad1f8759cb6cff661397c0d
+
+Changes in 1.4.24 (UNRELEASED):
+
+* cavern:
+
+  + Walls quietly ignores a missing `.srv` file (but does report an error if it
+    exists but isn't readable).  There is an indication in the Walls UI (the
+    icon is a blank page instead of a page with writing), but we've seen
+    surveys not actually included into a real world dataset because the path
+    wasn't set and this feature meant it was missed until the dataset was
+    processed with Survex.
+
+    We'd run into this before and were issuing a warning instead of an error in
+    the case where the missing file was in a non-existent directory, but
+    testing a carefully constructed example .wpj in Walls32.exe shows any
+    missing file is handled this way, so now we issue a warning instead of
+    an error for any missing `.srv` file.
+
+  + Don't warn about Walls options `V=DEG` and similar.  Walls documents you
+    can abbreviate `DEGREES`, etc to just the first letter but is actually much
+    more lenient.  We added a warning use of undocumented values in such cases
+    in 1.4.23, but the use of `DEG` as an abbreviation for `DEGREES` is fairly
+    widespread in some Walls datasets and warning about it isn't going to catch
+    typos.  Fixes #166, reported by Joe Walko.
+
+  + When Walls' `DECL=` is used to set an explicit declination value we now
+    correct for grid convergence (like we already do when the declination is
+    computed from the IGRF model).  See #140.
+
+  + Fix handling of Walls `.wpj` items with no `.STATUS` line.  It seems Walls
+    omits this line when the status value is zero, but we were handling it as
+    either -1 or the status of the preceding item.  This could lead to us
+    quietly failing to actually process such `.srv` files, or using incorrect
+    flags for them.  Fixes #167, reported by Joe Walko.
+
+* Manual:
+
+  + Walls chapter:
+
+    - Raise the recommended minimum Survex version for processing Walls data to
+      1.4.24.
+
+* Build system:
+
+  + Use rsvg-convert to convert SVG to PNG.  We were using inkscape, but that's
+    primary a GUI tool.  The PNGs produced by rsvg-convert preserve transparency,
+    which was the original motivation for moving to using inkscape.
+
 Changes in 1.4.23 (2026-10-13):
 
 * cavern:
