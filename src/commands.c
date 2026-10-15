@@ -135,20 +135,22 @@ static void
 default_grade(settings *s)
 {
    /* Values correspond to those in bcra5.svx */
-   s->Var[Q_POS] = (real)sqrd(0.05);
-   s->Var[Q_LENGTH] = (real)sqrd(0.05);
-   s->Var[Q_BACKLENGTH] = (real)sqrd(0.05);
-   s->Var[Q_COUNT] = (real)sqrd(0.05);
-   s->Var[Q_DX] = s->Var[Q_DY] = s->Var[Q_DZ] = (real)sqrd(0.05);
-   s->Var[Q_BEARING] = (real)sqrd(rad(0.5));
-   s->Var[Q_GRADIENT] = (real)sqrd(rad(0.5));
-   s->Var[Q_BACKBEARING] = (real)sqrd(rad(0.5));
-   s->Var[Q_BACKGRADIENT] = (real)sqrd(rad(0.5));
+   real angle_variance = sqrd(rad(0.5));
+   real distance_variance = sqrd(0.05);
+   s->Var[Q_POS] = distance_variance;;
+   s->Var[Q_LENGTH] = distance_variance;;
+   s->Var[Q_BACKLENGTH] = distance_variance;;
+   s->Var[Q_COUNT] = distance_variance;;
+   s->Var[Q_DX] = s->Var[Q_DY] = s->Var[Q_DZ] = distance_variance;;
+   s->Var[Q_BEARING] = angle_variance;;
+   s->Var[Q_GRADIENT] = angle_variance;;
+   s->Var[Q_BACKBEARING] = angle_variance;;
+   s->Var[Q_BACKGRADIENT] = angle_variance;;
    /* SD of plumbed legs (0.25 degrees?) */
-   s->Var[Q_PLUMB] = (real)sqrd(rad(0.25));
+   s->Var[Q_PLUMB] = angle_variance * 0.25;;
    /* SD of level legs (0.25 degrees?) */
-   s->Var[Q_LEVEL] = (real)sqrd(rad(0.25));
-   s->Var[Q_DEPTH] = (real)sqrd(0.05);
+   s->Var[Q_LEVEL] = angle_variance * 0.25;;
+   s->Var[Q_DEPTH] = distance_variance;;
 }
 
 static void
