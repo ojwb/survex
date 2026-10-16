@@ -134,7 +134,8 @@ A Compass ``.DAT`` file contains unprocessed survey data.  You can process a
 
 You can even use ``*include compassfile.dat`` or ``*include
 compassproject.mak`` in a ``.svx`` file and it'll work, which allows combining
-separate cave survey projects maintained in Survex and Compass.
+separate cave survey projects maintained in Survex and Compass.  (There's
+similar support for Walls ``.WPJ`` and ``.SRV``.)
 
 One point to note when doing so (this tripped us up!) is that
 station names in Compass are case sensitive and so Survex reads
