@@ -12,9 +12,11 @@ DESCRIPTION
 ~~~~~~~~~~~
 
 Diffpos reports stations which are in one file but not the other, and
-also stations which have moved by more than a specified threshold
-distance in X, Y, or Z.  `THRESHOLD` is a distance in metres and
-defaults to 0.01m if not specified.
+also stations which differ in position by more than a specified threshold
+distance in X, Y, or Z.  Differences are reported as (East,North,Up)
+vectors in metres from the first file to the second.
+
+`THRESHOLD` is a distance in metres and defaults to 0.01m if not specified.
 
 Note that the input files can be any format the "img" library can read (and
 can be different formats), so it works with Survex ``.3d`` and ``.pos`` files,

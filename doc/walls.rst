@@ -79,6 +79,9 @@ We suggest a couple of ways to compare the results:
 
     diffpos SURVEY.LST SURVEY.3d 0.5
 
+  Differences are reported as (East,North,Up) vectors in metres from the
+  first file to the second.
+
   ``diffpos`` doesn't compare connectivity, but that's unlikely to differ
   between Survex and Walls output.
 
